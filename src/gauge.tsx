@@ -22,26 +22,36 @@ export const Gauge:React.FunctionComponent<IGaugeProps> = (props) => {
           // Triggered whenever the size of the target is changed
         },
       });
-      let svgSize = width;
-      if (height < width) {
-          svgSize = height;
+      let svgWidth = width;
+      let svgHeight = svgWidth*0.5;
+      if (height*2 < width) {
+          svgHeight = height;
+          svgWidth = svgHeight*2;
       }
-      svgSize = svgSize - svgPadding*2;
-      let  strokeWidth = svgSize*0.05;
-      let circumference = Math.PI*(svgSize - strokeWidth)*0.5;
+    //   let svgSize = width;
+    //   if (height < width) {
+        //   svgSize = height;
+    //   }
+      svgWidth = svgWidth - svgPadding*0.5*2;
+      svgHeight = svgHeight - svgPadding*0.5;
+
+
+    //   svgSize = svgSize - svgPadding*2;
+      let  strokeWidth = svgHeight*0.1;
+      let circumference = 2*Math.PI*(svgHeight - strokeWidth*0.5)*0.5;
       let emptyWeight = 0.05;
       let ratio = 8+7*emptyWeight;
       let coloredWedge = circumference/ratio;
       let emptyWedge = emptyWeight*circumference/ratio;
-      let needleHeight = svgSize*0.75*0.5;
+      let needleHeight = svgHeight*0.75;
       let needleWidth = needleHeight/2;
 
       let colors = props.colors?.length ? props.colors:['blue','red'];
 
     return <div style={{position:'absolute',left:0,right:0,top:0,bottom:0}} ref={ref as any}>
         <svg 
-        viewBox={`0 0 ${svgSize} ${svgSize}`}
-        style={{width:svgSize,height:svgSize,position:'relative',left:0 + (width-svgSize)*0.5,top:0 + (height-svgSize)*0.5}} 
+        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+        style={{width:svgWidth,height:svgHeight,position:'relative',left:0 + (width-svgWidth)*0.5,top:0 + (height-svgHeight)*0.5}} 
         >
             <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
                 {
@@ -51,7 +61,7 @@ export const Gauge:React.FunctionComponent<IGaugeProps> = (props) => {
             <stop offset="100%" stopColor='red' />
     </linearGradient>
             <path fill={'transparent'} stroke={'url(#grad1)'} strokeDasharray={`${coloredWedge} ${emptyWedge}`} strokeWidth={strokeWidth} 
-            d={`M ${strokeWidth*0.5} ${svgSize*0.25+svgSize*0.5 } A ${svgSize*0.5 - strokeWidth} ${svgSize*0.5 - strokeWidth} 0 0 1 ${svgSize - strokeWidth*0.5} ${svgSize*0.25+svgSize*0.5 }`} />
+            d={`M ${strokeWidth*0.5} ${svgHeight } A ${svgHeight - strokeWidth} ${svgHeight - strokeWidth} 0 0 1 ${svgWidth - strokeWidth*0.5} ${svgHeight }`} />
         </svg>
         <div style={{backgroundImage:needle,backgroundPosition:'center',backgroundSize:'cover',backgroundRepeat:'no-repeat',position:'absolute',left:`50%` ,top:`50%`,transformOrigin:'50% 80%',transform:`translate(-50%,-20%) rotate(${180*percentage  - 90}deg)` ,width:`${needleWidth}px` ,height:`${needleHeight}px`}} ></div>
     </div>;

@@ -16,3 +16,7 @@ curl -X POST $URL/Lucy/EnergyBudget/consumption/building1/2020/9  -H "Authorizat
 curl -X POST $URL/Lucy/EnergyBudget/consumption/building1/2020/10 -H "Authorization: APIKEY $APIKEY" -H "Content-Type: application/json" --data '{ "value": 220 }'
 curl -X POST $URL/Lucy/EnergyBudget/consumption/building1/2020/11 -H "Authorization: APIKEY $APIKEY" -H "Content-Type: application/json" --data '{ "value": 200 }'
 curl -X POST $URL/Lucy/EnergyBudget/consumption/building1/2020/12 -H "Authorization: APIKEY $APIKEY" -H "Content-Type: application/json" --data '{ "value": 190 }'
+
+curl -X POST $URL/Lucy/EnergyBudget/consumption/building1/2021/1 -H "Authorization: APIKEY $APIKEY" -H "Content-Type: application/json" --data '{ "value": 200 }'
+curl -X POST $URL/Lucy/EnergyBudget/consumption/building1/2021/2 -H "Authorization: APIKEY $APIKEY" -H "Content-Type: application/json" --data '{ "value": 230 }'
+curl -X POST $URL/Lucy/EnergyBudget/consumption/building1/2021/3 -H "Authorization: APIKEY $APIKEY" -H "Content-Type: application/json" --data '{ "value": 20 }'

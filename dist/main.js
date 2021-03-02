@@ -93,7 +93,7 @@
 /*! exports provided: id, author, widgets, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"id\":\"356cd8c5-4807-4c5f-c60a-6b67c5660d4d\",\"author\":\"eutech\",\"widgets\":[{\"id\":\"energy-budget\",\"title\":\"Energy Budget\",\"description\":\"Show actual energy consumption for the year vs budgeted consumption\"}]}");
+module.exports = JSON.parse("{\"id\":\"356cd8c5-4807-4c5f-c60a-6b67c5660d4d\",\"author\":\"eutech\",\"widgets\":[{\"id\":\"energy-budget\",\"title\":\"Energy Budget\",\"description\":\"Show actual energy consumption for the year vs budgeted consumption\"},{\"id\":\"current-monthly-energy\",\"title\":\"Current Monthly Energyt\",\"description\":\"A gauge display of how much of your monthly energy budget has been used\"}]}");
 
 /***/ }),
 
@@ -9775,9 +9775,9 @@ module.exports = /*#__PURE__*/function (_BaseClient) {
 
 /***/ }),
 
-/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8083":
+/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8082":
 /*!*********************************************************!*\
-  !*** (webpack)-dev-server/client?http://localhost:8083 ***!
+  !*** (webpack)-dev-server/client?http://localhost:8082 ***!
   \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -9959,7 +9959,7 @@ var onSocketMessage = {
   }
 };
 socket(socketUrl, onSocketMessage);
-/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8083"))
+/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8082"))
 
 /***/ }),
 
@@ -10670,26 +10670,34 @@ exports.Gauge = (props) => {
             // Triggered whenever the size of the target is changed
         },
     });
-    let svgSize = width;
-    if (height < width) {
-        svgSize = height;
+    let svgWidth = width;
+    let svgHeight = svgWidth * 0.5;
+    if (height * 2 < width) {
+        svgHeight = height;
+        svgWidth = svgHeight * 2;
     }
-    svgSize = svgSize - svgPadding * 2;
-    let strokeWidth = svgSize * 0.05;
-    let circumference = Math.PI * (svgSize - strokeWidth) * 0.5;
+    //   let svgSize = width;
+    //   if (height < width) {
+    //   svgSize = height;
+    //   }
+    svgWidth = svgWidth - svgPadding * 0.5 * 2;
+    svgHeight = svgHeight - svgPadding * 0.5;
+    //   svgSize = svgSize - svgPadding*2;
+    let strokeWidth = svgHeight * 0.1;
+    let circumference = 2 * Math.PI * (svgHeight - strokeWidth * 0.5) * 0.5;
     let emptyWeight = 0.05;
     let ratio = 8 + 7 * emptyWeight;
     let coloredWedge = circumference / ratio;
     let emptyWedge = emptyWeight * circumference / ratio;
-    let needleHeight = svgSize * 0.75 * 0.5;
+    let needleHeight = svgHeight * 0.75;
     let needleWidth = needleHeight / 2;
     let colors = ((_a = props.colors) === null || _a === void 0 ? void 0 : _a.length) ? props.colors : ['blue', 'red'];
     return React.createElement("div", { style: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }, ref: ref },
-        React.createElement("svg", { viewBox: `0 0 ${svgSize} ${svgSize}`, style: { width: svgSize, height: svgSize, position: 'relative', left: 0 + (width - svgSize) * 0.5, top: 0 + (height - svgSize) * 0.5 } },
+        React.createElement("svg", { viewBox: `0 0 ${svgWidth} ${svgHeight}`, style: { width: svgWidth, height: svgHeight, position: 'relative', left: 0 + (width - svgWidth) * 0.5, top: 0 + (height - svgHeight) * 0.5 } },
             React.createElement("linearGradient", { id: "grad1", x1: "0%", y1: "0%", x2: "100%", y2: "0%" },
                 colors.map((c, i) => React.createElement("stop", { offset: `${100 * i / (colors.length - 1)}%`, stopColor: c })),
                 React.createElement("stop", { offset: "100%", stopColor: 'red' })),
-            React.createElement("path", { fill: 'transparent', stroke: 'url(#grad1)', strokeDasharray: `${coloredWedge} ${emptyWedge}`, strokeWidth: strokeWidth, d: `M ${strokeWidth * 0.5} ${svgSize * 0.25 + svgSize * 0.5} A ${svgSize * 0.5 - strokeWidth} ${svgSize * 0.5 - strokeWidth} 0 0 1 ${svgSize - strokeWidth * 0.5} ${svgSize * 0.25 + svgSize * 0.5}` })),
+            React.createElement("path", { fill: 'transparent', stroke: 'url(#grad1)', strokeDasharray: `${coloredWedge} ${emptyWedge}`, strokeWidth: strokeWidth, d: `M ${strokeWidth * 0.5} ${svgHeight} A ${svgHeight - strokeWidth} ${svgHeight - strokeWidth} 0 0 1 ${svgWidth - strokeWidth * 0.5} ${svgHeight}` })),
         React.createElement("div", { style: { backgroundImage: needle, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', position: 'absolute', left: `50%`, top: `50%`, transformOrigin: '50% 80%', transform: `translate(-50%,-20%) rotate(${180 * percentage - 90}deg)`, width: `${needleWidth}px`, height: `${needleHeight}px` } }));
 };
 
@@ -10751,8 +10759,8 @@ for (var i = 0; i < 3; i++) {
 function getMonthName(year, month) {
     return ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'][month - 1] + ' - ' + year;
 }
+const model = 'EnergyBudget';
 const EnergyBudgetWidget = (props) => {
-    let model = 'EnergyBudget';
     let [year, setYear] = React.useState('');
     let [buildings, setBuildings] = React.useState([]);
     let [selectedBuilding, setSelectedBuilding] = React.useState('');
@@ -10843,12 +10851,67 @@ const EnergyBudgetWidget = (props) => {
 };
 exports.CurrentUsage = (props) => {
     let radius = '50%';
-    let value = 75;
+    let [buildings, setBuildings] = React.useState([]);
+    let [building, setBuilding] = React.useState('');
+    let [value, setValue] = React.useState(0);
+    let [budget, setBudget] = React.useState(0);
+    let updater = components_1.useUpdateWidgetProps();
+    function loadLocations() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let locations = yield props.uxpContext.executeAction(model, 'GetLocations', {}, { json: true });
+            setBuildings(locations);
+            return locations;
+            // if (locations.length>0 && !props.building) {
+            //   setSelectedBuilding(locations[0].location);
+            //   setSelectedBudget(locations[0].values);
+            // }
+        });
+    }
+    React.useEffect(() => {
+        loadLocations().then(_ => {
+        });
+    }, []);
+    React.useEffect(() => {
+        if (props.building && buildings && buildings.length) {
+            selectBuilding(props.building);
+        }
+    }, [buildings]);
+    function selectBuilding(b) {
+        let o = buildings.find(x => x.location == b);
+        if (!o) {
+            console.log('Unable to find building', b);
+            alert('Unable to load building details for ' + b);
+            return;
+        }
+        setBuilding(o.location);
+        setBudget(o.values[new Date().getMonth() + 1]);
+        updater(props.instanceId, { building: b });
+    }
+    React.useEffect(() => {
+        let year = new Date().getFullYear();
+        let month = new Date().getMonth() + 1;
+        props.uxpContext.executeAction(model, 'ConsumptionForLocationMonth', { location: building, year, month }, { json: true })
+            .then((data) => {
+            if (data && data[0] && data[0].value) {
+                setValue(Number(data[0].value));
+            }
+        }).catch(e => {
+            console.log('Error loading latest monthly data', e);
+        });
+    }, [building, budget]);
+    console.log('BUDGET', budget);
     return React.createElement(components_1.WidgetWrapper, null,
-        React.createElement(components_1.TitleBar, { title: 'Current Energy' }),
+        React.createElement(components_1.TitleBar, { title: 'Current Monthly Energy Usage' },
+            React.createElement(components_1.FilterPanel, null,
+                React.createElement(components_1.Select, { onChange: selectBuilding, selected: building, options: buildings, labelField: 'location', valueField: 'location' }))),
         React.createElement("div", { style: { flex: 1, position: 'relative' } },
-            React.createElement(gauge_1.Gauge, { value: value, min: 0, max: 100, colors: ['red', 'yellow', 'green', 'yellow', 'red'] })),
-        React.createElement("div", { style: { fontSize: '4em', textAlign: 'center', padding: '10px' } }, value));
+            React.createElement(gauge_1.Gauge, { value: value, min: 0, max: Number(budget), colors: ['blue', 'green', 'yellow', 'red'] })),
+        React.createElement("div", { style: { fontSize: '1em', textAlign: 'center', padding: '10px', marginTop: '20px' } },
+            React.createElement("span", { style: { height: '20px', backgroundSize: 'contain', display: 'inline-block', verticalAlign: 'middle', width: '14px', backgroundRepeat: 'no-repeat', marginRight: '10px', backgroundImage: `url(${EnergyIcon})` } }),
+            React.createElement("span", { style: { textTransform: 'uppercase' } }, "This Month's Consumption")),
+        React.createElement("div", { style: { fontSize: '4em', textAlign: 'center', padding: '10px' } },
+            value,
+            React.createElement("span", { style: { fontSize: '0.3em', opacity: 0.5 } }, "KWH")));
 };
 /**
  * Register as a Widget
@@ -10952,12 +11015,12 @@ exports.registerUI = registerUI;
 
 /***/ 0:
 /*!*******************************************************************************!*\
-  !*** multi (webpack)-dev-server/client?http://localhost:8083 ./src/index.tsx ***!
+  !*** multi (webpack)-dev-server/client?http://localhost:8082 ./src/index.tsx ***!
   \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/shivanan/eutech/usecases/energy-budget/node_modules/webpack-dev-server/client/index.js?http://localhost:8083 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8083");
+__webpack_require__(/*! /Users/shivanan/eutech/usecases/energy-budget/node_modules/webpack-dev-server/client/index.js?http://localhost:8082 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8082");
 module.exports = __webpack_require__(/*! ./src/index.tsx */"./src/index.tsx");
 
 

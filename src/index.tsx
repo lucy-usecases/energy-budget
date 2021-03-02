@@ -24,8 +24,8 @@ for (var i = 0; i < 3; i++) {
 function getMonthName(year: number, month: number) {
   return ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'][month - 1] + ' - ' + year;
 }
+const model = 'EnergyBudget';
 const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
-  let model = 'EnergyBudget';
   let [year, setYear] = React.useState('');
   let [buildings, setBuildings] = React.useState<any[]>([]);
   let [selectedBuilding, setSelectedBuilding] = React.useState('');
@@ -142,14 +142,75 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
 
 export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
   let radius = '50%';
-  let value = 75;
+
+  let [buildings,setBuildings] = React.useState([]);
+  let [building,setBuilding] = React.useState('');
+  let [value,setValue] = React.useState(0);
+  let [budget,setBudget] = React.useState(0);
+  let updater = useUpdateWidgetProps();
+
+  async function loadLocations() {
+    let locations = await props.uxpContext.executeAction(model, 'GetLocations', {}, { json: true }) as any[];
+    setBuildings(locations);
+    return locations;
+
+    // if (locations.length>0 && !props.building) {
+    //   setSelectedBuilding(locations[0].location);
+    //   setSelectedBudget(locations[0].values);
+    // }
+
+  }
+  React.useEffect(()=>{
+    loadLocations().then(_=>{
+      
+    });
+  },[]);
+  React.useEffect(()=>{
+    if (props.building && buildings && buildings.length) {
+      selectBuilding(props.building);
+    }
+  },[buildings]);
+  function selectBuilding(b:string) {
+    let o = buildings.find( x=>x.location == b);
+    if (!o) {
+      console.log('Unable to find building',b);
+      alert('Unable to load building details for ' + b);
+      return;
+    }
+    setBuilding(o.location);
+    setBudget(o.values[new Date().getMonth()+1]);
+    updater(props.instanceId,{building:b});
+  }
+  React.useEffect(()=>{
+    let year = new Date().getFullYear();
+    let month = new Date().getMonth()+1;
+    props.uxpContext.executeAction(model,'ConsumptionForLocationMonth',{location:building,year,month},{json:true})
+    .then((data:any)=>{
+      if (data && data[0] && data[0].value) {
+        setValue(Number(data[0].value));
+      }
+    }).catch(e => {
+      console.log('Error loading latest monthly data',e);
+    });
+  },[building,budget]);
+  console.log('BUDGET',budget);
   return <WidgetWrapper>
-    <TitleBar title={'Current Energy'} />
+    <TitleBar title={'Current Monthly Energy Usage'} >
+      <FilterPanel>
+      <Select onChange={selectBuilding} selected={building}
+            options={buildings} labelField={'location'} valueField={'location'} />
+      </FilterPanel>
+      </TitleBar>
     <div style={{ flex: 1 ,position:'relative'}}>
-    <Gauge value={value} min={0} max={100} colors={['red','yellow','green','yellow','red']} />
+    <Gauge value={value} min={0} max={Number(budget)} colors={['blue','green','yellow','red']} />
     </div>
+    <div style={{fontSize:'1em',textAlign:'center',padding:'10px',marginTop:'20px'}}>
+      <span style={{height:'20px',backgroundSize:'contain',display:'inline-block',verticalAlign:'middle',width:'14px',backgroundRepeat:'no-repeat',marginRight:'10px',backgroundImage:`url(${EnergyIcon})`}}></span>
+      <span style={{textTransform:'uppercase'}}>This Month's Consumption</span>
+    </div>
+
     <div style={{fontSize:'4em',textAlign:'center',padding:'10px'}}>
-      {value}
+      {value}<span style={{fontSize:'0.3em',opacity:0.5}}>KWH</span>
     </div>
   </WidgetWrapper>;
 }
