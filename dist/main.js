@@ -9775,9 +9775,9 @@ module.exports = /*#__PURE__*/function (_BaseClient) {
 
 /***/ }),
 
-/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8082":
+/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8080":
 /*!*********************************************************!*\
-  !*** (webpack)-dev-server/client?http://localhost:8082 ***!
+  !*** (webpack)-dev-server/client?http://localhost:8080 ***!
   \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -9959,7 +9959,7 @@ var onSocketMessage = {
   }
 };
 socket(socketUrl, onSocketMessage);
-/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8082"))
+/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8080"))
 
 /***/ }),
 
@@ -10911,6 +10911,8 @@ exports.CurrentUsage = (props) => {
             React.createElement("span", { style: { textTransform: 'uppercase' } }, "This Month's Consumption")),
         React.createElement("div", { style: { fontSize: '4em', textAlign: 'center', padding: '10px' } },
             value,
+            React.createElement("span", { style: { fontSize: '0.3em', opacity: 0.5 } }, "KWH"),
+            React.createElement("span", { style: { marginLeft: '10px', opacity: 0.8, textTransform: 'uppercase', fontSize: '0.3em' } }, 'of ' + budget),
             React.createElement("span", { style: { fontSize: '0.3em', opacity: 0.5 } }, "KWH")));
 };
 /**
@@ -11015,12 +11017,12 @@ exports.registerUI = registerUI;
 
 /***/ 0:
 /*!*******************************************************************************!*\
-  !*** multi (webpack)-dev-server/client?http://localhost:8082 ./src/index.tsx ***!
+  !*** multi (webpack)-dev-server/client?http://localhost:8080 ./src/index.tsx ***!
   \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/shivanan/eutech/usecases/energy-budget/node_modules/webpack-dev-server/client/index.js?http://localhost:8082 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8082");
+__webpack_require__(/*! /Users/shivanan/eutech/usecases/energy-budget/node_modules/webpack-dev-server/client/index.js?http://localhost:8080 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8080");
 module.exports = __webpack_require__(/*! ./src/index.tsx */"./src/index.tsx");
 
 

@@ -210,7 +210,8 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
     </div>
 
     <div style={{fontSize:'4em',textAlign:'center',padding:'10px'}}>
-      {value}<span style={{fontSize:'0.3em',opacity:0.5}}>KWH</span>
+      {value}<span style={{fontSize:'0.3em',opacity:0.5}}>KWH</span>  
+      <span style={{marginLeft:'10px',opacity:0.8,textTransform:'uppercase',fontSize:'0.3em'}}>{'of ' + budget}</span><span style={{fontSize:'0.3em',opacity:0.5}}>KWH</span>
     </div>
   </WidgetWrapper>;
 }
