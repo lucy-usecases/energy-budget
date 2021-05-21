@@ -323,6 +323,57 @@ declare module "uxp/components" {
     /**
      * @export
      */
+    export interface ICalendarComponentProps {
+        /**
+         * array of dates
+         */
+        dates: Date[]
+        /**
+         * callback to trigger on click date
+         * ill return the clicked date
+         */
+        onSelectDate: (date: Date) => void
+        /**
+         * disable weekends
+         */
+        disableWeekEnds?: boolean,
+        /**
+         * list of dates to disable
+         */
+        disableDates?: Array<Date>
+        /**
+         * min date
+         */
+        minDate?: Date,
+        /**
+         * max date
+         */
+        maxDate?: Date,
+        /**
+         * class name to use custom styles
+         */
+        className?: string
+    }
+        
+    /**
+     * @export
+     * Options that can be passed to a date picker field
+     */
+    export interface IDataTableColumn {
+        title: string | ITitleFunc,
+        width: string,
+        renderColumn: (item: any) => JSX.Element
+    }
+        
+    /**
+     * @export
+     * An individual pie chart slice
+     */
+    export interface IDataItem { name: string, value: number, color?: string }
+        
+    /**
+     * @export
+     */
     export interface ISelectProps {
         /**
          * List of items to select from.
@@ -388,12 +439,6 @@ declare module "uxp/components" {
          */
         value: string
     }
-        
-    /**
-     * @export
-     * An individual pie chart slice
-     */
-    export interface IDataItem { name: string, value: number, color?: string }
         
     /**
      * @export
@@ -537,6 +582,71 @@ declare module "uxp/components" {
         
     /**
      * @export
+     */
+    export interface IHeatmapPoint {
+    
+        /**
+         * The latitude of the point
+         */
+        latitude: number;
+    
+        /**
+         * The longitude of the point
+         */
+        longitude: number;
+    
+        /**
+         * The intensity of the point
+         */
+        intensity: number;
+    }
+        
+    /**
+     * @export
+     */
+    export interface IHeatmapConfiguration {
+        /**
+         * The values to show on the heatmap. Each value has a coordinate and an intensity.
+         * Intensities are relative the heatmap colors will be scaled based on the min/max intensities in the array
+         *
+         * @example
+         * ```
+         * heatmap={{values:[{latitude:2.3,longitude:-38.6,intensity:20},{latitude:2.4,longitude:-38.6,intensity:20},]}}
+         * ```
+         */
+        values:IHeatmapPoint[];
+    
+        /**
+         * Optionally - a gradient specified as an object of floating point values as keys from 0-1 and colors as the values
+         *
+         * @example
+         * ```
+         * heatmap={{values,gradient:{0.0:'blue',0.4:'yellow',0.7:'orange',0.9:'red'}}}
+         * ```
+         */
+        gradient?:{[stop:number]:string};
+    
+    
+        radius?:number;
+    
+        blue?:number;
+    
+        /**
+         * The maximum possible intensity value.
+         * If not specified, the intensities will be scaled based on the range of values provided.
+         * Specify a max to set what the maximum possible value can be and the range will be scaled according to that max value
+         */
+        max?:number;
+    
+    
+        /**
+         * Set to true if the coordinates of the heatmap points are in the image coordinates system.
+         */
+        imageCoordinates?:boolean;
+    }
+        
+    /**
+     * @export
      * Region data for maps
      */
     export interface IRegion {
@@ -599,6 +709,38 @@ declare module "uxp/components" {
          *
          */
         bounds?: [[number, number], [number, number]]
+    }
+        
+    /**
+     * @export
+     * These props are passed to the render method of each wizard step.
+     *
+     */
+    export interface IWizardStepProps {
+        /**
+         * Triggers a request to go to the next step in the wizard. You can use this functional to programatically move to the next step (the user can also click the 'Next' action to do the same thing)
+         */
+        next: (id?: string) => void;
+    
+        /**
+         * Similar to `next`, you can call this function to programatically go to the previous step in the wizard.
+         */
+        prev: () => void;
+    }
+        
+    /**
+     * Defines an individual step within a wizard.
+     * Each step provides a render method to render the actual step.
+     * You also need to specify a unique 'id' and title for the step.
+     * You can optionally specify an `onNext` callback  to run whenever the user wants to go to the next step.
+     * This can return either `null` - meaning we should not proceed to the next step, or the id of the next step to go to.
+     * @export
+     */
+    export interface IWizardStep {
+        onNext?: () => string | null;
+        id: string;
+        title: string;
+        render: (props: IWizardStepProps) => React.ReactNode;
     }
         
     /**
@@ -666,16 +808,6 @@ declare module "uxp/components" {
         
     /**
      * @export
-     * Options that can be passed to a date picker field
-     */
-    export interface IDataTableColumn {
-        title: string | ITitleFunc,
-        width: string,
-        renderColumn: (item: any) => JSX.Element
-    }
-        
-    /**
-     * @export
      * Dropdown button props
      */
     export interface IDropDownButtonProps {
@@ -734,40 +866,92 @@ declare module "uxp/components" {
         
     /**
      * @export
-     * These props are passed to the render method of each wizard step.
-     *
+     * Options that can be passed to a date picker field
      */
-    export interface IWizardStepProps {
+    export interface IGaugeProps {
         /**
-         * Triggers a request to go to the next step in the wizard. You can use this functional to programatically move to the next step (the user can also click the 'Next' action to do the same thing)
+         * min value of the gauge
          */
-        next: (id?: string) => void;
+        min: number;
+        /**
+         * max value of the gauge
+         */
+        max: number;
+        /**
+         * value of the gauge
+         */
+        value: number;
     
         /**
-         * Similar to `next`, you can call this function to programatically go to the previous step in the wizard.
+         * colors array.
+         * color: name of the color.
+         * stopAt: length of color distribution.
+         *
+         * default is blue, green, yellow, red colors at equal length
          */
-        prev: () => void;
+        colors?: Array<{ color: string, stopAt: number }>;
+        /**
+         * label
+         * no default value
+         */
+        label?: () => JSX.Element,
+        /**
+         * if true show legend.
+         * default is false
+         */
+        legend?: boolean,
+        /**
+         * color of the ticks.
+         * default is white
+         */
+        tickColor?: string,
+        /**
+         * class name(s) for additional styling
+         */
+        className?: string,
+        /**
+         * additional inline styles
+         */
+        styles?: React.CSSProperties
+    
+        /**
+         * if true show gradient colors
+         * default is false
+         */
+        gradient?: boolean,
+        /**
+         * thickness of the gauge
+         * This value is defend on the radius
+         * default is radius * 0.11
+         * max value is radius * 0.25
+         *
+         * if you pass a higher value than the max value, max value will be used
+         */
+        thickness?: number,
+        /**
+         * thickness of the large ticks
+         * default is 4
+         * min value is 1
+         * max value is 6
+         *
+         * if the given value is higher than the max value, max values will be used
+         */
+        largeTick?: number,
+        /**
+         * thickness of the small ticks
+         * default is 1
+         * min values is 1
+         * max values is 3
+         *
+         * if the given values is higher than the max value, max values will be used
+         */
+        smallTick?: number
     }
         
     /**
-     * Defines an individual step within a wizard.
-     * Each step provides a render method to render the actual step.
-     * You also need to specify a unique 'id' and title for the step.
-     * You can optionally specify an `onNext` callback  to run whenever the user wants to go to the next step.
-     * This can return either `null` - meaning we should not proceed to the next step, or the id of the next step to go to.
      * @export
      */
-    export interface IWizardStep {
-        onNext?: () => string | null;
-        id: string;
-        title: string;
-        render: (props: IWizardStepProps) => React.ReactNode;
-    }
-        
-    /**
-     * @export
-     */
-    export type IDataFunction = (max: number, lastPageToken: string, args?: any) => Promise<{ items: Array<any>, pageToken: string }>;
+    export type IDataFunction = (max: number, lastPageToken: string, args?: any) => Promise<{ items: Array<any>, pageToken: string, total?: number }>;
         
     /**
      * @export
@@ -803,6 +987,12 @@ declare module "uxp/components" {
         
     /**
      * @export
+     * Options that can be passed to a date picker field
+     */
+    export type ITitleFunc = () => JSX.Element
+        
+    /**
+     * @export
      *
      * max: page size
      * last : last page token
@@ -810,12 +1000,6 @@ declare module "uxp/components" {
      * args has a default option 'query'. when you type in the search box, search text ill be set to this 'query'
      */
     export type IDynamicSelectDataFunction = (max: number, lastPageToken: string, args?: any) => Promise<{ items: Array<any>, pageToken: string }>
-        
-    /**
-     * @export
-     * Options that can be passed to a date picker field
-     */
-    export type ITitleFunc = () => JSX.Element
         
     /**
      * The react hook for resize effect
@@ -879,14 +1063,14 @@ declare module "uxp/components" {
         
     /**
      * @export
-     */
-    export type IPosition = "left" | "right";
-        
-    /**
-     * @export
      * Determines how a checkbox field looks
      */
     export type ICheckboxType = "default" | "bordered" | "change-icon" | "switch-line" | "switch-box";
+        
+    /**
+     * @export
+     */
+    export type IPosition = "left" | "right";
         
     /**
      * @export
@@ -1630,26 +1814,45 @@ declare module "uxp/components" {
      *
      */
     export const LinkWidgetContainer : React.FunctionComponent<ILinkWidgetContainerProps>;
-        
-    interface IFormFeedbackProps {
-        validInput?: boolean,
+        /**
+     * @export
+     */
+    interface ICalendarComponentProps {
+        /**
+         * array of dates
+         */
+        dates: Date[]
+        /**
+         * callback to trigger on click date
+         * ill return the clicked date
+         */
+        onSelectDate: (date: Date) => void
+        /**
+         * disable weekends
+         */
+        disableWeekEnds?: boolean,
+        /**
+         * list of dates to disable
+         */
+        disableDates?: Array<Date>
+        /**
+         * min date
+         */
+        minDate?: Date,
+        /**
+         * max date
+         */
+        maxDate?: Date,
+        /**
+         * class name to use custom styles
+         */
         className?: string
     }
     /**
-     * This is used to provide a success or error summary message for forms
      * @export
-     * @example
-     * ```
-     * FormFeedback validInput>Form feedback ( valid )</FormFeedback>
-     * ```
-     *
-     * @example
-     * ```
-     * <FormFeedback validInput={false}>Form feedback ( invalid )</FormFeedback>
-     * ```
-     *
+     * Calendar component so display range of dates
      */
-    export const FormFeedback : React.FunctionComponent<IFormFeedbackProps>;
+    export const CalendarComponent : React.FunctionComponent<ICalendarComponentProps>;
         
     interface INotificationProps {
          /**
@@ -1674,6 +1877,247 @@ declare module "uxp/components" {
      *
      */
     export const NotificationBlock : React.FunctionComponent<INotificationProps>;
+        
+    interface IDataTableProps {
+        /**
+         * List of items to render. This can either be an array of objects or a function that will generate the array of objects.
+         * If you supply a function then pagination will be supported. The function expects 2 parameters - `max` and `last` and returns a promise that will resolve to the list of objects.
+         * `max` specifies the maximum number of items to be returned.
+         */
+        data: Array<any> | IDataFunction,
+    
+        /**
+         * List of columns to render
+         * column contains three(3) params
+         *  - title : column title. this can be either a string or a function that returns a jsx element
+         *  - width : width of the column. this can a percentage (20%), fixed with (100px) or null
+         *  - renderColumn : content of the column. this is a function that returns a jsx element. this function will take a single argument item type of any
+         *  @example
+         *
+         * ```
+         *  renderColumn={(item,key)=><div>{'Item:' + JSON.stringify(item)}}</div>}
+         * ```
+         * @example
+         *
+         * ```
+         * columns= {[
+         *  {
+         *      title: "Request Id",
+         *      width: "20%",
+         *      render: (item) => <div>{item.requestId} </div>
+         *  },
+         *  {
+         *      title: "User",
+         *      width: "10%",
+         *      render: (item) => <div>{item.user} </div>
+         *  }
+         * ]}
+         * ```
+         */
+        columns: IDataTableColumn[],
+    
+        /**
+         * The number of items to fetch in each page. This gets passed to the data function as the `max` parameter
+         */
+        pageSize: number,
+    
+        args?: any
+    
+        /**
+         * This function renders a loading animation. If not specified, the default loading animation will be used.
+         */
+        renderLoading?: () => JSX.Element,
+    
+        /**
+         * Any extra class names to be added to the component
+         */
+        className?: string
+        /**
+         * show/hide footer (scroll buttons)
+         */
+        showFooter?: boolean,
+        /**
+         * mun of rows to scroll
+         */
+        scrollStep?: number,
+        /**
+         * show/hide end of content message
+         */
+        showEndOfContent?: boolean
+    
+        /**
+       * this function will be called every time list get updated
+       * this will return total number of items (function should return the total count) and loaded items count
+       */
+        onItemsLoad?: (total: number, loaded: number) => void
+    
+        /**
+         * this will toggle the headers
+         * default is true
+         */
+        renderHeaders?: boolean,
+    
+        /**
+         * callback function to trigger on click a table row
+         */
+        onClickRow?: (item: any) => void,
+    
+        /**
+         * active table row styles
+         * default is 'active' an has some styles
+         * if you give a class here it will be applied
+         */
+        activeClass?: string
+    }
+    /**
+     *
+     * A infinite-scrollable list that supports paging in of items
+     * @export
+     */
+    export const DataTable : React.FunctionComponent<IDataTableProps>;
+        
+    interface IItemCardProps {
+        /**
+         * A reference to the data to be rendered as a card.
+         */
+        item?: any,
+    
+        /**
+         * The name of the field within the `item` that has the url of an image to be shown
+         */
+        imageField?: string,
+    
+        /**
+         * The name of the field within `item` that has the title of the object
+         */
+        titleField?: string,
+    
+        /**
+         * The name of the field within 'item' that holds the subtitle of the object
+         */
+        subTitleField?: string,
+    
+        /**
+         * This name of the field within `item` that contains any 'name' associated with the object.
+         * This property is used only if the imageField value is not set. The name is abbreviated and set as the profile image.
+         */
+        nameField?: string,
+    
+        /**
+         * Any extra css classes to biind to the card.
+         */
+        className?: string
+    }
+    /**
+     * This component is used to render some item in a standard card form.
+     * This includes a profile pic, a title, a subtitle and a list of fields and values.
+     * @export
+     *
+     */
+    export const ItemCard : React.FunctionComponent<IItemCardProps>;
+        
+    interface IPieChartProps {
+        /**
+         * A list of items that the pie chart is comprised of
+         */
+        data: IDataItem[],
+    
+        /**
+         * TODO
+         */
+        fillColor: string,
+    
+        /**
+         * Set to `true` to show the chart legend
+         */
+        showLegend?: boolean
+    }
+    /**
+     *
+     * Display a pie chart visualization
+     * @export
+     */
+    export const PieChartComponent : React.FunctionComponent<IPieChartProps>;
+        
+    interface IFormFeedbackProps {
+        validInput?: boolean,
+        className?: string
+    }
+    /**
+     * This is used to provide a success or error summary message for forms
+     * @export
+     * @example
+     * ```
+     * FormFeedback validInput>Form feedback ( valid )</FormFeedback>
+     * ```
+     *
+     * @example
+     * ```
+     * <FormFeedback validInput={false}>Form feedback ( invalid )</FormFeedback>
+     * ```
+     *
+     */
+    export const FormFeedback : React.FunctionComponent<IFormFeedbackProps>;
+        
+    interface ICheckboxProps {
+        /**
+         * Called when the checkbox is checked or unchecked by clicking on it
+         */
+        onChange: (checked: boolean) => void,
+    
+        /**
+         * Get or set the current state of the checkbox
+         */
+        checked: boolean,
+    
+        /**
+         * Any additional text to show next to the checkbox
+         */
+        label?: string,
+    
+        /**
+         * If set to 'false' the checkbox will show in an 'invalid' state - neither true nor false
+         */
+        isValid?: boolean,
+    
+        /**
+         * Any additional html attributes to pass to the underlying input field
+         */
+        inputAttr?: { [key: string]: string | boolean },
+    
+        /**
+         * Determines how the checkbox looks, visually
+         */
+        type?: ICheckboxType
+    }
+    /**
+     *
+     * @export
+     *
+     * A checkbox component. This can render a true/value value in multiple ways. Set the type property to determine how it looks visually.
+     * types : default, bordered, change-icon, switch-line, switch-box
+     *
+     * @example
+     * ```
+     *  <Checkbox
+     *      checked={checked}
+     *      onChange={(isChecked) => setChecked(isChecked)}
+     *      label='Are you sure'
+     *  />
+     * ```
+     *
+     * @example
+     * ```
+     *  <Checkbox
+     *      checked={checked}
+     *      onChange={(isChecked) => setChecked(isChecked)}
+     *      label='Are you sure'
+     *      type="switch-box"
+     *  />
+     * ```
+     *
+     */
+    export const Checkbox : React.FunctionComponent<ICheckboxProps>;
         
     interface IDataListProps {
         /**
@@ -1899,66 +2343,6 @@ declare module "uxp/components" {
      */
     export const Select : React.FunctionComponent<ISelectProps>;
         
-    interface ICheckboxProps {
-        /**
-         * Called when the checkbox is checked or unchecked by clicking on it
-         */
-        onChange: (checked: boolean) => void,
-    
-        /**
-         * Get or set the current state of the checkbox
-         */
-        checked: boolean,
-    
-        /**
-         * Any additional text to show next to the checkbox
-         */
-        label?: string,
-    
-        /**
-         * If set to 'false' the checkbox will show in an 'invalid' state - neither true nor false
-         */
-        isValid?: boolean,
-    
-        /**
-         * Any additional html attributes to pass to the underlying input field
-         */
-        inputAttr?: { [key: string]: string | boolean },
-    
-        /**
-         * Determines how the checkbox looks, visually
-         */
-        type?: ICheckboxType
-    }
-    /**
-     *
-     * @export
-     *
-     * A checkbox component. This can render a true/value value in multiple ways. Set the type property to determine how it looks visually.
-     * types : default, bordered, change-icon, switch-line, switch-box
-     *
-     * @example
-     * ```
-     *  <Checkbox
-     *      checked={checked}
-     *      onChange={(isChecked) => setChecked(isChecked)}
-     *      label='Are you sure'
-     *  />
-     * ```
-     *
-     * @example
-     * ```
-     *  <Checkbox
-     *      checked={checked}
-     *      onChange={(isChecked) => setChecked(isChecked)}
-     *      label='Are you sure'
-     *      type="switch-box"
-     *  />
-     * ```
-     *
-     */
-    export const Checkbox : React.FunctionComponent<ICheckboxProps>;
-        
     interface IToggleFilterProps {
         /**
          * The list of possible options to choose from
@@ -1986,69 +2370,6 @@ declare module "uxp/components" {
      * @export
      */
     export const ToggleFilter : React.FunctionComponent<IToggleFilterProps>;
-        
-    interface IPieChartProps {
-        /**
-         * A list of items that the pie chart is comprised of
-         */
-        data: IDataItem[],
-    
-        /**
-         * TODO
-         */
-        fillColor: string,
-    
-        /**
-         * Set to `true` to show the chart legend
-         */
-        showLegend?: boolean
-    }
-    /**
-     *
-     * Display a pie chart visualization
-     * @export
-     */
-    export const PieChartComponent : React.FunctionComponent<IPieChartProps>;
-        
-    interface IItemCardProps {
-        /**
-         * A reference to the data to be rendered as a card.
-         */
-        item?: any,
-    
-        /**
-         * The name of the field within the `item` that has the url of an image to be shown
-         */
-        imageField?: string,
-    
-        /**
-         * The name of the field within `item` that has the title of the object
-         */
-        titleField?: string,
-    
-        /**
-         * The name of the field within 'item' that holds the subtitle of the object
-         */
-        subTitleField?: string,
-    
-        /**
-         * This name of the field within `item` that contains any 'name' associated with the object.
-         * This property is used only if the imageField value is not set. The name is abbreviated and set as the profile image.
-         */
-        nameField?: string,
-    
-        /**
-         * Any extra css classes to biind to the card.
-         */
-        className?: string
-    }
-    /**
-     * This component is used to render some item in a standard card form.
-     * This includes a profile pic, a title, a subtitle and a list of fields and values.
-     * @export
-     *
-     */
-    export const ItemCard : React.FunctionComponent<IItemCardProps>;
         
     interface IDataGridProps {
         /**
@@ -2100,123 +2421,6 @@ declare module "uxp/components" {
      *
      */
     export const DataGrid : React.FunctionComponent<IDataGridProps>;
-        /**
-     * @export
-     */
-    interface IWidgetWrapperProps {
-        /**
-         * Any extra css class names to add to the widget wrapper
-         */
-        className?: string
-    }
-    /**
-     *
-     * @export
-     *
-     * This is a standard wrapper for widgets.
-     * It provides basic visual styling for common widgets. You should generally wrap all your widgets in this.
-     *
-     * @example
-     * ```
-     * <WidgetWrapper>
-     *  <Label>My custom widget</Label>
-     * </WidgetWrapper>
-     * ```
-     */
-    export const WidgetWrapper : React.FunctionComponent<IWidgetWrapperProps>;
-        
-    interface ITrendChartProps {
-        /**
-         * The series to plot. More than one can be visualized.
-         */
-        data: ITrendSeries[],
-    
-        /**
-         * Use this to render a custom tooltip that will appear when the user hovers over a data point.
-         * The data being hovered over is passed as a parameter.
-         *
-         * @example
-         * onShowTooltip={(data)=><div>{`Temperature: ${data.temp}`}</div>}
-         */
-        onShowTooltip?: (data: any) => JSX.Element
-    
-        /**
-         * Called whenever a data point is clicked on. The data point being clicked on is passed as a parameter to the function
-         */
-        onClick?: (data: any) => JSX.Element
-    }
-    /**
-     * A component to show time series based trend or line visualizations
-     * @export
-     *
-     */
-    export const TrendChartComponent : React.FunctionComponent<ITrendChartProps>;
-        
-    interface IDateRangePickerProps {
-        title: string,
-        /**
-         * start date of the range. Either a Date object or an ISO8601 string representation of a date
-         */
-        startDate: string | Date,
-        /**
-         * end date of the range. Either a Date object or an ISO8601 string representation of a date
-         */
-        endDate: string | Date,
-        /**
-         * Callback that gets executed whenever a date range is selected/changed in the date picker
-         */
-        onChange: (newStartDate: Date, newEndDate: Date) => void,
-        /**
-         * Called when the calendar popup is closed
-         */
-        closeOnSelect?: boolean,
-        /**
-         * Set to true to prevent a user from typing in a date
-         */
-        disableInput?: boolean,
-        /**
-        * Additional options to control behavior
-        */
-        options?: {
-            /**
-             * The minimum selectable date. Either a Date object an an ISO8601 date string
-             */
-            minDate?: string | Date,
-    
-            /**
-             * The maximum selectable date. Either a Date object an an ISO8601 date string
-             */
-            maxDate?: string | Date,
-    
-            /**
-             * If set to `true`, you cannot select a weekend date
-             */
-            disableWeekEnds?: boolean,
-    
-            /**
-             * An array of specific dates that the user cannot select
-             */
-            disableDates?: Array<Date | String>
-        }
-    }
-    /**
-     *
-     * @export
-     *
-     * This component is used to select a date range.
-     *
-     * @example
-     * ```
-     *  <DateRangePicker
-     *      startDate={startDate}
-     *      endDate={endDate}
-     *      closeOnSelect
-     *      onChange={(newStart, newEnd) => { setStartDate(newStart); setEndDate(newEnd) }}
-     *  />
-     * ```
-     *
-     */
-    export const DateRangePicker : React.FunctionComponent<IDateRangePickerProps>;
         
     interface IItemListCardProps {
         /** The title to show on the card */
@@ -2259,6 +2463,30 @@ declare module "uxp/components" {
      * @export
      */
     export const ItemListCard : React.FunctionComponent<IItemListCardProps>;
+        /**
+     * @export
+     */
+    interface IWidgetWrapperProps {
+        /**
+         * Any extra css class names to add to the widget wrapper
+         */
+        className?: string
+    }
+    /**
+     *
+     * @export
+     *
+     * This is a standard wrapper for widgets.
+     * It provides basic visual styling for common widgets. You should generally wrap all your widgets in this.
+     *
+     * @example
+     * ```
+     * <WidgetWrapper>
+     *  <Label>My custom widget</Label>
+     * </WidgetWrapper>
+     * ```
+     */
+    export const WidgetWrapper : React.FunctionComponent<IWidgetWrapperProps>;
         
     interface IMapComponentProps {
         /**
@@ -2316,7 +2544,14 @@ declare module "uxp/components" {
          * this handler will get called when a region is clicked
          *
          */
-        onRegionClick?: (event: any, data: any) => void
+        onRegionClick?: (event: any, data: any) => void,
+    
+    
+    
+        /**
+         * If you want to overlay a heatmap -  assign this object with some valid value
+         */
+        heatmap?:IHeatmapConfiguration
     
         /**
          * The default zoom level to show on the map
@@ -2340,7 +2575,10 @@ declare module "uxp/components" {
         /**
          * this handler will get called when the map is clicked
          */
-        onClick?: (event: LeafletMouseEvent) => void
+        onClick?: (event: LeafletMouseEvent) => void,
+    
+        onZoomEnd?: (event: LeafletEvent) => void
+        onDragEnd?: (event: DragEndEvent) => void
     }
     /**
      * A map widget that can show a pannable/zoomable map with markers
@@ -2348,6 +2586,29 @@ declare module "uxp/components" {
      *
      */
     export const MapComponent : React.FunctionComponent<IMapComponentProps>;
+        
+    interface IWizardProps {
+        /**
+         * A list of steps within the wizard.
+         */
+        steps: IWizardStep[];
+    
+        /**
+         * What title should be shown on the 'next' button when we reach the last screen
+         */
+        completionTitle?: string;
+    
+        /**
+         * This callback is run whenever they hit the final 'completion' action on the last step. It should be async so we can show a loading animation on the button
+         */
+        onComplete?: () => Promise<void>;
+    }
+    /**
+     * A wizard-style interface to guide users through a journey.
+     * You can conditionally skip steps and validate steps before proceeding.
+     * @export
+     */
+    export const Wizard : React.FunctionComponent<IWizardProps>;
         /**
      * @export
      *
@@ -2446,6 +2707,72 @@ declare module "uxp/components" {
      */
     export const TimePicker : React.FunctionComponent<ITimePickerProps>;
         
+    interface IDateRangePickerProps {
+        title: string,
+        /**
+         * start date of the range. Either a Date object or an ISO8601 string representation of a date
+         */
+        startDate: string | Date,
+        /**
+         * end date of the range. Either a Date object or an ISO8601 string representation of a date
+         */
+        endDate: string | Date,
+        /**
+         * Callback that gets executed whenever a date range is selected/changed in the date picker
+         */
+        onChange: (newStartDate: Date, newEndDate: Date) => void,
+        /**
+         * Called when the calendar popup is closed
+         */
+        closeOnSelect?: boolean,
+        /**
+         * Set to true to prevent a user from typing in a date
+         */
+        disableInput?: boolean,
+        /**
+        * Additional options to control behavior
+        */
+        options?: {
+            /**
+             * The minimum selectable date. Either a Date object an an ISO8601 date string
+             */
+            minDate?: string | Date,
+    
+            /**
+             * The maximum selectable date. Either a Date object an an ISO8601 date string
+             */
+            maxDate?: string | Date,
+    
+            /**
+             * If set to `true`, you cannot select a weekend date
+             */
+            disableWeekEnds?: boolean,
+    
+            /**
+             * An array of specific dates that the user cannot select
+             */
+            disableDates?: Array<Date | String>
+        }
+    }
+    /**
+     *
+     * @export
+     *
+     * This component is used to select a date range.
+     *
+     * @example
+     * ```
+     *  <DateRangePicker
+     *      startDate={startDate}
+     *      endDate={endDate}
+     *      closeOnSelect
+     *      onChange={(newStart, newEnd) => { setStartDate(newStart); setEndDate(newEnd) }}
+     *  />
+     * ```
+     *
+     */
+    export const DateRangePicker : React.FunctionComponent<IDateRangePickerProps>;
+        
     interface ITimeRangePickerProps {
         title: string
         /**
@@ -2538,6 +2865,77 @@ declare module "uxp/components" {
      */
     export const DateTimePicker : React.FunctionComponent<IDateTimePickerProps>;
         
+    interface ITrendChartProps {
+        /**
+         * The series to plot. More than one can be visualized.
+         */
+        data: ITrendSeries[],
+    
+        /**
+         * Use this to render a custom tooltip that will appear when the user hovers over a data point.
+         * The data being hovered over is passed as a parameter.
+         *
+         * @example
+         * onShowTooltip={(data)=><div>{`Temperature: ${data.temp}`}</div>}
+         */
+        onShowTooltip?: (data: any) => JSX.Element
+    
+        /**
+         * Called whenever a data point is clicked on. The data point being clicked on is passed as a parameter to the function
+         */
+        onClick?: (data: any) => JSX.Element
+    }
+    /**
+     * A component to show time series based trend or line visualizations
+     * @export
+     *
+     */
+    export const TrendChartComponent : React.FunctionComponent<ITrendChartProps>;
+        
+    interface IConfirmButtonProps {
+        /**
+         * The caption for the button
+         */
+        title: string,
+    
+        /**
+         * The url of an icon to show on the button
+         */
+        icon?: string,
+    
+        /**
+         * Any extra css classes to add to the button
+         */
+        className?: string,
+    
+        /**
+         * The callback that gets invoked when the confirm button is clicked
+         */
+        onConfirm: () => Promise<any>,
+        /**
+         * The callback that gets invoked when the cancel button is clicked
+         */
+        onCancel: () => void,
+    
+        /**
+         * Set this to `true` to show the button in its 'loading...' state.
+         * In this state, an animation will be shown indicating that work is going on and the user will not be able to click the button
+         */
+        loading?: boolean,
+    
+        /**
+         * The caption to show on the button when its in loading state
+         */
+        loadingTitle?: string,
+        active?: boolean,
+        disabled?: boolean
+    }
+    /**
+     * This is a confirm button component.
+     * @export
+     */
+    export const ConfirmButton : React.FunctionComponent<IConfirmButtonProps>;
+        
     interface IDynamicSelectProps {
         /**
          * List of options to render.
@@ -2625,132 +3023,6 @@ declare module "uxp/components" {
      *
      */
     export const DynamicSelect : React.FunctionComponent<IDynamicSelectProps>;
-        
-    interface IConfirmButtonProps {
-        /**
-         * The caption for the button
-         */
-        title: string,
-    
-        /**
-         * The url of an icon to show on the button
-         */
-        icon?: string,
-    
-        /**
-         * Any extra css classes to add to the button
-         */
-        className?: string,
-    
-        /**
-         * The callback that gets invoked when the confirm button is clicked
-         */
-        onConfirm: () => Promise<any>,
-        /**
-         * The callback that gets invoked when the cancel button is clicked
-         */
-        onCancel: () => void,
-    
-        /**
-         * Set this to `true` to show the button in its 'loading...' state.
-         * In this state, an animation will be shown indicating that work is going on and the user will not be able to click the button
-         */
-        loading?: boolean,
-    
-        /**
-         * The caption to show on the button when its in loading state
-         */
-        loadingTitle?: string,
-        active?: boolean,
-        disabled?: boolean
-    }
-    /**
-     * This is a confirm button component.
-     * @export
-     */
-    export const ConfirmButton : React.FunctionComponent<IConfirmButtonProps>;
-        
-    interface IDataTableProps {
-        /**
-         * List of items to render. This can either be an array of objects or a function that will generate the array of objects.
-         * If you supply a function then pagination will be supported. The function expects 2 parameters - `max` and `last` and returns a promise that will resolve to the list of objects.
-         * `max` specifies the maximum number of items to be returned.
-         */
-        data: Array<any> | IDataFunction,
-    
-        /**
-         * List of columns to render
-         * column contains three(3) params
-         *  - title : column title. this can be either a string or a function that returns a jsx element
-         *  - width : width of the column. this can a percentage (20%), fixed with (100px) or null
-         *  - renderColumn : content of the column. this is a function that returns a jsx element. this function will take a single argument item type of any
-         *  @example
-         *
-         * ```
-         *  renderColumn={(item,key)=><div>{'Item:' + JSON.stringify(item)}}</div>}
-         * ```
-         * @example
-         *
-         * ```
-         * columns= {[
-         *  {
-         *      title: "Request Id",
-         *      width: "20%",
-         *      render: (item) => <div>{item.requestId} </div>
-         *  },
-         *  {
-         *      title: "User",
-         *      width: "10%",
-         *      render: (item) => <div>{item.user} </div>
-         *  }
-         * ]}
-         * ```
-         */
-        columns: IDataTableColumn[],
-    
-        /**
-         * The number of items to fetch in each page. This gets passed to the data function as the `max` parameter
-         */
-        pageSize: number,
-    
-        args?: any
-    
-        /**
-         * This function renders a loading animation. If not specified, the default loading animation will be used.
-         */
-        renderLoading?: () => JSX.Element,
-    
-        /**
-         * Any extra class names to be added to the component
-         */
-        className?: string
-        /**
-         * show/hide footer (scroll buttons)
-         */
-        showFooter?: boolean,
-        /**
-         * mun of rows to scroll
-         */
-        scrollStep?: number,
-        /**
-         * show/hide end of content message
-         */
-        showEndOfContent?: boolean
-    
-        /**
-       * this function will be called every time list get updated
-       * this will return total number of items (function should return the total count) and loaded items count
-       */
-        onItemsLoad?: (total: number, loaded: number) => void
-    
-        renderHeaders?: boolean
-    }
-    /**
-     *
-     * A infinite-scrollable list that supports paging in of items
-     * @export
-     */
-    export const DataTable : React.FunctionComponent<IDataTableProps>;
         /**
      * @export
      * Dropdown button props
@@ -2884,28 +3156,130 @@ declare module "uxp/components" {
      * @export
      */
     export const LinkButtonWidget : React.FunctionComponent<ILinkButtonWidgetProps>;
-        
-    interface IWizardProps {
         /**
-         * A list of steps within the wizard.
+     * @export
+     * Options that can be passed to a date picker field
+     */
+    interface IGaugeProps {
+        /**
+         * min value of the gauge
          */
-        steps: IWizardStep[];
+        min: number;
+        /**
+         * max value of the gauge
+         */
+        max: number;
+        /**
+         * value of the gauge
+         */
+        value: number;
     
         /**
-         * What title should be shown on the 'next' button when we reach the last screen
+         * colors array.
+         * color: name of the color.
+         * stopAt: length of color distribution.
+         *
+         * default is blue, green, yellow, red colors at equal length
          */
-        completionTitle?: string;
+        colors?: Array<{ color: string, stopAt: number }>;
+        /**
+         * label
+         * no default value
+         */
+        label?: () => JSX.Element,
+        /**
+         * if true show legend.
+         * default is false
+         */
+        legend?: boolean,
+        /**
+         * color of the ticks.
+         * default is white
+         */
+        tickColor?: string,
+        /**
+         * class name(s) for additional styling
+         */
+        className?: string,
+        /**
+         * additional inline styles
+         */
+        styles?: React.CSSProperties
     
         /**
-         * This callback is run whenever they hit the final 'completion' action on the last step. It should be async so we can show a loading animation on the button
+         * if true show gradient colors
+         * default is false
          */
-        onComplete?: () => Promise<void>;
+        gradient?: boolean,
+        /**
+         * thickness of the gauge
+         * This value is defend on the radius
+         * default is radius * 0.11
+         * max value is radius * 0.25
+         *
+         * if you pass a higher value than the max value, max value will be used
+         */
+        thickness?: number,
+        /**
+         * thickness of the large ticks
+         * default is 4
+         * min value is 1
+         * max value is 6
+         *
+         * if the given value is higher than the max value, max values will be used
+         */
+        largeTick?: number,
+        /**
+         * thickness of the small ticks
+         * default is 1
+         * min values is 1
+         * max values is 3
+         *
+         * if the given values is higher than the max value, max values will be used
+         */
+        smallTick?: number
     }
     /**
-     * A wizard-style interface to guide users through a journey.
-     * You can conditionally skip steps and validate steps before proceeding.
+     *
      * @export
+     *
+     * This component is used to create a radial gauge.
+     *
+     * ## Demo
+     * Find a [Demo](https://lucy-uxp.github.io/dev/showcase.html#radial-gauge) here
+     *
+     *
+     * @example
+     * ```
+     *  <RadialGauge
+     *      value={10}
+     *      min={0}
+     *      max={100}
+     *  />
+     * ```
+     *
+     * @example
+     * ```
+     *  <RadialGauge
+     *      value={10}
+     *      min={0}
+     *      max={100}
+     *      label={() => <>Equipment Heat</>}
+     *      legend={true}
+     *      gradient={true}
+     *      thickness={20}
+     *      largeTick={5}
+     *      smallTick={2}
+     *      colors={[
+     *          {color: 'cyan', stopAt: 12.5},
+     *          {color: 'green', stopAt: 70},
+     *          {color: 'orange', stopAt: 87.5},
+     *          {color: 'red', stopAt: 100},
+     *      ]}
+     *
+     *  />
+     * ```
      */
-    export const Wizard : React.FunctionComponent<IWizardProps>;
+    export const RadialGauge : React.FunctionComponent<IGaugeProps>;
         export const useToast:ToastHook;    export const useResizeEffect:ResizeEffectHook;    export const useMessageBus:MessageBusHook;    export const useFields:FieldsHook;    export const useUpdateWidgetProps:IUseUpdateWidgetProps;
 }

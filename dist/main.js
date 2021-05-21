@@ -2448,195 +2448,6 @@ exports.encode = exports.stringify = __webpack_require__(/*! ./encode */ "./node
 
 /***/ }),
 
-/***/ "./node_modules/react-cool-dimensions/dist/index.esm.js":
-/*!**************************************************************!*\
-  !*** ./node_modules/react-cool-dimensions/dist/index.esm.js ***!
-  \**************************************************************/
-/*! exports provided: default, borderBoxWarn, observerErr */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "borderBoxWarn", function() { return borderBoxWarn; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "observerErr", function() { return observerErr; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-
-
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-var observerErr = "💡 react-cool-dimensions: the browser doesn't support Resize Observer, please use polyfill: https://github.com/wellyshen/react-cool-dimensions#resizeobserver-polyfill";
-var borderBoxWarn = "💡 react-cool-dimensions: the browser doesn't support border-box size, fallback to content-box size. Please see: https://github.com/wellyshen/react-cool-dimensions#border-box-size-measurement";
-
-var getCurrentBreakpoint = function getCurrentBreakpoint(bps, w) {
-  var curBp = "";
-  var max = -1;
-  Object.keys(bps).forEach(function (key) {
-    var val = bps[key];
-
-    if (w >= val && val > max) {
-      curBp = key;
-      max = val;
-    }
-  });
-  return curBp;
-};
-
-var useDimensions = function useDimensions(_temp) {
-  var _ref = _temp === void 0 ? {} : _temp,
-      refOpt = _ref.ref,
-      _ref$useBorderBoxSize = _ref.useBorderBoxSize,
-      useBorderBoxSize = _ref$useBorderBoxSize === void 0 ? false : _ref$useBorderBoxSize,
-      breakpoints = _ref.breakpoints,
-      _ref$updateOnBreakpoi = _ref.updateOnBreakpointChange,
-      updateOnBreakpointChange = _ref$updateOnBreakpoi === void 0 ? false : _ref$updateOnBreakpoi,
-      shouldUpdate = _ref.shouldUpdate,
-      onResize = _ref.onResize,
-      polyfill = _ref.polyfill;
-
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])({
-    currentBreakpoint: "",
-    width: 0,
-    height: 0
-  }),
-      state = _useState[0],
-      setState = _useState[1];
-
-  var prevSizeRef = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])({});
-  var prevBreakpointRef = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])();
-  var observerRef = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(null);
-  var onResizeRef = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(null);
-  var shouldUpdateRef = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(null);
-  var warnedRef = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(false);
-  var refVar = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(null);
-  var ref = Object(react__WEBPACK_IMPORTED_MODULE_0__["useRef"])(refVar == null ? void 0 : refVar.current);
-  ref = refOpt || ref;
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    if (onResize) onResizeRef.current = onResize;
-  }, [onResize]);
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    if (shouldUpdate) shouldUpdateRef.current = shouldUpdate;
-  }, [shouldUpdate]);
-  var observe = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])(function (element) {
-    if (element) ref.current = element;
-    if (observerRef.current && ref.current) observerRef.current.observe(ref.current);
-  }, [ref]);
-  var unobserve = Object(react__WEBPACK_IMPORTED_MODULE_0__["useCallback"])(function () {
-    if (observerRef.current) observerRef.current.disconnect();
-  }, []);
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    if (!ref.current) return function () {
-      return null;
-    };
-
-    if ((!("ResizeObserver" in window) || !("ResizeObserverEntry" in window)) && !polyfill) {
-      console.error(observerErr);
-      return function () {
-        return null;
-      };
-    } // eslint-disable-next-line compat/compat
-
-
-    observerRef.current = new (window.ResizeObserver || polyfill)(function (_ref2) {
-      var entry = _ref2[0];
-      var contentBoxSize = entry.contentBoxSize,
-          borderBoxSize = entry.borderBoxSize,
-          contentRect = entry.contentRect;
-      var boxSize = contentBoxSize;
-
-      if (useBorderBoxSize) {
-        if (borderBoxSize) {
-          boxSize = borderBoxSize;
-        } else if (!warnedRef.current) {
-          console.warn(borderBoxWarn);
-          warnedRef.current = true;
-        }
-      } // @juggle/resize-observer polyfill has different data structure
-
-
-      boxSize = Array.isArray(boxSize) ? boxSize[0] : boxSize; // @ts-expect-error
-
-      var width = boxSize ? boxSize.inlineSize : contentRect.width; // @ts-expect-error
-
-      var height = boxSize ? boxSize.blockSize : contentRect.height;
-      if (width === prevSizeRef.current.width && height === prevSizeRef.current.height) return;
-      prevSizeRef.current = {
-        width: width,
-        height: height
-      };
-      var e = {
-        currentBreakpoint: "",
-        width: width,
-        height: height,
-        entry: entry,
-        observe: observe,
-        unobserve: unobserve
-      };
-
-      if (breakpoints) {
-        e.currentBreakpoint = getCurrentBreakpoint(breakpoints, width);
-
-        if (e.currentBreakpoint !== prevBreakpointRef.current) {
-          if (onResizeRef.current) onResizeRef.current(e);
-          prevBreakpointRef.current = e.currentBreakpoint;
-        }
-      } else if (onResizeRef.current) {
-        onResizeRef.current(e);
-      }
-
-      var next = {
-        currentBreakpoint: e.currentBreakpoint,
-        width: width,
-        height: height,
-        entry: entry
-      };
-      if (shouldUpdateRef.current && !shouldUpdateRef.current(next)) return;
-
-      if (!shouldUpdateRef.current && breakpoints && updateOnBreakpointChange) {
-        setState(function (prev) {
-          return prev.currentBreakpoint !== next.currentBreakpoint ? next : prev;
-        });
-        return;
-      }
-
-      setState(next);
-    });
-    observe();
-    return function () {
-      return unobserve();
-    }; // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [// eslint-disable-next-line react-hooks/exhaustive-deps
-  JSON.stringify(breakpoints), useBorderBoxSize, observe, unobserve, updateOnBreakpointChange]);
-  return _extends({
-    ref: ref
-  }, state, {
-    observe: observe,
-    unobserve: unobserve
-  });
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (useDimensions);
-
-
-
-/***/ }),
-
 /***/ "./node_modules/sockjs-client/dist/sockjs.js":
 /*!***************************************************!*\
   !*** ./node_modules/sockjs-client/dist/sockjs.js ***!
@@ -9775,9 +9586,9 @@ module.exports = /*#__PURE__*/function (_BaseClient) {
 
 /***/ }),
 
-/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8080":
+/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8082":
 /*!*********************************************************!*\
-  !*** (webpack)-dev-server/client?http://localhost:8080 ***!
+  !*** (webpack)-dev-server/client?http://localhost:8082 ***!
   \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -9959,7 +9770,7 @@ var onSocketMessage = {
   }
 };
 socket(socketUrl, onSocketMessage);
-/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8080"))
+/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8082"))
 
 /***/ }),
 
@@ -10621,89 +10432,6 @@ module.exports.formatError = function(err) {
 
 /***/ }),
 
-/***/ "./src/gauge.tsx":
-/*!***********************!*\
-  !*** ./src/gauge.tsx ***!
-  \***********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Gauge = void 0;
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-const react_cool_dimensions_1 = __importDefault(__webpack_require__(/*! react-cool-dimensions */ "./node_modules/react-cool-dimensions/dist/index.esm.js"));
-const needle = 'url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDYuOTc1IiBoZWlnaHQ9Ijk1Ljk0OCIgdmlld0JveD0iMCAwIDQ2Ljk3NSA5NS45NDgiPgogIDxkZWZzPgogICAgPGZpbHRlciBpZD0iUGF0aF8xMzY2OSIgeD0iMCIgeT0iMCIgd2lkdGg9IjQ2Ljk3NSIgaGVpZ2h0PSI5NS45NDgiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CiAgICAgIDxmZU9mZnNldCBkeD0iNCIgaW5wdXQ9IlNvdXJjZUFscGhhIi8+CiAgICAgIDxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjQuNSIgcmVzdWx0PSJibHVyIi8+CiAgICAgIDxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAuMjI0Ii8+CiAgICAgIDxmZUNvbXBvc2l0ZSBvcGVyYXRvcj0iaW4iIGluMj0iYmx1ciIvPgogICAgICA8ZmVDb21wb3NpdGUgaW49IlNvdXJjZUdyYXBoaWMiLz4KICAgIDwvZmlsdGVyPgogIDwvZGVmcz4KICA8ZyBpZD0iR3JvdXBfNDA2NyIgZGF0YS1uYW1lPSJHcm91cCA0MDY3IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtOTE2Ljg3NSAtODE2LjAxNSkiPgogICAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMSwgMCwgMCwgMSwgOTE2Ljg4LCA4MTYuMDIpIiBmaWx0ZXI9InVybCgjUGF0aF8xMzY2OSkiPgogICAgICA8ZyBpZD0iUGF0aF8xMzY2OS0yIiBkYXRhLW5hbWU9IlBhdGggMTM2NjkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDkuNSA5Mi45MSkiIGZpbGw9IiM4ZThlOGUiPgogICAgICAgIDxwYXRoIGQ9Ik05Ljk4OC03OS40MTJzOS45ODgsNTMuNDQ1LDkuOTg4LDU4Ljk2MWE5Ljk4OCw5Ljk4OCwwLDAsMS05Ljk4OCw5Ljk4OEE5Ljk4OCw5Ljk4OCwwLDAsMSwwLTIwLjQ1MUMwLTI1Ljk2Nyw5Ljk4OC03OS40MTIsOS45ODgtNzkuNDEyWiIgc3Ryb2tlPSJub25lIi8+CiAgICAgICAgPHBhdGggZD0iTSA5Ljk4NzUyMTE3MTU2OTgyNCAtNzMuOTI1NDgzNzAzNjEzMjggQyA3LjQ3MTUxNjYwOTE5MTg5NSAtNjAuMjg5MjA3NDU4NDk2MDkgMS4wMDAwMDE5MDczNDg2MzMgLTI0Ljc5MjIyMTA2OTMzNTk0IDEuMDAwMDAxOTA3MzQ4NjMzIC0yMC40NTEyNzEwNTcxMjg5MSBDIDEuMDAwMDAxOTA3MzQ4NjMzIC0xNS40OTU1MjkxNzQ4MDQ2OSA1LjAzMTc4MTE5NjU5NDIzOCAtMTEuNDYzNzUyNzQ2NTgyMDMgOS45ODc1MjExNzE1Njk4MjQgLTExLjQ2Mzc1Mjc0NjU4MjAzIEMgMTQuOTQzMjYxMTQ2NTQ1NDEgLTExLjQ2Mzc1Mjc0NjU4MjAzIDE4Ljk3NTA0MDQzNTc5MTAyIC0xNS40OTU1MjkxNzQ4MDQ2OSAxOC45NzUwNDA0MzU3OTEwMiAtMjAuNDUxMjcxMDU3MTI4OTEgQyAxOC45NzUwNDA0MzU3OTEwMiAtMjQuNzkyMjIxMDY5MzM1OTQgMTIuNTAzNTI2Njg3NjIyMDcgLTYwLjI4OTIwNzQ1ODQ5NjA5IDkuOTg3NTIxMTcxNTY5ODI0IC03My45MjU0ODM3MDM2MTMyOCBNIDkuOTg3NTIxMTcxNTY5ODI0IC03OS40MTIxMDkzNzUgQyA5Ljk4NzUyMTE3MTU2OTgyNCAtNzkuNDEyMTA5Mzc1IDE5Ljk3NTA0MDQzNTc5MTAyIC0yNS45NjcyMzE3NTA0ODgyOCAxOS45NzUwNDA0MzU3OTEwMiAtMjAuNDUxMjcxMDU3MTI4OTEgQyAxOS45NzUwNDA0MzU3OTEwMiAtMTQuOTM1MzE3OTkzMTY0MDYgMTUuNTAzNDcxMzc0NTExNzIgLTEwLjQ2Mzc1Mjc0NjU4MjAzIDkuOTg3NTIxMTcxNTY5ODI0IC0xMC40NjM3NTI3NDY1ODIwMyBDIDQuNDcxNTYxNDMxODg0NzY2IC0xMC40NjM3NTI3NDY1ODIwMyAxLjkwNzM0ODYzMjgxMjVlLTA2IC0xNC45MzUzMTc5OTMxNjQwNiAxLjkwNzM0ODYzMjgxMjVlLTA2IC0yMC40NTEyNzEwNTcxMjg5MSBDIDEuOTA3MzQ4NjMyODEyNWUtMDYgLTI1Ljk2NzIzMTc1MDQ4ODI4IDkuOTg3NTIxMTcxNTY5ODI0IC03OS40MTIxMDkzNzUgOS45ODc1MjExNzE1Njk4MjQgLTc5LjQxMjEwOTM3NSBaIiBzdHJva2U9Im5vbmUiIGZpbGw9InJnYmEoMTEyLDExMiwxMTIsMC4xNikiLz4KICAgICAgPC9nPgogICAgPC9nPgogICAgPGNpcmNsZSBpZD0iRWxsaXBzZV8xNjEiIGRhdGEtbmFtZT0iRWxsaXBzZSAxNjEiIGN4PSI2LjIyNiIgY3k9IjYuMjI2IiByPSI2LjIyNiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTMwLjEzNyA4ODEuOTAyKSIgZmlsbD0iI2ZmZiIvPgogIDwvZz4KPC9zdmc+Cg==)';
-exports.Gauge = (props) => {
-    var _a;
-    const svgPadding = props.margin || 20;
-    let min = props.min || 0.0;
-    let max = props.max || 1.0;
-    let value = Number(props.value);
-    value = Math.min(Math.max(value, min), max);
-    let percentage = (value - min) / (max - min);
-    const { ref, width, height, entry, unobserve, observe } = react_cool_dimensions_1.default({
-        onResize: (p) => {
-            // Triggered whenever the size of the target is changed
-        },
-    });
-    let svgWidth = width;
-    let svgHeight = svgWidth * 0.5;
-    if (height * 2 < width) {
-        svgHeight = height;
-        svgWidth = svgHeight * 2;
-    }
-    //   let svgSize = width;
-    //   if (height < width) {
-    //   svgSize = height;
-    //   }
-    svgWidth = svgWidth - svgPadding * 0.5 * 2;
-    svgHeight = svgHeight - svgPadding * 0.5;
-    //   svgSize = svgSize - svgPadding*2;
-    let strokeWidth = svgHeight * 0.1;
-    let circumference = 2 * Math.PI * (svgHeight - strokeWidth * 0.5) * 0.5;
-    let emptyWeight = 0.05;
-    let ratio = 8 + 7 * emptyWeight;
-    let coloredWedge = circumference / ratio;
-    let emptyWedge = emptyWeight * circumference / ratio;
-    let needleHeight = svgHeight * 0.75;
-    let needleWidth = needleHeight / 2;
-    let colors = ((_a = props.colors) === null || _a === void 0 ? void 0 : _a.length) ? props.colors : ['blue', 'red'];
-    return React.createElement("div", { style: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }, ref: ref },
-        React.createElement("svg", { viewBox: `0 0 ${svgWidth} ${svgHeight}`, style: { width: svgWidth, height: svgHeight, position: 'relative', left: 0 + (width - svgWidth) * 0.5, top: 0 + (height - svgHeight) * 0.5 } },
-            React.createElement("linearGradient", { id: "grad1", x1: "0%", y1: "0%", x2: "100%", y2: "0%" },
-                colors.map((c, i) => React.createElement("stop", { offset: `${100 * i / (colors.length - 1)}%`, stopColor: c })),
-                React.createElement("stop", { offset: "100%", stopColor: 'red' })),
-            React.createElement("path", { fill: 'transparent', stroke: 'url(#grad1)', strokeDasharray: `${coloredWedge} ${emptyWedge}`, strokeWidth: strokeWidth, d: `M ${strokeWidth * 0.5} ${svgHeight} A ${svgHeight - strokeWidth} ${svgHeight - strokeWidth} 0 0 1 ${svgWidth - strokeWidth * 0.5} ${svgHeight}` })),
-        React.createElement("div", { style: { backgroundImage: needle, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', position: 'absolute', left: `50%`, top: `50%`, transformOrigin: '50% 80%', transform: `translate(-50%,-20%) rotate(${180 * percentage - 90}deg)`, width: `${needleWidth}px`, height: `${needleHeight}px` } }));
-};
-
-
-/***/ }),
-
 /***/ "./src/index.tsx":
 /*!***********************!*\
   !*** ./src/index.tsx ***!
@@ -10748,13 +10476,39 @@ const recharts_1 = __webpack_require__(/*! recharts */ "recharts");
 const uxp_1 = __webpack_require__(/*! ./uxp */ "./src/uxp.ts");
 const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
 __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
-const gauge_1 = __webpack_require__(/*! ./gauge */ "./src/gauge.tsx");
 const EnergyIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMC44NDgiIGhlaWdodD0iMzAuODQ5IiB2aWV3Qm94PSIwIDAgMzAuODQ4IDMwLjg0OSI+CiAgPHBhdGggaWQ9Ikljb25fbWV0cm8tcG93ZXIiIGRhdGEtbmFtZT0iSWNvbiBtZXRyby1wb3dlciIgZD0iTTE0LjEzOSwxLjkyOCwyLjU3MSwxNy4zNTJIMTQuMTM5TDYuNDI3LDMyLjc3NywzMy40MTksMTMuNUgxNy45OTVMMjkuNTYzLDEuOTI4WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIuNTcxIC0xLjkyOCkiLz4KPC9zdmc+Cg==';
 let startYear = new Date().getFullYear();
 let Years = [];
 for (var i = 0; i < 3; i++) {
     let y = startYear - i;
     Years.push({ label: '' + y, value: '' + y });
+}
+;
+/**
+ *  Transform a location/category/value tuple to a list of locations with a category/values map.
+ */
+function transformLocations(locations) {
+    let result = [];
+    for (let l of locations) {
+        let item = result.find(x => x.location == l.location);
+        if (!item) {
+            item = { location: l.location, categories: {} };
+            result.push(item);
+        }
+        if (!item.categories[l.category]) {
+            item.categories[l.category] = [];
+        }
+        item.categories[l.category] = l.values;
+    }
+    return result;
+}
+;
+function transformCategories(categories) {
+    return categories.map(c => {
+        if (!c.label)
+            c.label = c.id;
+        return c;
+    });
 }
 function getMonthName(year, month) {
     return ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'][month - 1] + ' - ' + year;
@@ -10766,19 +10520,17 @@ const EnergyBudgetWidget = (props) => {
     let [selectedBuilding, setSelectedBuilding] = React.useState('');
     let [selectedBudget, setSelectedBudget] = React.useState([]);
     let [chartData, setChartData] = React.useState([]);
+    let [categories, setCategories] = React.useState([]);
+    let [selectedCategory, setSelectedCategory] = React.useState('');
     let updater = components_1.useUpdateWidgetProps();
     function loadLocations() {
         return __awaiter(this, void 0, void 0, function* () {
-            let locations = yield props.uxpContext.executeAction(model, 'GetLocations', {}, { json: true });
-            setBuildings(locations);
-            // if (locations.length>0 && !props.building) {
-            //   setSelectedBuilding(locations[0].location);
-            //   setSelectedBudget(locations[0].values);
-            // }
+            let { locations, categories } = yield props.uxpContext.executeAction(model, 'GetLocationsAndCategories', {}, { json: true });
+            setBuildings(transformLocations(locations));
+            setCategories(transformCategories(categories));
         });
     }
     React.useEffect(() => {
-        debugger;
         if (!buildings) {
             return;
         }
@@ -10788,20 +10540,36 @@ const EnergyBudgetWidget = (props) => {
         if (props.year) {
             setYear(props.year);
         }
-    }, [buildings]);
+        if (props.category) {
+            selectCategory(props.category);
+        }
+    }, [buildings, categories]);
     function selectBuilding(name) {
         let item = buildings.find(b => b.location == name);
         if (!item) {
             return;
         }
         setSelectedBuilding(item.location);
-        setSelectedBudget(item.values);
+        let values = item.categories[selectedCategory] || [];
+        setSelectedBudget(values);
+    }
+    function selectCategory(name) {
+        let item = categories.find(c => c.id == name);
+        if (!item) {
+            return;
+        }
+        setSelectedCategory(item.id);
+        let l = buildings.find(b => b.location == selectedBuilding);
+        if (l) {
+            let values = (l === null || l === void 0 ? void 0 : l.categories[item.id]) || [];
+            setSelectedBudget(values);
+        }
     }
     React.useEffect(() => {
         loadLocations().then(_ => { });
     }, []);
     React.useEffect(() => {
-        props.uxpContext.executeAction(model, 'ConsumptionForLocation', { year, location: selectedBuilding }, { json: true }).then((data) => {
+        props.uxpContext.executeAction(model, 'ConsumptionForLocation', { year, location: selectedBuilding, category: selectedCategory }, { json: true }).then((data) => {
             let consumptionData = {};
             for (var j in data) {
                 let row = data[j];
@@ -10822,14 +10590,15 @@ const EnergyBudgetWidget = (props) => {
                 });
             }
             setChartData(chartData);
-            updater(props.instanceId, { year, building: selectedBuilding });
+            updater(props.instanceId, { year, building: selectedBuilding, category: selectedCategory });
         });
-    }, [year, selectedBuilding]);
+    }, [year, selectedBuilding, selectedCategory]);
     return (React.createElement(components_1.WidgetWrapper, null,
-        React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'Yearly Energy Budgeted vs Actual ' + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') },
+        React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'Yearly Energy Budgeted vs Actual ' + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '') },
             React.createElement(components_1.FilterPanel, null,
-                React.createElement(components_1.Select, { onChange: (year) => setYear(year), options: Years, selected: year }),
-                React.createElement(components_1.Select, { onChange: (b) => selectBuilding(b), selected: selectedBuilding, options: buildings, labelField: 'location', valueField: 'location' }))),
+                React.createElement(components_1.Select, { placeholder: 'Year', onChange: (year) => setYear(year), options: Years, selected: year }),
+                React.createElement(components_1.Select, { placeholder: 'Location', onChange: (b) => selectBuilding(b), selected: selectedBuilding, options: buildings, labelField: 'location', valueField: 'location' }),
+                React.createElement(components_1.Select, { placeholder: 'Energy Type', onChange: (b) => selectCategory(b), selected: selectedCategory, options: categories, labelField: 'label', valueField: 'id' }))),
         React.createElement("div", { style: { flex: 1 } },
             React.createElement(recharts_1.ResponsiveContainer, { width: "100%", height: "100%" },
                 React.createElement(recharts_1.ComposedChart, { width: 500, height: 300, data: chartData, margin: {
@@ -10856,15 +10625,13 @@ exports.CurrentUsage = (props) => {
     let [value, setValue] = React.useState(0);
     let [budget, setBudget] = React.useState(0);
     let updater = components_1.useUpdateWidgetProps();
+    let [categories, setCategories] = React.useState([]);
+    let [selectedCategory, setSelectedCategory] = React.useState('');
     function loadLocations() {
         return __awaiter(this, void 0, void 0, function* () {
-            let locations = yield props.uxpContext.executeAction(model, 'GetLocations', {}, { json: true });
-            setBuildings(locations);
-            return locations;
-            // if (locations.length>0 && !props.building) {
-            //   setSelectedBuilding(locations[0].location);
-            //   setSelectedBudget(locations[0].values);
-            // }
+            let { locations, categories } = yield props.uxpContext.executeAction(model, 'GetLocationsAndCategories', {}, { json: true });
+            setBuildings(transformLocations(locations));
+            setCategories(transformCategories(categories));
         });
     }
     React.useEffect(() => {
@@ -10873,9 +10640,14 @@ exports.CurrentUsage = (props) => {
     }, []);
     React.useEffect(() => {
         if (props.building && buildings && buildings.length) {
+            setBuilding(props.building);
             selectBuilding(props.building);
         }
-    }, [buildings]);
+        if (props.category && categories && categories.length) {
+            setSelectedCategory(props.category);
+            selectCategory(props.category);
+        }
+    }, [buildings, categories]);
     function selectBuilding(b) {
         let o = buildings.find(x => x.location == b);
         if (!o) {
@@ -10884,28 +10656,42 @@ exports.CurrentUsage = (props) => {
             return;
         }
         setBuilding(o.location);
-        setBudget(o.values[new Date().getMonth() + 1]);
-        updater(props.instanceId, { building: b });
+        let values = o.categories[selectedCategory] || [];
+        setBudget(values[new Date().getMonth() + 1] || 1);
+    }
+    function selectCategory(name) {
+        let item = categories.find(c => c.id == name);
+        if (!item) {
+            return;
+        }
+        setSelectedCategory(item.id);
+        let l = buildings.find(b => b.location == building);
+        if (l) {
+            let values = (l === null || l === void 0 ? void 0 : l.categories[item.id]) || [];
+            setBudget(values[new Date().getMonth() + 1]);
+        }
     }
     React.useEffect(() => {
         let year = new Date().getFullYear();
         let month = new Date().getMonth() + 1;
-        props.uxpContext.executeAction(model, 'ConsumptionForLocationMonth', { location: building, year, month }, { json: true })
+        props.uxpContext.executeAction(model, 'ConsumptionForLocationMonth', { location: building, year, month, category: selectedCategory }, { json: true })
             .then((data) => {
             if (data && data[0] && data[0].value) {
                 setValue(Number(data[0].value));
             }
+            updater(props.instanceId, { category: selectedCategory, building });
         }).catch(e => {
             console.log('Error loading latest monthly data', e);
         });
-    }, [building, budget]);
+    }, [building, budget, selectedCategory]);
     console.log('BUDGET', budget);
     return React.createElement(components_1.WidgetWrapper, null,
         React.createElement(components_1.TitleBar, { title: 'Current Monthly Energy Usage' },
             React.createElement(components_1.FilterPanel, null,
-                React.createElement(components_1.Select, { onChange: selectBuilding, selected: building, options: buildings, labelField: 'location', valueField: 'location' }))),
+                React.createElement(components_1.Select, { onChange: selectBuilding, selected: building, options: buildings, labelField: 'location', valueField: 'location' }),
+                React.createElement(components_1.Select, { placeholder: 'Energy Type', onChange: (b) => selectCategory(b), selected: selectedCategory, options: categories, labelField: 'label', valueField: 'id' }))),
         React.createElement("div", { style: { flex: 1, position: 'relative' } },
-            React.createElement(gauge_1.Gauge, { value: value, min: 0, max: Number(budget), colors: ['blue', 'green', 'yellow', 'red'] })),
+            React.createElement(components_1.RadialGauge, { tickColor: '#424242', thickness: 40, gradient: true, max: Number(budget), value: value, min: 0 })),
         React.createElement("div", { style: { fontSize: '1em', textAlign: 'center', padding: '10px', marginTop: '20px' } },
             React.createElement("span", { style: { height: '20px', backgroundSize: 'contain', display: 'inline-block', verticalAlign: 'middle', width: '14px', backgroundRepeat: 'no-repeat', marginRight: '10px', backgroundImage: `url(${EnergyIcon})` } }),
             React.createElement("span", { style: { textTransform: 'uppercase' } }, "This Month's Consumption")),
@@ -11017,12 +10803,12 @@ exports.registerUI = registerUI;
 
 /***/ 0:
 /*!*******************************************************************************!*\
-  !*** multi (webpack)-dev-server/client?http://localhost:8080 ./src/index.tsx ***!
+  !*** multi (webpack)-dev-server/client?http://localhost:8082 ./src/index.tsx ***!
   \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/shivanan/eutech/usecases/energy-budget/node_modules/webpack-dev-server/client/index.js?http://localhost:8080 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8080");
+__webpack_require__(/*! /Users/shivanan/eutech/usecases/energy-budget/node_modules/webpack-dev-server/client/index.js?http://localhost:8082 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8082");
 module.exports = __webpack_require__(/*! ./src/index.tsx */"./src/index.tsx");
 
 
