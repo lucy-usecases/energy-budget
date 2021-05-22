@@ -51,7 +51,7 @@ function transformCategories(categories:ICategory[]) {
   });
 }
 function getMonthName(year: number, month: number) {
-  return ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'][month - 1] + ' - ' + year;
+  return ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'][month - 1];// + ' - ' + year;
 }
 const model = 'EnergyBudget';
 const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
@@ -159,7 +159,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
             options={categories} labelField={'label'} valueField={'id'} />
         </FilterPanel>
       </TitleBar>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1,padding:'30px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             width={500}
@@ -172,22 +172,26 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
               bottom: 5,
             }}
           >
-            <CartesianGrid strokeWidth={0} />
+            <CartesianGrid strokeWidth={1} vertical={false} strokeOpacity={0.5}/>
             <XAxis dataKey="name" />
-            <YAxis />
-            <YAxis orientation={'right'} yAxisId={'cummulative'} />
+            <YAxis axisLine={false} />
+            <YAxis  axisLine={false} orientation={'right'} yAxisId={'cummulative'} />
             <Tooltip />
             <Legend />
-            <Bar dataKey="energy" fill="#8884d8" />
-            <Bar dataKey="budgeted" fill="#82ca9d" />
-            <Line strokeWidth={2} yAxisId={'cummulative'} type="monotone" fill={'red'} fillOpacity={0.1} dataKey="cummulativeBudget" stroke="#ff7300" />
-            <Area yAxisId={'cummulative'} type="monotone" fill={'blue'} fillOpacity={0.1} dataKey="cummulativeEnergy" stroke="#06f" />
+            <Bar name={'Consumption'} barSize={15} dataKey="energy" fill='#F78FAA'  />
+            <Bar name={'Baseline'} barSize={15} dataKey="budgeted" fill="#79B7B6"/>
+            <Line name={'Cummulative Budget'} strokeDasharray={'0 1 1 1'} strokeDashoffset={3} strokeOpacity={0.8} strokeWidth={2} yAxisId={'cummulative'} type="monotone" fill={'red'} fillOpacity={0.1} dataKey="cummulativeBudget" stroke="#ff7300" />
+            <Area name={'Cummulative Consumption'} yAxisId={'cummulative'} type="monotone" fill={'blue'} fillOpacity={0.1} dataKey="cummulativeEnergy" stroke="#06f" />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
     </WidgetWrapper>
   )
 };
+
+export const EnergyBreakdown: React.FunctionComponent<IWidgetProps> = (props) => {
+  return <div />;
+}
 interface ILC {
   locations: any[];
   categories: any[];
@@ -328,3 +332,20 @@ registerWidget({
   },
 
 });
+
+
+registerWidget({
+  id: "energy-breakdown",
+  name: "Energy Breakdown by Type",
+  widget: EnergyBreakdown,
+
+  configs: {
+    layout: {
+
+    },
+  },
+
+});
+
+
+
