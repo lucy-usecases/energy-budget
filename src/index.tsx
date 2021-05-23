@@ -159,7 +159,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
             options={categories} labelField={'label'} valueField={'id'} />
         </FilterPanel>
       </TitleBar>
-      <div style={{ flex: 1,padding:'30px' }}>
+      <div style={{ flex: 1,padding:'30px' ,paddingBottom:'45px'}}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             width={500}
@@ -172,16 +172,26 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
               bottom: 5,
             }}
           >
+               <defs>
+        <filter id="shadow" height="200%">
+        <feDropShadow dx="4" dy="4" stdDeviation="4" />    
+        </filter>
+    </defs>
             <CartesianGrid strokeWidth={1} vertical={false} strokeOpacity={0.5}/>
             <XAxis dataKey="name" />
             <YAxis axisLine={false} />
             <YAxis  axisLine={false} orientation={'right'} yAxisId={'cummulative'} />
+        
             <Tooltip />
             <Legend />
             <Bar name={'Consumption'} barSize={15} dataKey="energy" fill='#F78FAA'  />
-            <Bar name={'Baseline'} barSize={15} dataKey="budgeted" fill="#79B7B6"/>
+            <Bar name={'Baseline'}    barSize={15} dataKey="budgeted" fill="#79B7B6"/>
             <Line name={'Cummulative Budget'} strokeDasharray={'0 1 1 1'} strokeDashoffset={3} strokeOpacity={0.8} strokeWidth={2} yAxisId={'cummulative'} type="monotone" fill={'red'} fillOpacity={0.1} dataKey="cummulativeBudget" stroke="#ff7300" />
-            <Area name={'Cummulative Consumption'} yAxisId={'cummulative'} type="monotone" fill={'blue'} fillOpacity={0.1} dataKey="cummulativeEnergy" stroke="#06f" />
+            <Area filter="url(#shadow)"  name={'Cummulative Consumption'} yAxisId={'cummulative'} 
+            type="natural" fill={'#06F'} fillOpacity={0.5} 
+            stroke={'#06F'}
+            dataKey="cummulativeEnergy" /> 
+
           </ComposedChart>
         </ResponsiveContainer>
       </div>

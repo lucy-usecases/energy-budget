@@ -10599,7 +10599,7 @@ const EnergyBudgetWidget = (props) => {
                 React.createElement(components_1.Select, { placeholder: 'Year', onChange: (year) => setYear(year), options: Years, selected: year }),
                 React.createElement(components_1.Select, { placeholder: 'Location', onChange: (b) => selectBuilding(b), selected: selectedBuilding, options: buildings, labelField: 'location', valueField: 'location' }),
                 React.createElement(components_1.Select, { placeholder: 'Energy Type', onChange: (b) => selectCategory(b), selected: selectedCategory, options: categories, labelField: 'label', valueField: 'id' }))),
-        React.createElement("div", { style: { flex: 1, padding: '30px' } },
+        React.createElement("div", { style: { flex: 1, padding: '30px', paddingBottom: '45px' } },
             React.createElement(recharts_1.ResponsiveContainer, { width: "100%", height: "100%" },
                 React.createElement(recharts_1.ComposedChart, { width: 500, height: 300, data: chartData, margin: {
                         top: 5,
@@ -10607,6 +10607,9 @@ const EnergyBudgetWidget = (props) => {
                         left: 20,
                         bottom: 5,
                     } },
+                    React.createElement("defs", null,
+                        React.createElement("filter", { id: "shadow", height: "200%" },
+                            React.createElement("feDropShadow", { dx: "4", dy: "4", stdDeviation: "4" }))),
                     React.createElement(recharts_1.CartesianGrid, { strokeWidth: 1, vertical: false, strokeOpacity: 0.5 }),
                     React.createElement(recharts_1.XAxis, { dataKey: "name" }),
                     React.createElement(recharts_1.YAxis, { axisLine: false }),
@@ -10616,7 +10619,7 @@ const EnergyBudgetWidget = (props) => {
                     React.createElement(recharts_1.Bar, { name: 'Consumption', barSize: 15, dataKey: "energy", fill: '#F78FAA' }),
                     React.createElement(recharts_1.Bar, { name: 'Baseline', barSize: 15, dataKey: "budgeted", fill: "#79B7B6" }),
                     React.createElement(recharts_1.Line, { name: 'Cummulative Budget', strokeDasharray: '0 1 1 1', strokeDashoffset: 3, strokeOpacity: 0.8, strokeWidth: 2, yAxisId: 'cummulative', type: "monotone", fill: 'red', fillOpacity: 0.1, dataKey: "cummulativeBudget", stroke: "#ff7300" }),
-                    React.createElement(recharts_1.Area, { name: 'Cummulative Consumption', yAxisId: 'cummulative', type: "monotone", fill: 'blue', fillOpacity: 0.1, dataKey: "cummulativeEnergy", stroke: "#06f" }))))));
+                    React.createElement(recharts_1.Area, { filter: "url(#shadow)", name: 'Cummulative Consumption', yAxisId: 'cummulative', type: "natural", fill: '#06F', fillOpacity: 0.5, stroke: '#06F', dataKey: "cummulativeEnergy" }))))));
 };
 exports.EnergyBreakdown = (props) => {
     return React.createElement("div", null);
