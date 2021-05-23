@@ -9586,9 +9586,9 @@ module.exports = /*#__PURE__*/function (_BaseClient) {
 
 /***/ }),
 
-/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8081":
+/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8082":
 /*!*********************************************************!*\
-  !*** (webpack)-dev-server/client?http://localhost:8081 ***!
+  !*** (webpack)-dev-server/client?http://localhost:8082 ***!
   \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -9770,7 +9770,7 @@ var onSocketMessage = {
   }
 };
 socket(socketUrl, onSocketMessage);
-/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8081"))
+/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8082"))
 
 /***/ }),
 
@@ -10690,14 +10690,19 @@ exports.CurrentUsage = (props) => {
             console.log('Error loading latest monthly data', e);
         });
     }, [building, budget, selectedCategory]);
-    console.log('BUDGET', budget);
+    let budgetValue = Number(budget);
     return React.createElement(components_1.WidgetWrapper, null,
         React.createElement(components_1.TitleBar, { title: 'Current Monthly Energy Usage' },
             React.createElement(components_1.FilterPanel, null,
                 React.createElement(components_1.Select, { onChange: selectBuilding, selected: building, options: buildings, labelField: 'location', valueField: 'location' }),
                 React.createElement(components_1.Select, { placeholder: 'Energy Type', onChange: (b) => selectCategory(b), selected: selectedCategory, options: categories, labelField: 'label', valueField: 'id' }))),
         React.createElement("div", { style: { flex: 1, position: 'relative' } },
-            React.createElement(components_1.RadialGauge, { tickColor: '#424242', thickness: 40, gradient: true, max: Number(budget), value: value, min: 0 })),
+            React.createElement(components_1.RadialGauge, { tickColor: '#424242', thickness: 40, gradient: true, colors: [
+                    { color: 'lightblue', stopAt: 0.25 * budgetValue },
+                    { color: 'lightgreen', stopAt: 0.33 * budgetValue },
+                    { color: 'orange', stopAt: 0.65 * budgetValue },
+                    { color: 'coral', stopAt: 0.80 * budgetValue }
+                ], max: budgetValue, value: value, min: 0 })),
         React.createElement("div", { style: { fontSize: '1em', textAlign: 'center', padding: '10px', marginTop: '20px' } },
             React.createElement("span", { style: { height: '20px', backgroundSize: 'contain', display: 'inline-block', verticalAlign: 'middle', width: '14px', backgroundRepeat: 'no-repeat', marginRight: '10px', backgroundImage: `url(${EnergyIcon})` } }),
             React.createElement("span", { style: { textTransform: 'uppercase' } }, "This Month's Consumption")),
@@ -10817,12 +10822,12 @@ exports.registerUI = registerUI;
 
 /***/ 0:
 /*!*******************************************************************************!*\
-  !*** multi (webpack)-dev-server/client?http://localhost:8081 ./src/index.tsx ***!
+  !*** multi (webpack)-dev-server/client?http://localhost:8082 ./src/index.tsx ***!
   \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/shivanan/eutech/usecases/energy-budget/node_modules/webpack-dev-server/client/index.js?http://localhost:8081 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8081");
+__webpack_require__(/*! /Users/shivanan/eutech/usecases/energy-budget/node_modules/webpack-dev-server/client/index.js?http://localhost:8082 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8082");
 module.exports = __webpack_require__(/*! ./src/index.tsx */"./src/index.tsx");
 
 

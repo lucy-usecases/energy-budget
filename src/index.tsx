@@ -288,7 +288,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
       console.log('Error loading latest monthly data',e);
     });
   },[building,budget,selectedCategory]);
-  console.log('BUDGET',budget);
+  let budgetValue = Number(budget);
   return <WidgetWrapper>
     <TitleBar title={'Current Monthly Energy Usage'} >
       <FilterPanel>
@@ -299,7 +299,16 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
       </FilterPanel>
       </TitleBar>
     <div style={{ flex: 1 ,position:'relative'}}>
-    <RadialGauge tickColor={'#424242'} thickness={40} gradient={true} max={Number(budget)} value={value} min={0} />
+    <RadialGauge tickColor={'#424242'} thickness={40} gradient={true}
+        colors={[
+          { color: 'lightblue', stopAt: 0.25 * budgetValue },
+          { color: 'lightgreen', stopAt: 0.33 * budgetValue },
+
+          { color: 'orange', stopAt: 0.65 * budgetValue },
+          { color: 'coral', stopAt: 0.80 * budgetValue }
+
+        ]}
+    max={budgetValue} value={value} min={0} />
 
     </div>
     <div style={{fontSize:'1em',textAlign:'center',padding:'10px',marginTop:'20px'}}>
