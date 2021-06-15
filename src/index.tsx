@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip, ComposedChart, Line, Area } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip, ComposedChart, Line, Area, PieChart, Pie, Cell } from 'recharts';
 import { registerWidget, registerLink, registerUI, IContextProvider, } from './uxp';
-import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge } from "uxp/components";
+import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox } from "uxp/components";
 import './styles.scss';
+import { getPositionOfLineAndCharacter } from "typescript";
 
 
 
@@ -13,6 +14,15 @@ interface IWidgetProps {
   year: string;
   instanceId: string;
   category:string;
+}
+interface IBreakdownWidgetProps {
+  uxpContext?: IContextProvider;
+  building: string;
+  year: string;
+  month: string;
+  instanceId: string;
+  categories:string[];
+
 }
 
 let startYear = new Date().getFullYear();
@@ -50,9 +60,12 @@ function transformCategories(categories:ICategory[]) {
     return c;
   });
 }
+const Months =  ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 function getMonthName(year: number, month: number) {
-  return ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'][month - 1];// + ' - ' + year;
+  return Months[month - 1];// + ' - ' + year;
 }
+
+
 const model = 'EnergyBudget';
 const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
   let [year, setYear] = React.useState('');
@@ -148,14 +161,14 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
   return (
     <WidgetWrapper>
       <TitleBar icon={EnergyIcon} title={'Yearly Energy Budgeted vs Actual ' + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
-        <FilterPanel>
-          <Select placeholder={'Year'} onChange={(year) => setYear(year)}
+        <FilterPanel enableClear={false}>
+          <Select className={'selector-energy'}   placeholder={'Year'} onChange={(year) => setYear(year)}
             options={Years} selected={year}
           />
-          <Select placeholder={'Location'} onChange={(b) => selectBuilding(b)} selected={selectedBuilding}
+          <Select className={'selector-energy'}   placeholder={'Location'} onChange={(b) => selectBuilding(b)} selected={selectedBuilding}
             options={buildings} labelField={'location'} valueField={'location'} />
 
-          <Select placeholder={'Energy Type'} onChange={(b) => selectCategory(b)} selected={selectedCategory}
+          <Select className={'selector-energy'}   placeholder={'Energy Type'} onChange={(b) => selectCategory(b)} selected={selectedCategory}
             options={categories} labelField={'label'} valueField={'id'} />
         </FilterPanel>
       </TitleBar>
@@ -188,7 +201,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
             <Bar name={'Baseline'}    barSize={15} dataKey="budgeted" fill="#79B7B6"/>
             <Line name={'Cummulative Budget'} strokeDasharray={'0 1 1 1'} strokeDashoffset={3} strokeOpacity={0.8} strokeWidth={2} yAxisId={'cummulative'} type="monotone" fill={'red'} fillOpacity={0.1} dataKey="cummulativeBudget" stroke="#ff7300" />
             <Area filter="url(#shadow)"  name={'Cummulative Consumption'} yAxisId={'cummulative'} 
-            type="natural" fill={'#06F'} fillOpacity={0.5} 
+             fill={'#06F'} fillOpacity={0.5} 
             stroke={'#06F'}
             dataKey="cummulativeEnergy" /> 
 
@@ -199,8 +212,125 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
   )
 };
 
-export const EnergyBreakdown: React.FunctionComponent<IWidgetProps> = (props) => {
-  return <div />;
+export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (props) => {
+  let [year,setYear] = React.useState('');
+  let [month,setMonth] = React.useState('');
+  let [building,setBuilding] = React.useState('');
+  let [categories,setCategories] = React.useState([]);
+  let [selectedCategories,setSelectedCategories] = React.useState<string[]>([]);
+  let [buildings,setBuildings] = React.useState([]);
+  let [utilityData,setUtilityData] = React.useState([]);
+
+  let propsUpdater = useUpdateWidgetProps();
+
+  function lookupCategory(cat:string) {
+    let i = categories.find(c => c.id == cat);
+    if (!i) {
+      return cat;
+    }
+    return i?.label;
+  }
+  async function loadLocations() {
+    let {locations,categories} = await props.uxpContext.executeAction(model, 'GetLocationsAndCategories', {}, { json: true }) as ILC;
+    setBuildings(transformLocations(locations));
+    setCategories(transformCategories(categories));
+
+  }
+  React.useEffect(()=>{
+    props.uxpContext.executeAction(model,'ConsumptionBreakdownForLocationMonth',{location:building,year,month:Number(month)+1},{json:true}).then(data=>{
+      setUtilityData(data.map((item:any) => ({value:Number(item.value),category:item.category,label:lookupCategory(item.category)})));
+      propsUpdater(props.instanceId,{building,year,month:Number(month)+1,categories:selectedCategories});
+
+    });
+
+  },[building,year,month,selectedCategories]);
+  React.useEffect(() => {
+    if (buildings && props.building) {
+      selectBuilding(props.building);
+    }
+    if (props.year) {
+      setYear(props.year);
+    }
+    if (props.month) {
+      setMonth(''+(Number(props.month) - 1));
+    }
+    if (props.categories) {
+      setSelectedCategories(props.categories);
+    }
+  }, [buildings,categories]);
+  React.useEffect(()=>{
+    loadLocations();
+  },[]);
+  function selectBuilding(name: string) {
+    setBuilding(name);
+  }
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  let consumptionData = utilityData.filter(x => selectedCategories.indexOf(x.category)>=0);
+  return <WidgetWrapper>
+     <TitleBar icon={EnergyIcon} title={'Energy Consumption Category-Wise '}>
+        <FilterPanel enableClear={false}>
+          <Select className={'selector-energy'}  placeholder={'Year'} onChange={(year) => setYear(year)}
+            options={Years} selected={year}
+          />
+
+          <Select className={'selector-energy'} placeholder={'Month'} onChange={(month) =>setMonth(month)}
+          options={Months.map( (m,i)=> ({label:m,value:''+i}))} selected={''+month} />
+
+          <Select className={'selector-energy'} placeholder={'Location'} onChange={(b) => selectBuilding(b)} selected={building}
+            options={buildings} labelField={'location'} valueField={'location'} />
+
+        <div className='cat-list'>
+          {
+            categories.filter(c => !(c?.subcategories?.length)).map(c => {
+              let category = c.id;
+              return <Checkbox checked={selectedCategories.indexOf(category)>=0} label={c.label} onChange={(checked)=>{
+                let i = selectedCategories.indexOf(category);
+                if (checked) {
+                  if (i < 0) {
+                    selectedCategories.push(category);
+                  }
+                }
+                if (!checked) {
+                  if (i >= 0) {
+                     selectedCategories.splice(i,1);
+                  }
+                }
+                setSelectedCategories(selectedCategories.slice());
+              }} />
+            })
+          }
+        </div>
+        </FilterPanel>
+      </TitleBar>
+      <div style={{ flex: 1,padding:'30px' ,paddingBottom:'45px'}}>
+    <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+
+                <Legend verticalAlign="top" height={36} />
+                <Pie
+
+                    data={consumptionData}
+                    label={true}
+                      cx={'50%'}
+                      nameKey={'label'}
+                      cy={'50%'}
+                    innerRadius={'55%'}
+                    outerRadius={'85%'}
+
+                    paddingAngle={5}
+                    dataKey="value"
+                  
+
+                >
+              {consumptionData.map((entry, index) => (
+            <Cell  key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}                  
+                </Pie>
+            </PieChart>
+        </ResponsiveContainer>
+        </div>
+  </WidgetWrapper>;
 }
 interface ILC {
   locations: any[];
@@ -291,10 +421,10 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
   let budgetValue = Number(budget);
   return <WidgetWrapper>
     <TitleBar title={'Current Monthly Energy Usage'} >
-      <FilterPanel>
-        <Select onChange={selectBuilding} selected={building}
+      <FilterPanel enableClear={false}>
+        <Select className={'selector-energy'}  onChange={selectBuilding} selected={building}
           options={buildings} labelField={'location'} valueField={'location'} />
-        <Select placeholder={'Energy Type'} onChange={(b) => selectCategory(b)} selected={selectedCategory}
+        <Select className={'selector-energy'}  placeholder={'Energy Type'} onChange={(b) => selectCategory(b)} selected={selectedCategory}
           options={categories} labelField={'label'} valueField={'id'} />
       </FilterPanel>
       </TitleBar>
