@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip, ComposedChart, Line, Area, PieChart, Pie, Cell } from 'recharts';
 import { registerWidget, registerLink, registerUI, IContextProvider, } from './uxp';
-import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox } from "uxp/components";
+import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus } from "uxp/components";
 import './styles.scss';
 import { getPositionOfLineAndCharacter } from "typescript";
 
@@ -30,6 +30,39 @@ let Years: any[] = [];
 for (var i = 0; i < 3; i++) {
   let y = startYear - i;
   Years.push({ label: '' + y, value: '' + y });
+}
+
+function useEffectWithPolling(context:any, channel: string, interval: number, callback:()=>Promise<void>,deps:any[]) {
+  let [tick,setTick] = React.useState(0);
+  let [timer,setTimer] = React.useState(null);
+
+  let newDeps = deps.slice();
+  newDeps.push(tick);
+ 
+  function startTimer() {
+    clearTimeout(timer);
+    setTimer(setTimeout(()=>{
+      setTick((x)=>x+1);
+    },interval));
+  }
+
+  React.useEffect(()=>{
+    clearTimeout(timer);
+    console.log('running poll job');
+    callback().then(()=>{
+      startTimer();
+    }).catch(e=>{
+      console.log('Error in useEffectWithPolling',channel,e);
+      startTimer();
+    })
+    return () => timer && clearTimeout(timer);
+  },newDeps);
+  
+  useMessageBus(context,channel,(p,ch)=>{
+    setTick((x)=>x+1);
+    return "";
+  });
+
 }
 
 interface ILocation {location:string;categories:{[name:string]:number[]}};
@@ -403,20 +436,16 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
     }
 
   }
-  React.useEffect(()=>{
+  useEffectWithPolling(props.uxpContext,"lxp/energy",15*60*1000,async ()=>{
     let year = new Date().getFullYear();
     let month = new Date().getMonth()+1;
-    props.uxpContext.executeAction(model,'ConsumptionForLocationMonth',{location:building,year,month,category:selectedCategory},{json:true})
-    .then((data:any)=>{
-      if (data && data[0] && data[0].value) {
-        setValue(Number(data[0].value));
-      }
-
+    let data = await props.uxpContext.executeAction(model,'ConsumptionForLocationMonth',{location:building,year,month,category:selectedCategory},{json:true});
+    if (data && data[0] && data[0].value) {
+      setValue(Number(data[0].value));
+    }
     updater(props.instanceId,{category:selectedCategory,building});
 
-    }).catch(e => {
-      console.log('Error loading latest monthly data',e);
-    });
+   
   },[building,budget,selectedCategory]);
   let budgetValue = Number(budget);
   return <WidgetWrapper>
