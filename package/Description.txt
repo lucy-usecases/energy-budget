@@ -1,0 +1,27 @@
+This solution helps you become compliant with green energy standards by giving you the tools to track your energy consumption across multiple buildings and energy types.
+
+Once you're setup, you get out of the box widgets and dashboards for analyzing and tracking your energy consumption and green house emissions.
+
+## Features
+
+* Setup monthly budgets
+* Setup budgets per energy type and building
+* Dashboards and visualizations for measuring baseline against actuals
+* Calculated energy types - create new energy types on the fly as a combination of other types.
+* Metrics on greenhouse emissions
+
+## Setup
+This use case publishes an API that can be used to publish data as well as configure it.
+
+
+### Energy Types
+The first step is to configure your energy types. This can be done via API.
+You can define energy type ids and labels for them.
+
+You can also define calculated energy types as a sum of other energy types.
+
+_(Note: you cannot currently calculate energy types on other calculated energy types)_
+
+### Budgets
+Once your energy types are setup - you can setup budgets per energy type per building.
+Each budget consists of a `kWh` value for each month of the year (so 12 values need to specified)

@@ -106,6 +106,7 @@ function getMonthName(year: number, month: number) {
 const model = 'EnergyBudget';
 const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
   let [year, setYear] = React.useState('');
+  let [yearList,setYearList] = React.useState(Years);
   let [buildings, setBuildings] = React.useState<ILocation[]>([]);
   let [selectedBuilding, setSelectedBuilding] = React.useState('');
   let [selectedBudget, setSelectedBudget] = React.useState<number[]>([]);
@@ -212,7 +213,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IWidgetProps> = (props) => {
       <TitleBar icon={EnergyIcon} title={'Yearly Energy Budgeted vs Actual ' + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
         <FilterPanel enableClear={false}>
           <Select className={'selector-energy'}   placeholder={'Year'} onChange={(year) => setYear(year)}
-            options={Years} selected={year}
+            options={yearList} selected={year}
           />
           <Select className={'selector-energy'}   placeholder={'Location'} onChange={(b) => selectBuilding(b)} selected={selectedBuilding}
             options={buildings} labelField={'location'} valueField={'location'} />
