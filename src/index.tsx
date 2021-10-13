@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip, ComposedChart, Line, Area, PieChart, Pie, Cell } from 'recharts';
 import { registerWidget, registerLink, registerUI, IContextProvider, IConfigPanelProps, } from './uxp';
-import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast } from "uxp/components";
+import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker } from "uxp/components";
 import './styles.scss';
 
 
@@ -300,8 +300,8 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 							yAxisId={'cummulative'}
 							fill={colors.cumulativeConsumption}
 							fillOpacity={0.5}
-							stroke={'#06F'}
-							dataKey={colors.cumulativeConsumption}
+							stroke={colors.cumulativeConsumption}
+							dataKey={"cummulativeEnergy"}
 						/>
 						<Bar
 							name={'Consumption'}
@@ -412,11 +412,11 @@ const EnergyBudgetWidgetConfigPanel: React.FunctionComponent<IConfigPanelProps> 
 		<div className="row">
 			<FormField>
 				<Label>Baseline</Label>
-				<Input value={baseline || ""} onChange={setBaseline} />
+				<ColorPicker color={baseline || ""} onChange={setBaseline} />
 			</FormField>
 			<FormField>
 				<Label>Consumption</Label>
-				<Input value={consumption || ""} onChange={setConsumption} />
+				<ColorPicker color={consumption || ""} onChange={setConsumption} />
 			</FormField>
 		</div>
 
@@ -424,11 +424,11 @@ const EnergyBudgetWidgetConfigPanel: React.FunctionComponent<IConfigPanelProps> 
 
 			<FormField>
 				<Label>Cumulative Consumption</Label>
-				<Input value={cumulativeConsumption || ""} onChange={setCumulativeConsumption} />
+				<ColorPicker color={cumulativeConsumption || ""} onChange={setCumulativeConsumption} />
 			</FormField>
 			<FormField>
 				<Label>Cumulative Budget</Label>
-				<Input value={cumulativeBudget || ""} onChange={setCumulativeBudget} />
+				<ColorPicker color={cumulativeBudget || ""} onChange={setCumulativeBudget} />
 			</FormField>
 		</div>
 
