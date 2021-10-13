@@ -24,11 +24,16 @@ interface IWidgetPropConfig {
     label: string
     attr?: { [key: string]: any }
 }
-
+ // configs
+ export interface IConfigPanelProps {
+    configs:{ [key: string]: any },
+    onSubmit: (data: { [key: string]: any }) => void
+    onCancel?: () => void
+}
 interface IWidgetConfig {
     layout?: ILayout
-    // container?: IContainer,
     props?: IWidgetPropConfig[]
+    configPanel?: React.FunctionComponent<IConfigPanelProps>
 }
 
 interface IWidgetObject {
