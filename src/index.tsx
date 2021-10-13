@@ -119,7 +119,7 @@ interface IEnergyBudgetWidgetProps extends IWidgetProps {
 const model = 'EnergyBudget';
 const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (props) => {
 
-	let { colors, labels} = props
+	let { colors, labels } = props
 
 	let [yearList, setYearList] = React.useState(Years);
 	let [buildings, setBuildings] = React.useState<ILocation[]>([]);
@@ -348,15 +348,18 @@ const EnergyBudgetWidgetConfigPanel: React.FunctionComponent<IConfigPanelProps> 
 	let [yAxis, setYAxis] = React.useState("")
 
 	React.useEffect(() => {
-		console.log("configs ", configs)
 
 		if (configs) {
-			if (configs.colors.baseline) setBaseline(configs.colors.baseline)
-			if (configs.colors.consumption) setConsumption(configs.colors.consumption)
-			if (configs.colors.cumulativeConsumption) setCumulativeConsumption(configs.colors.cumulativeConsumption)
-			if (configs.colors.cumulativeBudget) setCumulativeBudget(configs.colors.cumulativeBudget)
-			if (configs.labels.xAxis) setXAxis(configs.labels.xAxis)
-			if (configs.labels.yAxis) setYAxis(configs.labels.yAxis)
+			if (configs.colors) {
+				if (configs.colors.baseline) setBaseline(configs.colors.baseline)
+				if (configs.colors.consumption) setConsumption(configs.colors.consumption)
+				if (configs.colors.cumulativeConsumption) setCumulativeConsumption(configs.colors.cumulativeConsumption)
+				if (configs.colors.cumulativeBudget) setCumulativeBudget(configs.colors.cumulativeBudget)
+			}
+			if (configs.labels) {
+				if (configs.labels.xAxis) setXAxis(configs.labels.xAxis)
+				if (configs.labels.yAxis) setYAxis(configs.labels.yAxis)
+			}
 		}
 	}, [configs])
 
