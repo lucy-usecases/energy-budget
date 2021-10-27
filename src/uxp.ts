@@ -45,7 +45,8 @@ interface IWidgetObject {
     description?: string,
     icon?: string,
     vendor?: string,
-    tags?: string[]
+    tags?: string[],
+    defaultProps?:any
 }
 type SidebarLinkClick = () => void;
 

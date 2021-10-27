@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "build:prod": "webpack --config webpack.config.js --mode production --progress",
     "build": "webpack --config webpack.config.js",
     "watch": "webpack --watch --config webpack.config.js",
     "dev": "webpack-dev-server"

@@ -144,17 +144,30 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 
 	}
 	React.useEffect(() => {
-		if (!buildings) {
-			return;
+		if (buildings.length > 0) {
+			if (props.building && props.building.trim().length > 0) {
+				selectBuilding(props.building || "");
+			}
+			else {
+				selectBuilding(buildings[0].location)
+			}
 		}
-		if (props.building) {
-			selectBuilding(props.building || "");
+		if (yearList.length > 0) {
+			if (props.year && props.year.trim().length > 0) {
+				setYear(props.year || "");
+			}
+			else {
+				setYear(yearList[0].value)
+			}
 		}
-		if (props.year) {
-			setYear(props.year || "");
-		}
-		if (props.category) {
-			selectCategory(props.category || "");
+
+		if (categories.length > 0) {
+			if (props.category && props.category.trim().length > 0) {
+				selectCategory(props.category || "");
+			}
+			else {
+				selectCategory(categories[0].id)
+			}
 		}
 	}, [buildings, categories, yearList]);
 
@@ -279,14 +292,14 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 						<XAxis dataKey="name"
 							label={{
 								position: "center",
-								value: labels.xAxis,
+								value: labels?.xAxis ||"",
 								dy: 15
 							}}
 						/>
 						<YAxis axisLine={false}
 							label={{
 								position: "center",
-								value: labels.yAxis,
+								value: labels?.yAxis || "",
 								angle: -90,
 							}}
 						/>
@@ -298,22 +311,22 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 							filter="url(#shadow)"
 							name={'Cumulative Consumption'}
 							yAxisId={'cummulative'}
-							fill={colors.cumulativeConsumption}
+							fill={colors?.cumulativeConsumption || "#06F"}
 							fillOpacity={0.5}
-							stroke={colors.cumulativeConsumption}
+							stroke={colors?.cumulativeConsumption || "#06F"}
 							dataKey={"cummulativeEnergy"}
 						/>
 						<Bar
 							name={'Consumption'}
 							barSize={15}
 							dataKey="energy"
-							fill={colors.consumption}
+							fill={colors?.consumption|| "#F78FAA"}
 						/>
 						<Bar
 							name={'Baseline'}
 							barSize={15}
 							dataKey="budgeted"
-							fill={colors.baseline}
+							fill={colors?.baseline|| "#79B7B6"}
 						/>
 						<Line
 							name={'Cumulative Budget'}
@@ -322,10 +335,11 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 							strokeOpacity={0.8}
 							strokeWidth={2}
 							yAxisId={'cummulative'}
-							type="monotone" fill={'red'}
+							type="monotone" 
+							fill={'red'}
 							fillOpacity={0.1}
 							dataKey="cummulativeBudget"
-							stroke={colors.cumulativeBudget}
+							stroke={colors?.cumulativeBudget || "#ff7300"}
 						/>
 
 					</ComposedChart>
@@ -714,6 +728,18 @@ registerWidget({
 		],
 		configPanel: EnergyBudgetWidgetConfigPanel
 	},
+	defaultProps: {
+		colors: {
+			baseline: "#79B7B6",
+			consumption: "#F78FAA",
+			cumulativeConsumption: "#06F",
+			cumulativeBudget: "#ff7300",
+		},
+		labels:{
+			xAxis: "",
+			yAxis: ""
+		}
+	}
 });
 
 registerWidget({
