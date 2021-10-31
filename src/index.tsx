@@ -3,6 +3,7 @@ import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis
 import { registerWidget, registerLink, registerUI, IContextProvider, IConfigPanelProps, } from './uxp';
 import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker } from "uxp/components";
 import './styles.scss';
+import { isExportAssignment } from "typescript";
 
 
 
@@ -117,11 +118,18 @@ interface IEnergyBudgetWidgetProps extends IWidgetProps {
 }
 
 const model = 'EnergyBudget';
+let ValidYears:unknown[] = null;
+async function getYears(context:IContextProvider) {
+	if (ValidYears != null) return ValidYears;
+	let years = await context.executeAction(model,'GetValidYears',{},{json:true});
+	ValidYears = years;
+	return ValidYears;
+}
 const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (props) => {
 
 	let { colors, labels } = props
 
-	let [yearList, setYearList] = React.useState(Years);
+	let [yearList, setYearList] = React.useState([]);
 	let [buildings, setBuildings] = React.useState<ILocation[]>([]);
 	let [categories, setCategories] = React.useState<any[]>([]);
 
@@ -134,6 +142,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let [year, setYear] = React.useState('');
 	let [selectedBuilding, setSelectedBuilding] = React.useState('');
 	let [selectedCategory, setSelectedCategory] = React.useState('');
+
 
 	let updater = useUpdateWidgetProps();
 
@@ -197,6 +206,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 
 	React.useEffect(() => {
 		loadLocations().then(_ => { });
+		getYears(props.uxpContext).then(setYearList);
 	}, []);
 
 
@@ -246,7 +256,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 			<TitleBar icon={EnergyIcon} title={'Yearly Energy Budgeted vs Actual ' + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '')}>
 				<FilterPanel enableClear={false}>
 					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
-						options={yearList} selected={year}
+						options={yearList} labelField='year' valueField='year' selected={year}
 					/>
 					<Select className={'selector-energy'} placeholder={'Location'} onChange={(b) => selectBuilding(b)} selected={selectedBuilding}
 						options={buildings} labelField={'location'} valueField={'location'} />
@@ -473,6 +483,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 	let [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
 	let [buildings, setBuildings] = React.useState([]);
 	let [utilityData, setUtilityData] = React.useState([]);
+	let [yearList,setYearList] = React.useState([]);
 
 	let propsUpdater = useUpdateWidgetProps();
 
@@ -513,6 +524,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 	}, [buildings, categories]);
 	React.useEffect(() => {
 		loadLocations();
+		getYears(props.uxpContext).then(setYearList);
 	}, []);
 	function selectBuilding(name: string) {
 		setBuilding(name);
@@ -524,7 +536,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 		<TitleBar icon={EnergyIcon} title={'Energy Consumption Category-Wise '}>
 			<FilterPanel enableClear={false}>
 				<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
-					options={Years} selected={year}
+					options={yearList} labelField='year' valueField='year' selected={year}
 				/>
 
 				<Select className={'selector-energy'} placeholder={'Month'} onChange={(month) => setMonth(month)}
