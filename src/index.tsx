@@ -12,6 +12,10 @@ const PowerIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" 
 const Co2Icon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33"%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill:%23535353;%7D.b%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Ccircle class="a" cx="16.5" cy="16.5" r="16.5"/%3E%3Cpath class="b" d="M7.608,12.061a3.251,3.251,0,0,1,.734-2.08A3.188,3.188,0,0,1,10.2,8.817a4.046,4.046,0,0,1,6.454-2.311,3.955,3.955,0,0,1,1.428,2.22H18.3A3.258,3.258,0,0,1,20.68,9.7a3.2,3.2,0,0,1,.982,2.352,3.253,3.253,0,0,1-.305,1.4,3.377,3.377,0,0,1-.85,1.131v.025a2.07,2.07,0,0,1-.462,1.312,2.007,2.007,0,0,1-1.155.734,2.574,2.574,0,0,1-2.1,1.964,1.443,1.443,0,0,1-1.081,2.385,1.36,1.36,0,0,1-1.015-.429,1.4,1.4,0,0,1-.421-1.023,1.347,1.347,0,0,1,.083-.47h-.083a1.775,1.775,0,0,1-1.758-1.758,1.6,1.6,0,0,1,.248-.883,2.05,2.05,0,0,1-.924-1.032H10.785V15.4a3.323,3.323,0,0,1-2.253-1.048A3.184,3.184,0,0,1,7.608,12.061Zm1.155-.206a2.367,2.367,0,0,0,2.368,2.377,2.32,2.32,0,0,0,1.131-.281,2.529,2.529,0,0,0,.858,1.535,2.448,2.448,0,0,0,1.667.611,2.5,2.5,0,0,0,1.832-.759,1.591,1.591,0,0,0,1.271.586,1.691,1.691,0,0,0,1.7-1.7,2.374,2.374,0,0,0,.784-.858,2.327,2.327,0,0,0,.289-1.131,2.232,2.232,0,0,0-.7-1.667,2.349,2.349,0,0,0-1.692-.685,2.323,2.323,0,0,0-1.263.363,2.729,2.729,0,0,0,.066-.652,2.743,2.743,0,0,0-.85-2.03,2.931,2.931,0,0,0-4.06-.033,2.724,2.724,0,0,0-.883,1.956h-.14a2.3,2.3,0,0,0-1.675.693A2.276,2.276,0,0,0,8.763,11.854Z" transform="translate(1.332 3.3)"/%3E%3C/svg%3E';
 const TreesIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33"%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill:%23535353;%7D.b%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Ccircle class="a" cx="16.5" cy="16.5" r="16.5"/%3E%3Cpath class="b" d="M14.215,4.221a.43.43,0,0,1-.2-.369,4.239,4.239,0,0,0-8.443,0,.432.432,0,0,1-.2.369A4.25,4.25,0,0,0,6.717,11.8a1.159,1.159,0,0,0,.738.039,1.953,1.953,0,0,0,.369-1.433,1.4,1.4,0,0,0-.657-.328A2.506,2.506,0,0,1,5.324,7.664,2.466,2.466,0,0,1,5.98,5.981a2.3,2.3,0,0,1,.614-.49,1.451,1.451,0,0,0,.738-1.272,2.357,2.357,0,0,1,.122-.778,2.5,2.5,0,0,1,4.753,0,2.357,2.357,0,0,1,.122.778,1.365,1.365,0,0,0,.739,1.264,1.722,1.722,0,0,1,.612.487,2.445,2.445,0,0,1,.657,1.682,2.485,2.485,0,0,1-2.5,2.5,2.87,2.87,0,0,0-2.869,2.859v1.633a1.528,1.528,0,0,0,.123.739,1.849,1.849,0,0,0,1.475,0,1.421,1.421,0,0,0,.126-.739V12.973A1.109,1.109,0,0,1,11.8,11.864,4.211,4.211,0,0,0,14.225,4.2l-.01.021Z" transform="translate(7 8.769)"/%3E%3C/svg%3E';
 
+/* default value to use when calculating radial gauge limits when no budget is set */
+const DEFAULT_BUDGET_VALUE = 250;
+
+
 interface IWidgetProps {
 	uxpContext?: IContextProvider;
 	building: string;
@@ -672,16 +676,16 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 		let year = new Date().getFullYear();
 		let month = new Date().getMonth() + 1;
 		let data = await props.uxpContext.executeAction(model, 'ConsumptionForLocationMonth', { location: building, year, month, category: selectedCategory }, { json: true });
-		if (data && data[0] && data[0].value) {
-			setValue(Number(data[0].value));
+		if (data && data[0]) {
+			setValue(Number(data[0].value)||0);
 		}
 		updater(props.instanceId, { category: selectedCategory, building });
 
 
 	}, [building, budget, selectedCategory]);
-	let budgetValue = Number(budget);
+	let budgetValue = Number(budget) || (value||DEFAULT_BUDGET_VALUE*0.5)*2;
 	return <WidgetWrapper className='energy-gauge'>
-		<TitleBar title={'Current Monthly Energy Usage'} >
+		<TitleBar title={'Current Monthly Energy Usage ' + (selectCategory?`[${selectedCategory}]`:'')} >
 			<FilterPanel enableClear={false}>
 				<Select className={'selector-energy'} onChange={selectBuilding} selected={building}
 					options={buildings} labelField={'location'} valueField={'location'} />
@@ -708,8 +712,13 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 		</div>
 
 		<div style={{ fontSize: '4em', textAlign: 'center', padding: '10px' }}>
-			{value}<span style={{ fontSize: '0.3em', opacity: 0.5 }}>KWH</span>
-			<span style={{ marginLeft: '10px', opacity: 0.8, textTransform: 'uppercase', fontSize: '0.3em' }}>{'of ' + budget}</span><span style={{ fontSize: '0.3em', opacity: 0.5 }}>KWH</span>
+			{value.toFixed(2)}<span style={{ fontSize: '0.3em', opacity: 0.5 }}>KWH</span>
+			{
+				Number(budget)>0?
+			<><span style={{ marginLeft: '10px', opacity: 0.8, textTransform: 'uppercase', fontSize: '0.3em' }}>{'of ' + budget}</span><span style={{ fontSize: '0.3em', opacity: 0.5 }}>KWH</span></>
+			:null
+			}
+
 		</div>
 	</WidgetWrapper>;
 }
