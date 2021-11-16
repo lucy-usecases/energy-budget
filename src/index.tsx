@@ -259,9 +259,10 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	if (co2 > 0) showCO2 = true;
 
 	let hasBudget =selectedBudget.filter(x => Number(x)>0).length>0;
-
+	let hasData = chartData.filter(x => x.utilization!=0).length > 0;
+	
 	return (
-		<WidgetWrapper>
+		<WidgetWrapper className='energy-widget'>
 			<TitleBar icon={EnergyIcon} title={'Yearly Energy ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '')}>
 				<FilterPanel enableClear={false}>
 					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
@@ -290,6 +291,13 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 				</div>
 			}
 			<div style={{ flex: 1, padding: '30px' }}>
+			{
+          (!hasData && !hasBudget)
+          ?
+          <div className='no-budget-data'>
+            No data available
+          </div>
+          :
 				<ResponsiveContainer width="100%" height="100%">
 					<ComposedChart
 						width={500}
@@ -371,6 +379,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 
 					</ComposedChart>
 				</ResponsiveContainer>
+}
 			</div>
 		</WidgetWrapper>
 	)
@@ -549,7 +558,8 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 
 	const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 	let consumptionData = utilityData.filter(x => selectedCategories.indexOf(x.category) >= 0);
-	return <WidgetWrapper>
+	let hasData = consumptionData.filter(x => Number(x.value)).length > 0;
+	return <WidgetWrapper className='energy-widget'>
 		<TitleBar icon={EnergyIcon} title={'Energy Consumption Category-Wise '}>
 			<FilterPanel enableClear={false}>
 				<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
@@ -586,6 +596,12 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 			</FilterPanel>
 		</TitleBar>
 		<div style={{ flex: 1, padding: '30px', paddingBottom: '45px' }}>
+			{!hasData?
+			 <div className='no-budget-data'>
+			 No data available
+		   </div>
+			:
+			
 			<ResponsiveContainer width="100%" height="100%">
 				<PieChart>
 
@@ -611,6 +627,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 					</Pie>
 				</PieChart>
 			</ResponsiveContainer>
+}
 		</div>
 	</WidgetWrapper>;
 }

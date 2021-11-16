@@ -7,6 +7,16 @@
         margin-right: auto;
     }
 }
+.energy-widget {
+    .no-budget-data {
+        font-size: 3em;
+        opacity: 0.5;
+        text-align: center;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
 .carbon-footprint {
     padding: 10px 50px;
     .profile-image-container {
