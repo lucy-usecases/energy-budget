@@ -14,7 +14,10 @@ const TreesIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" 
 
 /* default value to use when calculating radial gauge limits when no budget is set */
 const DEFAULT_BUDGET_VALUE = 250;
-
+function toFixed(n:number,places:number=2) {
+	let f = Math.pow(10,places);
+	return Math.round(n*f)/f;
+}
 
 interface IWidgetProps {
 	uxpContext?: IContextProvider;
@@ -214,7 +217,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	}, []);
 
 
-
+	
 	React.useEffect(() => {
 		props.uxpContext.executeAction(model, 'ConsumptionForLocationWithEmission', { year, location: selectedBuilding, category: selectedCategory }, { json: true }).then((data: any[]) => {
 			let consumptionData: any = {};
@@ -234,10 +237,10 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 				cummulativeEnergy += consumptionData[i] || 0;
 				chartData.push({
 					name: getMonthName(Number(year), i),
-					energy: consumptionData[i] || 0,
-					budgeted: selectedBudget[i - 1] || 0,
-					cummulativeBudget,
-					cummulativeEnergy,
+					energy: toFixed(consumptionData[i] || 0),
+					budgeted: toFixed(selectedBudget[i - 1] || 0),
+					cummulativeBudget:toFixed(cummulativeBudget),
+					cummulativeEnergy:toFixed(cummulativeEnergy),
 				});
 			}
 			setChartData(chartData);
@@ -255,9 +258,11 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let trees = 16.5 * emissions;
 	if (co2 > 0) showCO2 = true;
 
+	let hasBudget =selectedBudget.filter(x => Number(x)>0).length>0;
+
 	return (
 		<WidgetWrapper>
-			<TitleBar icon={EnergyIcon} title={'Yearly Energy Budgeted vs Actual ' + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '')}>
+			<TitleBar icon={EnergyIcon} title={'Yearly Energy ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '')}>
 				<FilterPanel enableClear={false}>
 					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
 						options={yearList} labelField='year' valueField='year' selected={year}
@@ -306,15 +311,16 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 						<XAxis dataKey="name"
 							label={{
 								position: "center",
-								value: labels?.xAxis ||"",
+								value: labels?.xAxis ||"Months",
 								dy: 15
 							}}
 						/>
 						<YAxis axisLine={false}
 							label={{
 								position: "center",
-								value: labels?.yAxis || "",
+								value: labels?.yAxis || "KwH",
 								angle: -90,
+								dx:-30,
 							}}
 						/>
 						<YAxis axisLine={false} orientation={'right'} yAxisId={'cummulative'} />
@@ -336,12 +342,18 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 							dataKey="energy"
 							fill={colors?.consumption|| "#F78FAA"}
 						/>
+						{
+							hasBudget &&
+						
 						<Bar
 							name={'Baseline'}
 							barSize={15}
 							dataKey="budgeted"
 							fill={colors?.baseline|| "#79B7B6"}
 						/>
+}
+{
+							hasBudget &&
 						<Line
 							name={'Cumulative Budget'}
 							strokeDasharray={'0 1 1 1'}
@@ -355,6 +367,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 							dataKey="cummulativeBudget"
 							stroke={colors?.cumulativeBudget || "#ff7300"}
 						/>
+}
 
 					</ComposedChart>
 				</ResponsiveContainer>
