@@ -708,6 +708,8 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 		let data = await props.uxpContext.executeAction(model, 'ConsumptionForLocationMonth', { location: building, year, month, category: selectedCategory }, { json: true });
 		if (data && data[0]) {
 			setValue(Number(data[0].value)||0);
+		} else {
+			setValue(0);
 		}
 		updater(props.instanceId, { category: selectedCategory, building });
 
