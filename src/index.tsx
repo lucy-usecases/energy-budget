@@ -257,9 +257,10 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let emissions = totalConsumption * co2 / (1000 * 1000);
 	let trees = 16.5 * emissions;
 	if (co2 > 0) showCO2 = true;
+	let hasBudget =selectedBudget.filter(x => !!Number(x)).length>0;
+	let hasData = chartData.filter(x => !!Number(x.energy)).length > 0;
+	console.log('budget',hasBudget,hasData);
 
-	let hasBudget =selectedBudget.filter(x => Number(x)>0).length>0;
-	let hasData = chartData.filter(x => x.utilization!=0).length > 0;
 	
 	return (
 		<WidgetWrapper className='energy-widget'>
