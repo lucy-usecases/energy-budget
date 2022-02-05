@@ -626,6 +626,10 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 							<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
 						))}
 					</Pie>
+					<Tooltip content={(opts:any)=><div className='u-tt'>
+						<div>{opts?.payload[0]?.name}</div>
+						<div>{Number(opts?.payload[0]?.value).toFixed(2)+' kWh'}</div>
+					</div>} />
 				</PieChart>
 			</ResponsiveContainer>
 }
