@@ -334,7 +334,9 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 						/>
 						<YAxis axisLine={false} orientation={'right'} yAxisId={'cummulative'} />
 
-						<Tooltip />
+						<Tooltip formatter={(value,name,entry,index)=>{
+							return `${Number(value).toFixed(2)+(labels?.yAxis || '')}`
+						}} />
 						<Legend align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
 						<Area
 							filter="url(#shadow)"

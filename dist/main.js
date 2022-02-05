@@ -10714,7 +10714,9 @@ const EnergyBudgetWidget = (props) => {
                                 dx: -30,
                             } }),
                         React.createElement(recharts_1.YAxis, { axisLine: false, orientation: 'right', yAxisId: 'cummulative' }),
-                        React.createElement(recharts_1.Tooltip, null),
+                        React.createElement(recharts_1.Tooltip, { formatter: (value, name, entry, index) => {
+                                return `${Number(value).toFixed(2) + ((labels === null || labels === void 0 ? void 0 : labels.yAxis) || '')}`;
+                            } }),
                         React.createElement(recharts_1.Legend, { align: "center", verticalAlign: "bottom", wrapperStyle: { paddingTop: 20 } }),
                         React.createElement(recharts_1.Area, { filter: "url(#shadow)", name: 'Cumulative Consumption', yAxisId: 'cummulative', fill: (colors === null || colors === void 0 ? void 0 : colors.cumulativeConsumption) || "#06F", fillOpacity: 0.5, stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeConsumption) || "#06F", dataKey: "cummulativeEnergy" }),
                         React.createElement(recharts_1.Bar, { name: 'Consumption', barSize: 15, dataKey: "energy", fill: (colors === null || colors === void 0 ? void 0 : colors.consumption) || "#F78FAA" }),
