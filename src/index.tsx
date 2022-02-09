@@ -18,6 +18,9 @@ function toFixed(n:number,places:number=2) {
 	let f = Math.pow(10,places);
 	return Math.round(n*f)/f;
 }
+function intFmt(x:string) {
+	return Intl.NumberFormat().format(Number(x));
+}
 
 interface IWidgetProps {
 	uxpContext?: IContextProvider;
@@ -26,6 +29,7 @@ interface IWidgetProps {
 	instanceId: string;
 	category: string;
 }
+
 interface IBreakdownWidgetProps {
 	uxpContext?: IContextProvider;
 	building: string;
@@ -335,7 +339,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 						<YAxis axisLine={false} orientation={'right'} yAxisId={'cummulative'} />
 
 						<Tooltip formatter={(value,name,entry,index)=>{
-							return `${Number(value).toFixed(2)+(labels?.yAxis || '')}`
+							return `${intFmt(Number(value).toFixed(2))+(labels?.yAxis || '')}`
 						}} />
 						<Legend align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
 						<Area
@@ -630,7 +634,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 					</Pie>
 					<Tooltip content={(opts:any)=><div className='u-tt'>
 						<div>{opts?.payload[0]?.name}</div>
-						<div>{Number(opts?.payload[0]?.value).toFixed(2)+' kWh'}</div>
+						<div>{intFmt(Number(opts?.payload[0]?.value).toFixed(2))+' kWh'}</div>
 					</div>} />
 				</PieChart>
 			</ResponsiveContainer>
