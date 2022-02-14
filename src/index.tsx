@@ -108,7 +108,7 @@ function transformCategories(categories: ICategory[]) {
 		return c;
 	});
 }
-const Months = ['Jan', 'Feb', 'March', 'April', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+const Months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 function getMonthName(year: number, month: number) {
 	return Months[month - 1];// + ' - ' + year;
 }
@@ -144,15 +144,15 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let [buildings, setBuildings] = React.useState<ILocation[]>([]);
 	let [categories, setCategories] = React.useState<any[]>([]);
 
-	let [selectedBudget, setSelectedBudget] = React.useState<number[]>([]);
+	//let [selectedBudget, setSelectedBudget] = React.useState<number[]>([]);
 	let [chartData, setChartData] = React.useState<any[]>([]);
 	let [co2, setCo2] = React.useState(0);
 
 	// configurable states 
 	// get defaults from props  
-	let [year, setYear] = React.useState('');
-	let [selectedBuilding, setSelectedBuilding] = React.useState('');
-	let [selectedCategory, setSelectedCategory] = React.useState('');
+	let [year, setYear] = React.useState(props.year);
+	let [selectedBuilding, setSelectedBuilding] = React.useState(props.building);
+	let [selectedCategory, setSelectedCategory] = React.useState(props.category);
 
 
 	let updater = useUpdateWidgetProps();
@@ -163,64 +163,67 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		setCategories(transformCategories(categories));
 
 	}
-	React.useEffect(() => {
-		if (buildings.length > 0) {
-			if (props.building && props.building.trim().length > 0) {
-				selectBuilding(props.building || "");
-			}
-			else {
-				selectBuilding(buildings[0].location)
-			}
-		}
-		if (yearList.length > 0) {
-			if (props.year && props.year.trim().length > 0) {
-				setYear(props.year || "");
-			}
-			else {
-				setYear(yearList[0].value)
-			}
-		}
+	// React.useEffect(() => {
+	// 	if (buildings.length > 0) {
+	// 		if (props.building && props.building.trim().length > 0) {
+	// 			selectBuilding(props.building || "");
+	// 		}
+	// 		else {
+	// 			selectBuilding(buildings[0].location)
+	// 		}
+	// 	}
+	// 	if (yearList.length > 0) {
+	// 		if (props.year && props.year.trim().length > 0) {
+	// 			setYear(props.year || "");
+	// 		}
+	// 		else {
+	// 			setYear(yearList[0].value)
+	// 		}
+	// 	}
 
-		if (categories.length > 0) {
-			if (props.category && props.category.trim().length > 0) {
-				selectCategory(props.category || "");
-			}
-			else {
-				selectCategory(categories[0].id)
-			}
-		}
-	}, [buildings, categories, yearList]);
+	// 	if (categories.length > 0) {
+	// 		if (props.category && props.category.trim().length > 0) {
+	// 			selectCategory(props.category || "");
+	// 		}
+	// 		else {
+	// 			selectCategory(categories[0].id)
+	// 		}
+	// 	}
+	// }, [buildings, categories, yearList]);
 
-	function selectBuilding(name: string) {
-		let item = buildings.find(b => b.location == name);
-		if (!item) {
-			return;
-		}
-		setSelectedBuilding(item.location);
-		let values = item.categories[selectedCategory] || [];
-		setSelectedBudget(values);
-	}
+	// function selectBuilding(name: string) {
+	// 	let item = buildings.find(b => b.location == name);
+	// 	if (!item) {
+	// 		return;
+	// 	}
+	// 	setSelectedBuilding(item.location);
+	// 	let values = item.categories[selectedCategory] || [];
+	// 	setSelectedBudget(values);
+	// }
 
-	function selectCategory(name: string) {
-		let item = categories.find(c => c.id == name);
-		if (!item) {
-			return;
-		}
-		setSelectedCategory(item.id);
+	// function selectCategory(name: string) {
+	// 	let item = categories.find(c => c.id == name);
+	// 	if (!item) {
+	// 		return;
+	// 	}
+	// 	setSelectedCategory(item.id);
 
-		let l = buildings.find(b => b.location == selectedBuilding);
-		if (l) {
-			let values = l?.categories[item.id] || [];
-			setSelectedBudget(values);
-		}
-	}
+	// 	let l = buildings.find(b => b.location == selectedBuilding);
+	// 	if (l) {
+	// 		let values = l?.categories[item.id] || [];
+	// 		setSelectedBudget(values);
+	// 	}
+	// }
 
 	React.useEffect(() => {
 		loadLocations().then(_ => { });
 		getYears(props.uxpContext).then(setYearList);
 	}, []);
 
-
+	function getSelectedBudget() {
+		let l = buildings.find(b => b.location == selectedBuilding);
+		return l?.categories?.[selectedCategory] || [];
+	}
 	
 	React.useEffect(() => {
 		props.uxpContext.executeAction(model, 'ConsumptionForLocationWithEmission', { year, location: selectedBuilding, category: selectedCategory }, { json: true }).then((data: any[]) => {
@@ -232,7 +235,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 				_co2 = Number(row.co2) || 0;
 			}
 			setCo2(_co2);
-
+			let selectedBudget = getSelectedBudget();
 			chartData = [];
 			let cummulativeBudget = 0;
 			let cummulativeEnergy = 0;
@@ -261,7 +264,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let emissions = totalConsumption * co2 / (1000 * 1000);
 	let trees = 16.5 * emissions;
 	if (co2 > 0) showCO2 = true;
-	let hasBudget =selectedBudget.filter(x => !!Number(x)).length>0;
+	let hasBudget =getSelectedBudget().filter(x => !!Number(x)).length>0;
 	let hasData = chartData.filter(x => !!Number(x.energy)).length > 0;
 	console.log('budget',hasBudget,hasData);
 
@@ -273,10 +276,10 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
 						options={yearList} labelField='year' valueField='year' selected={year}
 					/>
-					<Select className={'selector-energy'} placeholder={'Location'} onChange={(b) => selectBuilding(b)} selected={selectedBuilding}
+					<Select className={'selector-energy'} placeholder={'Location'} onChange={(b) => setSelectedBuilding(b)} selected={selectedBuilding}
 						options={buildings} labelField={'location'} valueField={'location'} />
 
-					<Select className={'selector-energy'} placeholder={'Energy Type'} onChange={(b) => selectCategory(b)} selected={selectedCategory}
+					<Select className={'selector-energy'} placeholder={'Energy Type'} onChange={(b) => setSelectedCategory(b)} selected={selectedCategory}
 						options={categories} labelField={'label'} valueField={'id'} />
 				</FilterPanel>
 			</TitleBar>
@@ -509,11 +512,11 @@ const EnergyBudgetWidgetConfigPanel: React.FunctionComponent<IConfigPanelProps> 
 }
 
 export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (props) => {
-	let [year, setYear] = React.useState('');
-	let [month, setMonth] = React.useState('');
-	let [building, setBuilding] = React.useState('');
-	let [categories, setCategories] = React.useState([]);
-	let [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
+	let [year, setYear] = React.useState(props.year|| new Date().getFullYear().toString());
+	let [month, setMonth] = React.useState(props.month ||(( new Date().getMonth()).toString()));
+	let [building, setBuilding] = React.useState(props.building||'');
+	let [categories, setCategories] = React.useState<any[]>( []);
+	let [selectedCategories, setSelectedCategories] = React.useState<string[]>(props.categories||[]);
 	let [buildings, setBuildings] = React.useState([]);
 	let [utilityData, setUtilityData] = React.useState([]);
 	let [yearList,setYearList] = React.useState([]);
@@ -536,25 +539,25 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 	React.useEffect(() => {
 		props.uxpContext.executeAction(model, 'ConsumptionBreakdownForLocationMonth', { location: building, year, month: Number(month) + 1 }, { json: true }).then(data => {
 			setUtilityData(data.map((item: any) => ({ value: Number(item.value), category: item.category, label: lookupCategory(item.category) })));
-			propsUpdater(props.instanceId, { building, year, month: Number(month) + 1, categories: selectedCategories });
+			propsUpdater(props.instanceId, { building, year, month: Number(month), categories: selectedCategories });
 
 		});
 
 	}, [building, year, month, selectedCategories]);
-	React.useEffect(() => {
-		if (buildings && props.building) {
-			selectBuilding(props.building);
-		}
-		if (props.year) {
-			setYear(props.year);
-		}
-		if (props.month) {
-			setMonth('' + (Number(props.month) - 1));
-		}
-		if (props.categories) {
-			setSelectedCategories(props.categories);
-		}
-	}, [buildings, categories]);
+	// React.useEffect(() => {
+	// 	if (buildings && props.building) {
+	// 		selectBuilding(props.building);
+	// 	}
+	// 	if (props.year) {
+	// 		setYear(props.year);
+	// 	}
+	// 	if (props.month) {
+	// 		setMonth('' + (Number(props.month) - 1));
+	// 	}
+	// 	if (props.categories) {
+	// 		setSelectedCategories(props.categories);
+	// 	}
+	// }, [buildings, categories]);
 	React.useEffect(() => {
 		loadLocations();
 		getYears(props.uxpContext).then(setYearList);
@@ -650,13 +653,13 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 	let radius = '50%';
 
 	let [buildings, setBuildings] = React.useState([]);
-	let [building, setBuilding] = React.useState('');
+	let [building, setBuilding] = React.useState(props.building || '');
 	let [value, setValue] = React.useState(0);
-	let [budget, setBudget] = React.useState(0);
+	// let [budget, setBudget] = React.useState(0);
 	let updater = useUpdateWidgetProps();
 
 	let [categories, setCategories] = React.useState<any[]>([]);
-	let [selectedCategory, setSelectedCategory] = React.useState('');
+	let [selectedCategory, setSelectedCategory] = React.useState(props.category||'');
 
 
 	async function loadLocations() {
@@ -671,48 +674,48 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 
 		});
 	}, []);
-	React.useEffect(() => {
-		if (props.building && buildings && buildings.length) {
-			setBuilding(props.building);
-			selectBuilding(props.building);
-		}
-		if (props.category && categories && categories.length) {
-			setSelectedCategory(props.category);
-			selectCategory(props.category);
-		}
-	}, [buildings, categories]);
+	// React.useEffect(() => {
+	// 	if (props.building && buildings && buildings.length) {
+	// 		setBuilding(props.building);
+	// 		selectBuilding(props.building);
+	// 	}
+	// 	if (props.category && categories && categories.length) {
+	// 		setSelectedCategory(props.category);
+	// 		selectCategory(props.category);
+	// 	}
+	// }, [buildings, categories]);
 
 
-	function selectBuilding(b: string) {
-		let o = buildings.find(x => x.location == b);
-		if (!o) {
-			console.log('Unable to find building', b);
-			alert('Unable to load building details for ' + b);
-			return;
-		}
-		setBuilding(o.location);
-		let values = o.categories[selectedCategory] || [];
-		setBudget(values[new Date().getMonth() + 1] || 1);
+	// function selectBuilding(b: string) {
+	// 	let o = buildings.find(x => x.location == b);
+	// 	if (!o) {
+	// 		console.log('Unable to find building', b);
+	// 		alert('Unable to load building details for ' + b);
+	// 		return;
+	// 	}
+	// 	setBuilding(o.location);
+	// 	let values = o.categories[selectedCategory] || [];
+	// 	setBudget(values[new Date().getMonth() + 1] || 1);
 
-	}
+	// }
 
 
 
-	function selectCategory(name: string) {
-		let item = categories.find(c => c.id == name);
-		if (!item) {
-			return;
-		}
-		setSelectedCategory(item.id);
+	// function selectCategory(name: string) {
+	// 	let item = categories.find(c => c.id == name);
+	// 	if (!item) {
+	// 		return;
+	// 	}
+	// 	setSelectedCategory(item.id);
 
-		let l = buildings.find(b => b.location == building);
-		if (l) {
-			let values = l?.categories[item.id] || [];
-			setBudget(values[new Date().getMonth() + 1]);
+	// 	let l = buildings.find(b => b.location == building);
+	// 	if (l) {
+	// 		let values = l?.categories[item.id] || [];
+	// 		setBudget(values[new Date().getMonth() + 1]);
 
-		}
+	// 	}
 
-	}
+	// }
 	useEffectWithPolling(props.uxpContext, "lxp/energy", 15 * 60 * 1000, async () => {
 		let year = new Date().getFullYear();
 		let month = new Date().getMonth() + 1;
@@ -725,14 +728,17 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 		updater(props.instanceId, { category: selectedCategory, building });
 
 
-	}, [building, budget, selectedCategory]);
+	}, [building,  selectedCategory]);
+	let l = buildings.find(b => b.location == building);
+	let budgetItems = l?.categories?.[selectedCategory] || [];
+	let budget = budgetItems[new Date().getMonth()+1] || 0;
 	let budgetValue = Number(budget) || (value||DEFAULT_BUDGET_VALUE*0.5)*2;
 	return <WidgetWrapper className='energy-gauge'>
-		<TitleBar title={'Current Monthly Energy Usage ' + (selectCategory?`[${selectedCategory}]`:'')} >
+		<TitleBar title={'Current Monthly Energy Usage ' + (selectedCategory?`[${selectedCategory}]`:'')} >
 			<FilterPanel enableClear={false}>
-				<Select className={'selector-energy'} onChange={selectBuilding} selected={building}
+				<Select className={'selector-energy'} onChange={setBuilding} selected={building}
 					options={buildings} labelField={'location'} valueField={'location'} />
-				<Select className={'selector-energy'} placeholder={'Energy Type'} onChange={(b) => selectCategory(b)} selected={selectedCategory}
+				<Select className={'selector-energy'} placeholder={'Energy Type'} onChange={(b) => setSelectedCategory(b)} selected={selectedCategory}
 					options={categories} labelField={'label'} valueField={'id'} />
 			</FilterPanel>
 		</TitleBar>
