@@ -254,7 +254,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 			updater(props.instanceId, { year, building: selectedBuilding, category: selectedCategory });
 
 		});
-	}, [year, selectedBuilding, selectedCategory]);
+	}, [year, buildings,selectedBuilding, selectedCategory]);
 
 	let totalConsumption = 0;
 	if (chartData && chartData.length > 0) {
