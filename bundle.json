@@ -5,17 +5,20 @@
         {
             "id":"energy-budget",
             "title":"Energy Budget",
-            "description":"Show actual energy consumption for the year vs budgeted consumption"
+            "description":"Show actual energy consumption for the year vs budgeted consumption",
+	    "category":"utility"
         },
         {
             "id":"current-monthly-energy",
             "title":"Current Monthly Energyt",
-            "description":"A gauge display of how much of your monthly energy budget has been used"
+            "description":"A gauge display of how much of your monthly energy budget has been used",
+	    "category":"utility"
         },
          {
             "id":"energy-breakdown",
             "title":"Energy Breakdown by Type",
-            "description":"Breakdown of energy usage according to type"
+            "description":"Breakdown of energy usage according to type",
+	    "category":"utility"
         }
 
     ]
