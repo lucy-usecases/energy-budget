@@ -93,7 +93,7 @@
 /*! exports provided: id, author, widgets, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"id\":\"356cd8c5-4807-4c5f-c60a-6b67c5660d4d\",\"author\":\"eutech\",\"widgets\":[{\"id\":\"energy-budget\",\"title\":\"Energy Budget\",\"description\":\"Show actual energy consumption for the year vs budgeted consumption\",\"category\":\"utility\"},{\"id\":\"current-monthly-energy\",\"title\":\"Current Monthly Energy\",\"description\":\"A gauge display of how much of your monthly energy budget has been used. This can be set per category or overall.\",\"category\":\"utility\"},{\"id\":\"energy-breakdown\",\"title\":\"Energy Consumption (Category-wise)\",\"description\":\"Provides insight on how energy is consumed across different categories of energy consumption.\",\"category\":\"utility\"}]}");
+module.exports = JSON.parse("{\"id\":\"356cd8c5-4807-4c5f-c60a-6b67c5660d4d\",\"author\":\"eutech\",\"widgets\":[{\"id\":\"energy-budget\",\"name\":\"Energy Consumption (Category-wise)\",\"description\":\"Show actual energy consumption for the year vs budgeted consumption\",\"category\":\"utility\"},{\"id\":\"current-monthly-energy\",\"name\":\"Current Monthly Energy Usage\",\"description\":\"A gauge display of how much of your monthly energy budget has been used. This can be set per category or overall.\",\"category\":\"utility\"},{\"id\":\"energy-breakdown\",\"name\":\"Energy Consumption (Category-wise)\",\"description\":\"Provides insight on how energy is consumed across different categories of energy consumption.\",\"category\":\"utility\"}]}");
 
 /***/ }),
 
@@ -297,24 +297,6 @@ ansiHTML.reset()
 module.exports = function () {
 	return /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]/g;
 };
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/SampleDataLabel.scss":
-/*!***************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/SampleDataLabel.scss ***!
-  \***************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".sample-data-label {\n  transform: rotate(-45deg);\n  position: absolute;\n  right: -38px;\n  bottom: 20px;\n  padding: 10px;\n  background-color: #06F;\n  color: white;\n  text-transform: uppercase;\n  width: 150px;\n  font-size: 12px;\n  text-align: center;\n}", ""]);
-// Exports
-module.exports = exports;
 
 
 /***/ }),
@@ -10450,77 +10432,6 @@ module.exports.formatError = function(err) {
 
 /***/ }),
 
-/***/ "./src/SampleDataLabel.scss":
-/*!**********************************!*\
-  !*** ./src/SampleDataLabel.scss ***!
-  \**********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(/*! ../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-            var content = __webpack_require__(/*! !../node_modules/css-loader/dist/cjs.js!../node_modules/sass-loader/dist/cjs.js!./SampleDataLabel.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/SampleDataLabel.scss");
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-
-
-module.exports = content.locals || {};
-
-/***/ }),
-
-/***/ "./src/SampleDataLabel.tsx":
-/*!*********************************!*\
-  !*** ./src/SampleDataLabel.tsx ***!
-  \*********************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SampleDataLabel = void 0;
-const React = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./SampleDataLabel.scss */ "./src/SampleDataLabel.scss");
-exports.SampleDataLabel = (props) => {
-    if (props.show != undefined && props.show != null && !props.show) {
-        return null;
-    }
-    return React.createElement("div", { className: 'sample-data-label' }, "Sample Data");
-};
-
-
-/***/ }),
-
 /***/ "./src/index.tsx":
 /*!***********************!*\
   !*** ./src/index.tsx ***!
@@ -10565,7 +10476,7 @@ const recharts_1 = __webpack_require__(/*! recharts */ "recharts");
 const uxp_1 = __webpack_require__(/*! ./uxp */ "./src/uxp.ts");
 const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
 __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
-const SampleDataLabel_1 = __webpack_require__(/*! ./SampleDataLabel */ "./src/SampleDataLabel.tsx");
+// import { SampleDataLabel } from "./SampleDataLabel";
 const EnergyIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMC44NDgiIGhlaWdodD0iMzAuODQ5IiB2aWV3Qm94PSIwIDAgMzAuODQ4IDMwLjg0OSI+CiAgPHBhdGggaWQ9Ikljb25fbWV0cm8tcG93ZXIiIGRhdGEtbmFtZT0iSWNvbiBtZXRyby1wb3dlciIgZD0iTTE0LjEzOSwxLjkyOCwyLjU3MSwxNy4zNTJIMTQuMTM5TDYuNDI3LDMyLjc3NywzMy40MTksMTMuNUgxNy45OTVMMjkuNTYzLDEuOTI4WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIuNTcxIC0xLjkyOCkiLz4KPC9zdmc+Cg==';
 const PowerIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33"%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill:%23535353;%7D.b%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Ccircle class="a" cx="16.5" cy="16.5" r="16.5"/%3E%3Cpath class="b" d="M7.316,1.928,2.571,8.256H7.316L4.153,14.583,15.226,6.674H8.9l4.746-4.746Z" transform="translate(7.385 8.602)"/%3E%3C/svg%3E';
 const Co2Icon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33"%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill:%23535353;%7D.b%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Ccircle class="a" cx="16.5" cy="16.5" r="16.5"/%3E%3Cpath class="b" d="M7.608,12.061a3.251,3.251,0,0,1,.734-2.08A3.188,3.188,0,0,1,10.2,8.817a4.046,4.046,0,0,1,6.454-2.311,3.955,3.955,0,0,1,1.428,2.22H18.3A3.258,3.258,0,0,1,20.68,9.7a3.2,3.2,0,0,1,.982,2.352,3.253,3.253,0,0,1-.305,1.4,3.377,3.377,0,0,1-.85,1.131v.025a2.07,2.07,0,0,1-.462,1.312,2.007,2.007,0,0,1-1.155.734,2.574,2.574,0,0,1-2.1,1.964,1.443,1.443,0,0,1-1.081,2.385,1.36,1.36,0,0,1-1.015-.429,1.4,1.4,0,0,1-.421-1.023,1.347,1.347,0,0,1,.083-.47h-.083a1.775,1.775,0,0,1-1.758-1.758,1.6,1.6,0,0,1,.248-.883,2.05,2.05,0,0,1-.924-1.032H10.785V15.4a3.323,3.323,0,0,1-2.253-1.048A3.184,3.184,0,0,1,7.608,12.061Zm1.155-.206a2.367,2.367,0,0,0,2.368,2.377,2.32,2.32,0,0,0,1.131-.281,2.529,2.529,0,0,0,.858,1.535,2.448,2.448,0,0,0,1.667.611,2.5,2.5,0,0,0,1.832-.759,1.591,1.591,0,0,0,1.271.586,1.691,1.691,0,0,0,1.7-1.7,2.374,2.374,0,0,0,.784-.858,2.327,2.327,0,0,0,.289-1.131,2.232,2.232,0,0,0-.7-1.667,2.349,2.349,0,0,0-1.692-.685,2.323,2.323,0,0,0-1.263.363,2.729,2.729,0,0,0,.066-.652,2.743,2.743,0,0,0-.85-2.03,2.931,2.931,0,0,0-4.06-.033,2.724,2.724,0,0,0-.883,1.956h-.14a2.3,2.3,0,0,0-1.675.693A2.276,2.276,0,0,0,8.763,11.854Z" transform="translate(1.332 3.3)"/%3E%3C/svg%3E';
@@ -10713,6 +10624,32 @@ const EnergyBudgetWidget = (props) => {
             updater(props.instanceId, { year, building: selectedBuilding, category: selectedCategory });
         });
     }, [year, buildings, selectedBuilding, selectedCategory]);
+    let hasChartData = chartData.filter(x => !!Number(x.energy)).length > 0;
+    let hasBudget = getSelectedBudget().filter(x => !!Number(x)).length > 0;
+    let isSample = !hasChartData && !hasBudget && !categories.length;
+    if (isSample) {
+        chartData = [];
+        hasBudget = true;
+        let cy = new Date().getFullYear();
+        let energy = [280, 250, 280, 300, 320, 290, 250, 230, 290, 310, 320, 290];
+        let budgeted = [300, 300, 310, 320, 300, 310, 290, 290, 290, 300, 290, 290];
+        let i = 0;
+        let cummulativeBudget = 0;
+        let cummulativeEnergy = 0;
+        for (let e of energy) {
+            cummulativeBudget += budgeted[i - 1] || 0;
+            cummulativeEnergy += energy[i] || 0;
+            chartData.push({
+                name: getMonthName(cy, i + 1),
+                energy: toFixed(energy[i]),
+                budgeted: toFixed(budgeted[i]),
+                cummulativeBudget: toFixed(cummulativeBudget),
+                cummulativeEnergy: toFixed(cummulativeEnergy)
+            });
+            i++;
+        }
+        co2 = 200;
+    }
     let totalConsumption = 0;
     if (chartData && chartData.length > 0) {
         totalConsumption = chartData[chartData.length - 1].cummulativeEnergy;
@@ -10722,15 +10659,8 @@ const EnergyBudgetWidget = (props) => {
     let trees = 16.5 * emissions;
     if (co2 > 0)
         showCO2 = true;
-    let hasBudget = getSelectedBudget().filter(x => !!Number(x)).length > 0;
     let hasData = chartData.filter(x => !!Number(x.energy)).length > 0;
     console.log('budget', hasBudget, hasData);
-    let isSample = !hasData && !hasBudget && !categories.length;
-    if (isSample) {
-        hasData = true;
-        hasBudget = true;
-        chartData = [];
-    }
     return (React.createElement(components_1.WidgetWrapper, { className: 'energy-widget' },
         React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'Yearly Energy ' + (hasBudget ? 'Budgeted vs Actual ' : '') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '') },
             React.createElement(components_1.FilterPanel, { enableClear: false },
@@ -10782,7 +10712,7 @@ const EnergyBudgetWidget = (props) => {
                             React.createElement(recharts_1.Bar, { name: 'Baseline', barSize: 15, dataKey: "budgeted", fill: (colors === null || colors === void 0 ? void 0 : colors.baseline) || "#79B7B6" }),
                         hasBudget &&
                             React.createElement(recharts_1.Line, { name: 'Cumulative Budget', strokeDasharray: '0 1 1 1', strokeDashoffset: 3, strokeOpacity: 0.8, strokeWidth: 2, yAxisId: 'cummulative', type: "monotone", fill: 'red', fillOpacity: 0.1, dataKey: "cummulativeBudget", stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeBudget) || "#ff7300" })))),
-        React.createElement(SampleDataLabel_1.SampleDataLabel, { show: isSample })));
+        React.createElement(components_1.SampleDataLabel, { show: isSample })));
 };
 const EnergyBudgetWidgetConfigPanel = (props) => {
     let { onSubmit, onCancel, configs } = props;
@@ -10964,7 +10894,7 @@ exports.EnergyBreakdown = (props) => {
                                     React.createElement("div", null, (_a = opts === null || opts === void 0 ? void 0 : opts.payload[0]) === null || _a === void 0 ? void 0 : _a.name),
                                     React.createElement("div", null, intFmt(Number((_b = opts === null || opts === void 0 ? void 0 : opts.payload[0]) === null || _b === void 0 ? void 0 : _b.value).toFixed(2)) + ' kWh'));
                             } })))),
-        isSample && React.createElement(SampleDataLabel_1.SampleDataLabel, null));
+        isSample && React.createElement(components_1.SampleDataLabel, null));
 };
 exports.CurrentUsage = (props) => {
     var _a;
@@ -11032,14 +10962,14 @@ exports.CurrentUsage = (props) => {
                     React.createElement("span", { style: { marginLeft: '10px', opacity: 0.8, textTransform: 'uppercase', fontSize: '0.3em' } }, 'of ' + budget),
                     React.createElement("span", { style: { fontSize: '0.3em', opacity: 0.5 } }, "KWH"))
                 : null),
-        React.createElement(SampleDataLabel_1.SampleDataLabel, { show: isSample }));
+        React.createElement(components_1.SampleDataLabel, { show: isSample }));
 };
 /**
  * Register as a Widget
  */
 uxp_1.registerWidget({
     id: "energy-budget",
-    name: "Energy Budget",
+    name: "Yearly Energy Consumption",
     widget: EnergyBudgetWidget,
     configs: {
         layout: {},
@@ -11072,7 +11002,7 @@ uxp_1.registerWidget({
 });
 uxp_1.registerWidget({
     id: "current-monthly-energy",
-    name: "Current Energy Usage",
+    name: "Current Monthly Energy Usage",
     widget: exports.CurrentUsage,
     configs: {
         layout: {},
@@ -11080,7 +11010,7 @@ uxp_1.registerWidget({
 });
 uxp_1.registerWidget({
     id: "energy-breakdown",
-    name: "Energy Breakdown by Type",
+    name: "Energy Consumption (Category-wise)",
     widget: exports.EnergyBreakdown,
     configs: {
         layout: {},

@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip, ComposedChart, Line, Area, PieChart, Pie, Cell } from 'recharts';
 import { registerWidget, registerLink, registerUI, IContextProvider, IConfigPanelProps, } from './uxp';
-import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker } from "uxp/components";
+import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker, SampleDataLabel } from "uxp/components";
 import './styles.scss';
 import { isExportAssignment } from "typescript";
-import { SampleDataLabel } from "./SampleDataLabel";
+// import { SampleDataLabel } from "./SampleDataLabel";
 
 
 
@@ -207,6 +207,37 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		});
 	}, [year, buildings,selectedBuilding, selectedCategory]);
 
+	let hasChartData =  chartData.filter(x => !!Number(x.energy)).length > 0;
+	let hasBudget =getSelectedBudget().filter(x => !!Number(x)).length>0;
+
+	let isSample = !hasChartData && !hasBudget && !categories.length;
+
+	if (isSample) {
+		chartData = [];
+		hasBudget = true;
+		let cy = new Date().getFullYear();
+		let energy =   [280,250,280,300,320,290,250,230,290,310,320,290];
+		let budgeted = [300,300,310,320,300,310,290,290,290,300,290,290];
+		let i = 0;
+		let cummulativeBudget = 0;
+		let cummulativeEnergy = 0;
+		for(let e of energy) {
+			cummulativeBudget += budgeted[i - 1] || 0;
+			cummulativeEnergy += energy[i] || 0;
+
+			chartData.push({
+				name:getMonthName(cy,i+1),
+				energy:toFixed(energy[i]),
+				budgeted:toFixed(budgeted[i]),
+				cummulativeBudget:toFixed(cummulativeBudget),
+				cummulativeEnergy:toFixed(cummulativeEnergy)
+			});
+			i++;
+
+		}
+		co2 = 200;
+
+	}
 	let totalConsumption = 0;
 	if (chartData && chartData.length > 0) {
 		totalConsumption = chartData[chartData.length - 1].cummulativeEnergy;
@@ -215,17 +246,10 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let emissions = totalConsumption * co2 / (1000 * 1000);
 	let trees = 16.5 * emissions;
 	if (co2 > 0) showCO2 = true;
-	let hasBudget =getSelectedBudget().filter(x => !!Number(x)).length>0;
 	let hasData = chartData.filter(x => !!Number(x.energy)).length > 0;
 	console.log('budget',hasBudget,hasData);
 
-	let isSample = !hasData && !hasBudget && !categories.length;
-
-	if (isSample) {
-		hasData = true;
-		hasBudget = true;
-		chartData = [];
-	}
+	
 
 	
 	return (
@@ -699,7 +723,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
  */
 registerWidget({
 	id: "energy-budget",
-	name: "Energy Budget",
+	name: "Yearly Energy Consumption",
 	widget: EnergyBudgetWidget,
 
 	configs: {
@@ -736,7 +760,7 @@ registerWidget({
 
 registerWidget({
 	id: "current-monthly-energy",
-	name: "Current Energy Usage",
+	name: "Current Monthly Energy Usage",
 	widget: CurrentUsage,
 
 	configs: {
@@ -750,7 +774,7 @@ registerWidget({
 
 registerWidget({
 	id: "energy-breakdown",
-	name: "Energy Breakdown by Type",
+	name: "Energy Consumption (Category-wise)",
 	widget: EnergyBreakdown,
 
 	configs: {
