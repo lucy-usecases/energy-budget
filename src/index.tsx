@@ -4,6 +4,7 @@ import { registerWidget, registerLink, registerUI, IContextProvider, IConfigPane
 import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker } from "uxp/components";
 import './styles.scss';
 import { isExportAssignment } from "typescript";
+import { SampleDataLabel } from "./SampleDataLabel";
 
 
 
@@ -163,57 +164,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		setCategories(transformCategories(categories));
 
 	}
-	// React.useEffect(() => {
-	// 	if (buildings.length > 0) {
-	// 		if (props.building && props.building.trim().length > 0) {
-	// 			selectBuilding(props.building || "");
-	// 		}
-	// 		else {
-	// 			selectBuilding(buildings[0].location)
-	// 		}
-	// 	}
-	// 	if (yearList.length > 0) {
-	// 		if (props.year && props.year.trim().length > 0) {
-	// 			setYear(props.year || "");
-	// 		}
-	// 		else {
-	// 			setYear(yearList[0].value)
-	// 		}
-	// 	}
-
-	// 	if (categories.length > 0) {
-	// 		if (props.category && props.category.trim().length > 0) {
-	// 			selectCategory(props.category || "");
-	// 		}
-	// 		else {
-	// 			selectCategory(categories[0].id)
-	// 		}
-	// 	}
-	// }, [buildings, categories, yearList]);
-
-	// function selectBuilding(name: string) {
-	// 	let item = buildings.find(b => b.location == name);
-	// 	if (!item) {
-	// 		return;
-	// 	}
-	// 	setSelectedBuilding(item.location);
-	// 	let values = item.categories[selectedCategory] || [];
-	// 	setSelectedBudget(values);
-	// }
-
-	// function selectCategory(name: string) {
-	// 	let item = categories.find(c => c.id == name);
-	// 	if (!item) {
-	// 		return;
-	// 	}
-	// 	setSelectedCategory(item.id);
-
-	// 	let l = buildings.find(b => b.location == selectedBuilding);
-	// 	if (l) {
-	// 		let values = l?.categories[item.id] || [];
-	// 		setSelectedBudget(values);
-	// 	}
-	// }
+	
 
 	React.useEffect(() => {
 		loadLocations().then(_ => { });
@@ -267,6 +218,14 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let hasBudget =getSelectedBudget().filter(x => !!Number(x)).length>0;
 	let hasData = chartData.filter(x => !!Number(x.energy)).length > 0;
 	console.log('budget',hasBudget,hasData);
+
+	let isSample = !hasData && !hasBudget && !categories.length;
+
+	if (isSample) {
+		hasData = true;
+		hasBudget = true;
+		chartData = [];
+	}
 
 	
 	return (
@@ -391,6 +350,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 				</ResponsiveContainer>
 }
 			</div>
+			<SampleDataLabel show={isSample} />
 		</WidgetWrapper>
 	)
 };
@@ -544,20 +504,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 		});
 
 	}, [building, year, month, selectedCategories]);
-	// React.useEffect(() => {
-	// 	if (buildings && props.building) {
-	// 		selectBuilding(props.building);
-	// 	}
-	// 	if (props.year) {
-	// 		setYear(props.year);
-	// 	}
-	// 	if (props.month) {
-	// 		setMonth('' + (Number(props.month) - 1));
-	// 	}
-	// 	if (props.categories) {
-	// 		setSelectedCategories(props.categories);
-	// 	}
-	// }, [buildings, categories]);
+	
 	React.useEffect(() => {
 		loadLocations();
 		getYears(props.uxpContext).then(setYearList);
@@ -569,6 +516,13 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 	const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 	let consumptionData = utilityData.filter(x => selectedCategories.indexOf(x.category) >= 0);
 	let hasData = consumptionData.filter(x => Number(x.value)).length > 0;
+
+	let isSample =  (!buildings.length && !categories.length && !utilityData.length);
+	if (isSample) {
+		let SampleData = [{value:34,category:'Heating',label:'HVAC'},{value:22,category:'Workstations',label:'Workstations'},{value:19,'category':'Utilities',label:'Utilities'}];
+		consumptionData = SampleData;
+		hasData = true;
+	}
 	return <WidgetWrapper className='energy-widget'>
 		<TitleBar icon={EnergyIcon} title={'Energy Consumption Category-Wise '}>
 			<FilterPanel enableClear={false}>
@@ -611,7 +565,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 			 No data available
 		   </div>
 			:
-			
+
 			<ResponsiveContainer width="100%" height="100%">
 				<PieChart>
 
@@ -641,8 +595,9 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 					</div>} />
 				</PieChart>
 			</ResponsiveContainer>
-}
+}			
 		</div>
+		{isSample && <SampleDataLabel />}
 	</WidgetWrapper>;
 }
 interface ILC {
@@ -674,48 +629,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 
 		});
 	}, []);
-	// React.useEffect(() => {
-	// 	if (props.building && buildings && buildings.length) {
-	// 		setBuilding(props.building);
-	// 		selectBuilding(props.building);
-	// 	}
-	// 	if (props.category && categories && categories.length) {
-	// 		setSelectedCategory(props.category);
-	// 		selectCategory(props.category);
-	// 	}
-	// }, [buildings, categories]);
-
-
-	// function selectBuilding(b: string) {
-	// 	let o = buildings.find(x => x.location == b);
-	// 	if (!o) {
-	// 		console.log('Unable to find building', b);
-	// 		alert('Unable to load building details for ' + b);
-	// 		return;
-	// 	}
-	// 	setBuilding(o.location);
-	// 	let values = o.categories[selectedCategory] || [];
-	// 	setBudget(values[new Date().getMonth() + 1] || 1);
-
-	// }
-
-
-
-	// function selectCategory(name: string) {
-	// 	let item = categories.find(c => c.id == name);
-	// 	if (!item) {
-	// 		return;
-	// 	}
-	// 	setSelectedCategory(item.id);
-
-	// 	let l = buildings.find(b => b.location == building);
-	// 	if (l) {
-	// 		let values = l?.categories[item.id] || [];
-	// 		setBudget(values[new Date().getMonth() + 1]);
-
-	// 	}
-
-	// }
+	
 	useEffectWithPolling(props.uxpContext, "lxp/energy", 15 * 60 * 1000, async () => {
 		let year = new Date().getFullYear();
 		let month = new Date().getMonth() + 1;
@@ -733,6 +647,12 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 	let budgetItems = l?.categories?.[selectedCategory] || [];
 	let budget = budgetItems[new Date().getMonth()+1] || 0;
 	let budgetValue = Number(budget) || (value||DEFAULT_BUDGET_VALUE*0.5)*2;
+	let isSample = !buildings.length && !categories.length && !Number(budget) ;
+	if (isSample) {
+		budgetValue = DEFAULT_BUDGET_VALUE;
+		budget  = DEFAULT_BUDGET_VALUE;
+		value = DEFAULT_BUDGET_VALUE*0.75;
+	}
 	return <WidgetWrapper className='energy-gauge'>
 		<TitleBar title={'Current Monthly Energy Usage ' + (selectedCategory?`[${selectedCategory}]`:'')} >
 			<FilterPanel enableClear={false}>
@@ -769,6 +689,8 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 			}
 
 		</div>
+		<SampleDataLabel show={isSample} />
+		
 	</WidgetWrapper>;
 }
 
