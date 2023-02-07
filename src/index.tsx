@@ -254,7 +254,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	
 	return (
 		<WidgetWrapper className='energy-widget'>
-			<TitleBar icon={EnergyIcon} title={'YEARLY ENERGY CONSUMPTION'}>
+			<TitleBar icon={EnergyIcon} title={'YEARLY ENERGY CONSUMPTION ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
 				<FilterPanel enableClear={false}>
 					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
 						options={yearList} labelField='year' valueField='year' selected={year}

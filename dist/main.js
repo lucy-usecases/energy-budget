@@ -9463,14 +9463,14 @@ module.exports = /*#__PURE__*/function (_BaseClient) {
 
 /***/ }),
 
-/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8080":
+/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8081":
 /*!*******************************************************************************!*\
-  !*** ./node_modules/webpack-dev-server/client/index.js?http://localhost:8080 ***!
+  !*** ./node_modules/webpack-dev-server/client/index.js?http://localhost:8081 ***!
   \*******************************************************************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
-var __resourceQuery = "?http://localhost:8080";
+var __resourceQuery = "?http://localhost:8081";
 
 /* global __resourceQuery WorkerGlobalScope self */
 
@@ -10463,7 +10463,7 @@ const EnergyBudgetWidget = (props) => {
     let hasData = chartData.filter(x => !!Number(x.energy)).length > 0;
     console.log('budget', hasBudget, hasData);
     return (React.createElement(components_1.WidgetWrapper, { className: 'energy-widget' },
-        React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'YEARLY ENERGY CONSUMPTION' },
+        React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'YEARLY ENERGY CONSUMPTION ' + (hasBudget ? 'Budgeted vs Actual ' : '') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '') },
             React.createElement(components_1.FilterPanel, { enableClear: false },
                 React.createElement(components_1.Select, { className: 'selector-energy', placeholder: 'Year', onChange: (year) => setYear(year), options: yearList, labelField: 'year', valueField: 'year', selected: year }),
                 React.createElement(components_1.Select, { className: 'selector-energy', placeholder: 'Location', onChange: (b) => setSelectedBuilding(b), selected: selectedBuilding, options: buildings, labelField: 'location', valueField: 'location' }),
@@ -11013,7 +11013,7 @@ module.exports = JSON.parse('{"id":"356cd8c5-4807-4c5f-c60a-6b67c5660d4d","autho
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
 /******/ 	__webpack_require__("./src/index.tsx");
-/******/ 	var __webpack_exports__ = __webpack_require__("./node_modules/webpack-dev-server/client/index.js?http://localhost:8080");
+/******/ 	var __webpack_exports__ = __webpack_require__("./node_modules/webpack-dev-server/client/index.js?http://localhost:8081");
 /******/ 	
 /******/ })()
 ;
