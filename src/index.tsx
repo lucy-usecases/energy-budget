@@ -1,9 +1,10 @@
 import * as React from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, XAxis, YAxis, Tooltip, ComposedChart, Line, Area, PieChart, Pie, Cell } from 'recharts';
 import { registerWidget, registerLink, registerUI, IContextProvider, IConfigPanelProps, } from './uxp';
-import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker } from "uxp/components";
+import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker, SampleDataLabel } from "uxp/components";
 import './styles.scss';
 import { isExportAssignment } from "typescript";
+// import { SampleDataLabel } from "./SampleDataLabel";
 
 
 
@@ -163,57 +164,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		setCategories(transformCategories(categories));
 
 	}
-	// React.useEffect(() => {
-	// 	if (buildings.length > 0) {
-	// 		if (props.building && props.building.trim().length > 0) {
-	// 			selectBuilding(props.building || "");
-	// 		}
-	// 		else {
-	// 			selectBuilding(buildings[0].location)
-	// 		}
-	// 	}
-	// 	if (yearList.length > 0) {
-	// 		if (props.year && props.year.trim().length > 0) {
-	// 			setYear(props.year || "");
-	// 		}
-	// 		else {
-	// 			setYear(yearList[0].value)
-	// 		}
-	// 	}
-
-	// 	if (categories.length > 0) {
-	// 		if (props.category && props.category.trim().length > 0) {
-	// 			selectCategory(props.category || "");
-	// 		}
-	// 		else {
-	// 			selectCategory(categories[0].id)
-	// 		}
-	// 	}
-	// }, [buildings, categories, yearList]);
-
-	// function selectBuilding(name: string) {
-	// 	let item = buildings.find(b => b.location == name);
-	// 	if (!item) {
-	// 		return;
-	// 	}
-	// 	setSelectedBuilding(item.location);
-	// 	let values = item.categories[selectedCategory] || [];
-	// 	setSelectedBudget(values);
-	// }
-
-	// function selectCategory(name: string) {
-	// 	let item = categories.find(c => c.id == name);
-	// 	if (!item) {
-	// 		return;
-	// 	}
-	// 	setSelectedCategory(item.id);
-
-	// 	let l = buildings.find(b => b.location == selectedBuilding);
-	// 	if (l) {
-	// 		let values = l?.categories[item.id] || [];
-	// 		setSelectedBudget(values);
-	// 	}
-	// }
+	
 
 	React.useEffect(() => {
 		loadLocations().then(_ => { });
@@ -256,6 +207,37 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		});
 	}, [year, buildings,selectedBuilding, selectedCategory]);
 
+	let hasChartData =  chartData.filter(x => !!Number(x.energy)).length > 0;
+	let hasBudget =getSelectedBudget().filter(x => !!Number(x)).length>0;
+
+	let isSample = !hasChartData && !hasBudget && !categories.length;
+
+	if (isSample) {
+		chartData = [];
+		hasBudget = true;
+		let cy = new Date().getFullYear();
+		let energy =   [280,250,280,300,320,290,250,230,290,310,320,290];
+		let budgeted = [300,300,310,320,300,310,290,290,290,300,290,290];
+		let i = 0;
+		let cummulativeBudget = 0;
+		let cummulativeEnergy = 0;
+		for(let e of energy) {
+			cummulativeBudget += budgeted[i - 1] || 0;
+			cummulativeEnergy += energy[i] || 0;
+
+			chartData.push({
+				name:getMonthName(cy,i+1),
+				energy:toFixed(energy[i]),
+				budgeted:toFixed(budgeted[i]),
+				cummulativeBudget:toFixed(cummulativeBudget),
+				cummulativeEnergy:toFixed(cummulativeEnergy)
+			});
+			i++;
+
+		}
+		co2 = 200;
+
+	}
 	let totalConsumption = 0;
 	if (chartData && chartData.length > 0) {
 		totalConsumption = chartData[chartData.length - 1].cummulativeEnergy;
@@ -264,14 +246,15 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let emissions = totalConsumption * co2 / (1000 * 1000);
 	let trees = 16.5 * emissions;
 	if (co2 > 0) showCO2 = true;
-	let hasBudget =getSelectedBudget().filter(x => !!Number(x)).length>0;
 	let hasData = chartData.filter(x => !!Number(x.energy)).length > 0;
 	console.log('budget',hasBudget,hasData);
 
 	
+
+	
 	return (
 		<WidgetWrapper className='energy-widget'>
-			<TitleBar icon={EnergyIcon} title={'Yearly Energy ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '')}>
+			<TitleBar icon={EnergyIcon} title={'YEARLY ENERGY CONSUMPTION ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
 				<FilterPanel enableClear={false}>
 					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
 						options={yearList} labelField='year' valueField='year' selected={year}
@@ -391,6 +374,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 				</ResponsiveContainer>
 }
 			</div>
+			<SampleDataLabel show={isSample} />
 		</WidgetWrapper>
 	)
 };
@@ -544,20 +528,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 		});
 
 	}, [building, year, month, selectedCategories]);
-	// React.useEffect(() => {
-	// 	if (buildings && props.building) {
-	// 		selectBuilding(props.building);
-	// 	}
-	// 	if (props.year) {
-	// 		setYear(props.year);
-	// 	}
-	// 	if (props.month) {
-	// 		setMonth('' + (Number(props.month) - 1));
-	// 	}
-	// 	if (props.categories) {
-	// 		setSelectedCategories(props.categories);
-	// 	}
-	// }, [buildings, categories]);
+	
 	React.useEffect(() => {
 		loadLocations();
 		getYears(props.uxpContext).then(setYearList);
@@ -569,8 +540,15 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 	const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 	let consumptionData = utilityData.filter(x => selectedCategories.indexOf(x.category) >= 0);
 	let hasData = consumptionData.filter(x => Number(x.value)).length > 0;
+
+	let isSample =  (!buildings.length && !categories.length && !utilityData.length);
+	if (isSample) {
+		let SampleData = [{value:34,category:'Heating',label:'HVAC'},{value:22,category:'Workstations',label:'Workstations'},{value:19,'category':'Utilities',label:'Utilities'}];
+		consumptionData = SampleData;
+		hasData = true;
+	}
 	return <WidgetWrapper className='energy-widget'>
-		<TitleBar icon={EnergyIcon} title={'Energy Consumption Category-Wise '}>
+		<TitleBar icon={EnergyIcon} title={'Energy Consumption (Category-wise) '}>
 			<FilterPanel enableClear={false}>
 				<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
 					options={yearList} labelField='year' valueField='year' selected={year}
@@ -611,7 +589,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 			 No data available
 		   </div>
 			:
-			
+
 			<ResponsiveContainer width="100%" height="100%">
 				<PieChart>
 
@@ -641,8 +619,9 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 					</div>} />
 				</PieChart>
 			</ResponsiveContainer>
-}
+}			
 		</div>
+		{isSample && <SampleDataLabel />}
 	</WidgetWrapper>;
 }
 interface ILC {
@@ -674,48 +653,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 
 		});
 	}, []);
-	// React.useEffect(() => {
-	// 	if (props.building && buildings && buildings.length) {
-	// 		setBuilding(props.building);
-	// 		selectBuilding(props.building);
-	// 	}
-	// 	if (props.category && categories && categories.length) {
-	// 		setSelectedCategory(props.category);
-	// 		selectCategory(props.category);
-	// 	}
-	// }, [buildings, categories]);
-
-
-	// function selectBuilding(b: string) {
-	// 	let o = buildings.find(x => x.location == b);
-	// 	if (!o) {
-	// 		console.log('Unable to find building', b);
-	// 		alert('Unable to load building details for ' + b);
-	// 		return;
-	// 	}
-	// 	setBuilding(o.location);
-	// 	let values = o.categories[selectedCategory] || [];
-	// 	setBudget(values[new Date().getMonth() + 1] || 1);
-
-	// }
-
-
-
-	// function selectCategory(name: string) {
-	// 	let item = categories.find(c => c.id == name);
-	// 	if (!item) {
-	// 		return;
-	// 	}
-	// 	setSelectedCategory(item.id);
-
-	// 	let l = buildings.find(b => b.location == building);
-	// 	if (l) {
-	// 		let values = l?.categories[item.id] || [];
-	// 		setBudget(values[new Date().getMonth() + 1]);
-
-	// 	}
-
-	// }
+	
 	useEffectWithPolling(props.uxpContext, "lxp/energy", 15 * 60 * 1000, async () => {
 		let year = new Date().getFullYear();
 		let month = new Date().getMonth() + 1;
@@ -733,6 +671,12 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 	let budgetItems = l?.categories?.[selectedCategory] || [];
 	let budget = budgetItems[new Date().getMonth()+1] || 0;
 	let budgetValue = Number(budget) || (value||DEFAULT_BUDGET_VALUE*0.5)*2;
+	let isSample = !buildings.length && !categories.length && !Number(budget) ;
+	if (isSample) {
+		budgetValue = DEFAULT_BUDGET_VALUE;
+		budget  = DEFAULT_BUDGET_VALUE;
+		value = DEFAULT_BUDGET_VALUE*0.75;
+	}
 	return <WidgetWrapper className='energy-gauge'>
 		<TitleBar title={'Current Monthly Energy Usage ' + (selectedCategory?`[${selectedCategory}]`:'')} >
 			<FilterPanel enableClear={false}>
@@ -769,6 +713,8 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 			}
 
 		</div>
+		<SampleDataLabel show={isSample} />
+		
 	</WidgetWrapper>;
 }
 
@@ -777,7 +723,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
  */
 registerWidget({
 	id: "energy-budget",
-	name: "Energy Budget",
+	name: "Yearly Energy Consumption",
 	widget: EnergyBudgetWidget,
 
 	configs: {
@@ -814,7 +760,7 @@ registerWidget({
 
 registerWidget({
 	id: "current-monthly-energy",
-	name: "Current Energy Usage",
+	name: "Current Monthly Energy Usage",
 	widget: CurrentUsage,
 
 	configs: {
@@ -828,7 +774,7 @@ registerWidget({
 
 registerWidget({
 	id: "energy-breakdown",
-	name: "Energy Breakdown by Type",
+	name: "Energy Consumption (Category-wise)",
 	widget: EnergyBreakdown,
 
 	configs: {

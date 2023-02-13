@@ -9,8 +9,7 @@
     <!-- <link rel="stylesheet" type="text/css" href="./node_modules/react-grid-layout/css/styles.css"> -->
     <!-- <link rel="stylesheet" type="text/css" href="./node_modules/react-resizable/css/styles.css"> -->
 
-    <link rel="stylesheet" type="text/css" href="https://uxp.s3.amazonaws.com/dist/dev/uxp_dashboard.css">
-    <!-- <link rel="stylesheet" type="text/css" href="http://127.0.0.1:5502/assets/styles/css/uxp_dashboard.css"> -->
+    <link rel="stylesheet" type="text/css" href="https://uxp.s3.amazonaws.com/dist/experimental/uxp_dashboard.css">
 
 
     <title>UXP Development Environment</title>
@@ -27,8 +26,7 @@
     <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/recharts/1.8.5/Recharts.min.js"></script>
 
     <!-- Main -->
-    <script src="https://uxp.s3.amazonaws.com/dist/master/main.js"></script>
-    <!-- <script src="http://127.0.0.1:5502/dist/main.js"></script> -->
+    <script src="https://uxp.s3.amazonaws.com/dist/experimental/main.js"></script>
 
     <script>
 
@@ -46,9 +44,10 @@
         let deletedWidgets = [];
 
         let contextProviderValue = {
+            environment: "dev",
             userKey: "user_001",
             root: "root",
-            sidebarItems: () => (window.SidebarLinks || []).map(s => s.id),
+            sidebarItems: window.SidebarLinks || [],
             scriptFiles: scripts, // widget script files
             apiKey: '',
             widgetManager: {
