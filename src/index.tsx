@@ -254,7 +254,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	
 	return (
 		<WidgetWrapper className='energy-widget'>
-			<TitleBar icon={EnergyIcon} title={'Yearly Energy ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '')}>
+			<TitleBar icon={EnergyIcon} title={'YEARLY ENERGY CONSUMPTION ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
 				<FilterPanel enableClear={false}>
 					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
 						options={yearList} labelField='year' valueField='year' selected={year}
@@ -548,7 +548,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 		hasData = true;
 	}
 	return <WidgetWrapper className='energy-widget'>
-		<TitleBar icon={EnergyIcon} title={'Energy Consumption Category-Wise '}>
+		<TitleBar icon={EnergyIcon} title={'Energy Consumption (Category-wise) '}>
 			<FilterPanel enableClear={false}>
 				<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
 					options={yearList} labelField='year' valueField='year' selected={year}
