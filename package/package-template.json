@@ -1,7 +1,7 @@
 {
     "title":"Energy Budgeting",
     "tags":["energy"],
-    "version":"1.3.0",
+    "version":"1.3.1",
     "public":true,
     "connectorsRequired":[],
     "postInstallActions": []
