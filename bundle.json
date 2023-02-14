@@ -4,8 +4,7 @@
     "widgets":[
         {
             "id":"energy-budget",
-            "name": "Energy Consumption (Category-wise)",
-
+            "name": "Yearly Energy Consumption",
             "description":"Show actual energy consumption for the year vs budgeted consumption",
 	    "category":"utility"
         },
@@ -17,8 +16,7 @@
         },
          {
             "id":"energy-breakdown",
-	"name": "Energy Consumption (Category-wise)",
-         
+	        "name": "Energy Consumption (Category-wise)",
             "description":"Provides insight on how energy is consumed across different categories of energy consumption.",
 	    "category":"utility"
         }
