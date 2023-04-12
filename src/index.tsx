@@ -210,7 +210,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	let hasChartData =  chartData.filter(x => !!Number(x.energy)).length > 0;
 	let hasBudget =getSelectedBudget().filter(x => !!Number(x)).length>0;
 
-	let isSample = !hasChartData && !hasBudget && !categories.length;
+	 let isSample = !hasChartData && !hasBudget && !categories.length;
 
 	if (isSample) {
 		chartData = [];
@@ -238,6 +238,8 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		co2 = 200;
 
 	}
+
+
 	let totalConsumption = 0;
 	if (chartData && chartData.length > 0) {
 		totalConsumption = chartData[chartData.length - 1].cummulativeEnergy;
@@ -254,7 +256,19 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 	
 	return (
 		<WidgetWrapper className='energy-widget'
-		
+
+		cssBreakPoints={{
+			width: {
+				default: 'large',
+				850: 'small'
+			}
+		}}
+
+		instanceId={props.instanceId}
+		sampleData={{
+			showLabel: isSample,
+			description: 'This widget contains sample data.' 
+		  }}
 		>
 			<TitleBar icon={EnergyIcon} title={'YEARLY ENERGY CONSUMPTION ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
 				<FilterPanel enableClear={false}>
@@ -283,7 +297,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 					/>
 				</div>
 			}
-			<div style={{ flex: 1, padding: '30px' }}>
+			<div style={{ flex: 1, padding: '10px 30px 20px 30px' }}>
 			{
           (!hasData && !hasBudget)
           ?
@@ -376,7 +390,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 				</ResponsiveContainer>
 }
 			</div>
-			<SampleDataLabel show={isSample} />
+			 
 			
 		</WidgetWrapper>
 	)
@@ -550,7 +564,15 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 		consumptionData = SampleData;
 		hasData = true;
 	}
-	return <WidgetWrapper className='energy-widget'>
+	return <WidgetWrapper className='energy-widget'
+	
+		instanceId={props.instanceId}
+		sampleData={{
+			showLabel: isSample,
+			description: 'This widget contains sample data.' 
+		  }}
+		  
+		  >
 		<TitleBar icon={EnergyIcon} title={'Energy Consumption (Category-wise) '}>
 			<FilterPanel enableClear={false}>
 				<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
@@ -624,7 +646,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 			</ResponsiveContainer>
 }			
 		</div>
-		{isSample && <SampleDataLabel />}
+		{/* {isSample && <SampleDataLabel />} */}
 	</WidgetWrapper>;
 }
 interface ILC {
@@ -680,7 +702,17 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 		budget  = DEFAULT_BUDGET_VALUE;
 		value = DEFAULT_BUDGET_VALUE*0.75;
 	}
-	return <WidgetWrapper className='energy-gauge'>
+	return <WidgetWrapper className='energy-gauge'
+
+		
+	
+	    instanceId={props.instanceId}
+		sampleData={{
+			showLabel: isSample,
+			description: 'This widget contains sample data.' 
+		  }}
+		  
+		  >
 		<TitleBar title={'Current Monthly Energy Usage ' + (selectedCategory?`[${selectedCategory}]`:'')} >
 			<FilterPanel enableClear={false}>
 				<Select className={'selector-energy'} onChange={setBuilding} selected={building}
@@ -716,7 +748,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 			}
 
 		</div>
-		<SampleDataLabel show={isSample} />
+		{/* <SampleDataLabel show={isSample} /> */}
 		
 	</WidgetWrapper>;
 }
@@ -732,10 +764,10 @@ registerWidget({
 	configs: {
 		layout: {
 			w: 16,
-			h: 12,
+			h: 13,
 			minH: 12,
 			minW: 16,
-			maxH: 12 
+			maxH: 13 
 		},
 		props: [
 			{
@@ -773,8 +805,8 @@ registerWidget({
 	configs: {
 		layout: {
 			w: 8,
-			h: 8,
-			minH: 7,
+			h: 10,
+			minH: 10,
 			minW: 8,
 			maxH: 10,
 			maxW: 12

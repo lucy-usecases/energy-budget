@@ -312,7 +312,7 @@ module.exports = function () {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".selector-energy {\n  margin-bottom: 10px;\n}\n\n.energy-gauge .gauge-face-container {\n  margin-left: auto;\n  margin-right: auto;\n}\n\n.energy-widget .no-budget-data {\n  font-size: 3em;\n  opacity: 0.5;\n  text-align: center;\n  position: relative;\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.carbon-footprint {\n  padding: 10px 50px;\n}\n.carbon-footprint .profile-image-container {\n  background-color: transparent !important;\n}\n.carbon-footprint .cf-grid .data-grid-column {\n  border: none !important;\n}\n.carbon-footprint .cf-grid .item-card {\n  padding: 5px;\n}\n.carbon-footprint .cf-grid .item-card .title {\n  font-size: 2.4em;\n  font-weight: 200;\n}\n.carbon-footprint .cf-grid .item-card .content {\n  padding: 0px;\n}\n\n.energy-budget-widget-config-panel {\n  width: 60vw;\n  height: auto;\n}\n.energy-budget-widget-config-panel > .row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.energy-budget-widget-config-panel > .button-row {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button {\n  margin: 5px;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button.save.active {\n  background-color: #52c4c9;\n  color: white;\n}\n\n.u-tt {\n  background-color: rgba(0, 0, 0, 0.5);\n  border-radius: 5px;\n  padding: 10px;\n  color: white;\n  display: flex;\n}\n.u-tt div {\n  margin-right: 10px;\n}\n\n.uxp-sample-data-label {\n  text-transform: capitalize;\n}", ""]);
+exports.push([module.i, ".selector-energy {\n  margin-bottom: 10px;\n}\n\n.energy-gauge .gauge-face-container {\n  margin-left: auto;\n  margin-right: auto;\n}\n\n.energy-widget .no-budget-data {\n  font-size: 3em;\n  opacity: 0.5;\n  text-align: center;\n  position: relative;\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.carbon-footprint {\n  padding: 10px 50px;\n}\n.carbon-footprint .profile-image-container {\n  background-color: transparent !important;\n}\n.carbon-footprint .cf-grid .data-grid-column {\n  border: none !important;\n}\n.carbon-footprint .cf-grid .item-card {\n  padding: 5px;\n}\n.carbon-footprint .cf-grid .item-card .title {\n  font-size: 2.4em;\n  font-weight: 200;\n}\n.carbon-footprint .cf-grid .item-card .content {\n  padding: 0px;\n}\n\n.energy-budget-widget-config-panel {\n  width: 60vw;\n  height: auto;\n}\n.energy-budget-widget-config-panel > .row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.energy-budget-widget-config-panel > .button-row {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button {\n  margin: 5px;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button.save.active {\n  background-color: #52c4c9;\n  color: white;\n}\n\n.u-tt {\n  background-color: rgba(0, 0, 0, 0.5);\n  border-radius: 5px;\n  padding: 10px;\n  color: white;\n  display: flex;\n}\n.u-tt div {\n  margin-right: 10px;\n}\n\n.uxp-sample-data-label {\n  text-transform: capitalize;\n}\n\n.energy-widget.w-small .carbon-footprint .data-grid .data-grid-column .item-card .content .title {\n  font-size: 1.8em;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -9586,9 +9586,9 @@ module.exports = /*#__PURE__*/function (_BaseClient) {
 
 /***/ }),
 
-/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8081":
+/***/ "./node_modules/webpack-dev-server/client/index.js?http://localhost:8080":
 /*!*********************************************************!*\
-  !*** (webpack)-dev-server/client?http://localhost:8081 ***!
+  !*** (webpack)-dev-server/client?http://localhost:8080 ***!
   \*********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -9770,7 +9770,7 @@ var onSocketMessage = {
   }
 };
 socket(socketUrl, onSocketMessage);
-/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8081"))
+/* WEBPACK VAR INJECTION */}.call(this, "?http://localhost:8080"))
 
 /***/ }),
 
@@ -10661,7 +10661,15 @@ const EnergyBudgetWidget = (props) => {
         showCO2 = true;
     let hasData = chartData.filter(x => !!Number(x.energy)).length > 0;
     console.log('budget', hasBudget, hasData);
-    return (React.createElement(components_1.WidgetWrapper, { className: 'energy-widget' },
+    return (React.createElement(components_1.WidgetWrapper, { className: 'energy-widget', cssBreakPoints: {
+            width: {
+                default: 'large',
+                850: 'small'
+            }
+        }, instanceId: props.instanceId, sampleData: {
+            showLabel: isSample,
+            description: 'This widget contains sample data.'
+        } },
         React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'YEARLY ENERGY CONSUMPTION ' + (hasBudget ? 'Budgeted vs Actual ' : '') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '') },
             React.createElement(components_1.FilterPanel, { enableClear: false },
                 React.createElement(components_1.Select, { className: 'selector-energy', placeholder: 'Year', onChange: (year) => setYear(year), options: yearList, labelField: 'year', valueField: 'year', selected: year }),
@@ -10675,7 +10683,7 @@ const EnergyBudgetWidget = (props) => {
                 ], columns: 3, renderItem: (item) => {
                     return React.createElement(components_1.ItemCard, { imageField: 'image', item: item, titleField: 'value', subTitleField: 'title' });
                 } })),
-        React.createElement("div", { style: { flex: 1, padding: '30px' } }, (!hasData && !hasBudget)
+        React.createElement("div", { style: { flex: 1, padding: '10px 30px 20px 30px' } }, (!hasData && !hasBudget)
             ?
                 React.createElement("div", { className: 'no-budget-data' }, "No data available")
             :
@@ -10711,8 +10719,7 @@ const EnergyBudgetWidget = (props) => {
                         hasBudget &&
                             React.createElement(recharts_1.Bar, { name: 'Baseline', barSize: 15, dataKey: "budgeted", fill: (colors === null || colors === void 0 ? void 0 : colors.baseline) || "#79B7B6" }),
                         hasBudget &&
-                            React.createElement(recharts_1.Line, { name: 'Cumulative Budget', strokeDasharray: '0 1 1 1', strokeDashoffset: 3, strokeOpacity: 0.8, strokeWidth: 2, yAxisId: 'cummulative', type: "monotone", fill: 'red', fillOpacity: 0.1, dataKey: "cummulativeBudget", stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeBudget) || "#ff7300" })))),
-        React.createElement(components_1.SampleDataLabel, { show: isSample })));
+                            React.createElement(recharts_1.Line, { name: 'Cumulative Budget', strokeDasharray: '0 1 1 1', strokeDashoffset: 3, strokeOpacity: 0.8, strokeWidth: 2, yAxisId: 'cummulative', type: "monotone", fill: 'red', fillOpacity: 0.1, dataKey: "cummulativeBudget", stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeBudget) || "#ff7300" }))))));
 };
 const EnergyBudgetWidgetConfigPanel = (props) => {
     let { onSubmit, onCancel, configs } = props;
@@ -10858,7 +10865,10 @@ exports.EnergyBreakdown = (props) => {
         consumptionData = SampleData;
         hasData = true;
     }
-    return React.createElement(components_1.WidgetWrapper, { className: 'energy-widget' },
+    return React.createElement(components_1.WidgetWrapper, { className: 'energy-widget', instanceId: props.instanceId, sampleData: {
+            showLabel: isSample,
+            description: 'This widget contains sample data.'
+        } },
         React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'Energy Consumption (Category-wise) ' },
             React.createElement(components_1.FilterPanel, { enableClear: false },
                 React.createElement(components_1.Select, { className: 'selector-energy', placeholder: 'Year', onChange: (year) => setYear(year), options: yearList, labelField: 'year', valueField: 'year', selected: year }),
@@ -10893,8 +10903,7 @@ exports.EnergyBreakdown = (props) => {
                                 return React.createElement("div", { className: 'u-tt' },
                                     React.createElement("div", null, (_a = opts === null || opts === void 0 ? void 0 : opts.payload[0]) === null || _a === void 0 ? void 0 : _a.name),
                                     React.createElement("div", null, intFmt(Number((_b = opts === null || opts === void 0 ? void 0 : opts.payload[0]) === null || _b === void 0 ? void 0 : _b.value).toFixed(2)) + ' kWh'));
-                            } })))),
-        isSample && React.createElement(components_1.SampleDataLabel, null));
+                            } })))));
 };
 exports.CurrentUsage = (props) => {
     var _a;
@@ -10939,7 +10948,10 @@ exports.CurrentUsage = (props) => {
         budget = DEFAULT_BUDGET_VALUE;
         value = DEFAULT_BUDGET_VALUE * 0.75;
     }
-    return React.createElement(components_1.WidgetWrapper, { className: 'energy-gauge' },
+    return React.createElement(components_1.WidgetWrapper, { className: 'energy-gauge', instanceId: props.instanceId, sampleData: {
+            showLabel: isSample,
+            description: 'This widget contains sample data.'
+        } },
         React.createElement(components_1.TitleBar, { title: 'Current Monthly Energy Usage ' + (selectedCategory ? `[${selectedCategory}]` : '') },
             React.createElement(components_1.FilterPanel, { enableClear: false },
                 React.createElement(components_1.Select, { className: 'selector-energy', onChange: setBuilding, selected: building, options: buildings, labelField: 'location', valueField: 'location' }),
@@ -10961,8 +10973,7 @@ exports.CurrentUsage = (props) => {
                 React.createElement(React.Fragment, null,
                     React.createElement("span", { style: { marginLeft: '10px', opacity: 0.8, textTransform: 'uppercase', fontSize: '0.3em' } }, 'of ' + budget),
                     React.createElement("span", { style: { fontSize: '0.3em', opacity: 0.5 } }, "KWH"))
-                : null),
-        React.createElement(components_1.SampleDataLabel, { show: isSample }));
+                : null));
 };
 /**
  * Register as a Widget
@@ -10974,10 +10985,10 @@ uxp_1.registerWidget({
     configs: {
         layout: {
             w: 16,
-            h: 12,
+            h: 13,
             minH: 12,
             minW: 16,
-            maxH: 12
+            maxH: 13
         },
         props: [
             {
@@ -11013,8 +11024,8 @@ uxp_1.registerWidget({
     configs: {
         layout: {
             w: 8,
-            h: 8,
-            minH: 7,
+            h: 10,
+            minH: 10,
             minW: 8,
             maxH: 10,
             maxW: 12
@@ -11119,12 +11130,12 @@ exports.registerUI = registerUI;
 
 /***/ 0:
 /*!*******************************************************************************!*\
-  !*** multi (webpack)-dev-server/client?http://localhost:8081 ./src/index.tsx ***!
+  !*** multi (webpack)-dev-server/client?http://localhost:8080 ./src/index.tsx ***!
   \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! D:\Udhay Project files\Project-2023\energy-budget\node_modules\webpack-dev-server\client\index.js?http://localhost:8081 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8081");
+__webpack_require__(/*! D:\Udhay Project files\Project-2023\energy-budget\node_modules\webpack-dev-server\client\index.js?http://localhost:8080 */"./node_modules/webpack-dev-server/client/index.js?http://localhost:8080");
 module.exports = __webpack_require__(/*! ./src/index.tsx */"./src/index.tsx");
 
 

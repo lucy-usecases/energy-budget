@@ -324,7 +324,9 @@ declare module "uxp/components" {
             showName?: boolean // default false,
             showPreview?: boolean // default true
         }
-        className?: string
+        className?: string,
+        dropAreaIcon?: IconProp,
+        dropAreaLabel?: string
     }
         
     /**
@@ -382,6 +384,12 @@ declare module "uxp/components" {
          */
         showOnHover?: boolean
     
+        /**
+         * this will open the dropdown on hover and keep open even if user takes the mouse away
+         * Click on outside to close the dropdown
+         */
+        keepShowingOnHover?: boolean,
+    
         className?: string,
     
         /**
@@ -397,6 +405,18 @@ declare module "uxp/components" {
          */
         forceClose?: boolean
     
+        /**
+         * disable scroll on open dropdown
+         * true by default
+         */
+        disableScroll?: boolean,
+    
+        /**
+         * if this is enabled drop down will be automatically positionsed within the view.
+         * better to use this option- it has been improved
+         * if enabled it will ignore the position param
+         */
+        autoPosition?: boolean
     }
         
     /**
@@ -1020,11 +1040,70 @@ declare module "uxp/components" {
     /**
      * @export
      */
+    export interface IBuyOnSpaceworxButtonProps {
+        /**
+         * link to the marketplace product page
+         */
+        link: string
+        /**
+         * class name for additional styling
+         */
+        className?: string
+        /**
+         * additional inline styles
+         */
+        styles?: React.CSSProperties
+    }
+        
+    /**
+     * @export
+     */
+    export interface ISpaceworxDescriptionTagProps {
+        className?: string,
+        styles?: React.CSSProperties
+    }
+        
+    /**
+     * @export
+     */
     export interface IWidgetWrapperProps {
         /**
          * Any extra css class names to add to the widget wrapper
          */
-        className?: string
+        className?: string,
+        cssBreakPoints?: {
+            width?: {
+                default: string,
+                [key: number]: string
+            },
+            height?: {
+                default: string,
+                [key: number]: string
+            }
+        },
+        /**
+         * this will be used to get the widget props
+         * this will be used to access the name and description of the widget
+         */
+        instanceId?: string
+        /**
+         * sample data label
+         */
+        sampleData?: {
+            /**
+             * toggle sample data label
+             */
+            showLabel?: boolean,
+            /**
+             * this will be shown in the popup
+             */
+            description?: string,
+            /**
+             * link to buy from spaceworx
+             * if not provided button will not be shown
+             */
+            link?: string
+        }
     }
         
     /**
@@ -1380,7 +1459,7 @@ declare module "uxp/components" {
      * A simple callback function
      * @export
      */
-    export type ICallback = ()=>void;
+    export type ICallback = () => void;
         
     /**
      * @export
@@ -2723,7 +2802,9 @@ declare module "uxp/components" {
             showName?: boolean // default false,
             showPreview?: boolean // default true
         }
-        className?: string
+        className?: string,
+        dropAreaIcon?: IconProp,
+        dropAreaLabel?: string
     }
     /**
      * @export
@@ -2764,6 +2845,12 @@ declare module "uxp/components" {
          */
         showOnHover?: boolean
     
+        /**
+         * this will open the dropdown on hover and keep open even if user takes the mouse away
+         * Click on outside to close the dropdown
+         */
+        keepShowingOnHover?: boolean,
+    
         className?: string,
     
         /**
@@ -2779,6 +2866,18 @@ declare module "uxp/components" {
          */
         forceClose?: boolean
     
+        /**
+         * disable scroll on open dropdown
+         * true by default
+         */
+        disableScroll?: boolean,
+    
+        /**
+         * if this is enabled drop down will be automatically positionsed within the view.
+         * better to use this option- it has been improved
+         * if enabled it will ignore the position param
+         */
+        autoPosition?: boolean
     }
     /**
      * This component wraps another component and shows a tooltip for the component it is wrapping, whenever the user moves the mouse over it.
@@ -4431,11 +4530,94 @@ declare module "uxp/components" {
         /**
      * @export
      */
+    interface IBuyOnSpaceworxButtonProps {
+        /**
+         * link to the marketplace product page
+         */
+        link: string
+        /**
+         * class name for additional styling
+         */
+        className?: string
+        /**
+         * additional inline styles
+         */
+        styles?: React.CSSProperties
+    }
+    /**
+     * @export
+     * This component gives a styled button to go to the marketplace product pages
+     * Intend to use in the configuration panels and other place
+     *
+     * @example
+     *
+     * ```
+     * <BuyOnSpaceworxButton  link='https://marketplace.spaceworx.com' />
+     * ```
+     *
+     */
+    export const BuyOnSpaceworxButton : React.FunctionComponent<IBuyOnSpaceworxButtonProps>;
+        /**
+     * @export
+     */
+    interface ISpaceworxDescriptionTagProps {
+        className?: string,
+        styles?: React.CSSProperties
+    }
+    /**
+     * This gives a pre defined component to used in configuration panels where we need to explain what is spaceworx is
+     *
+     * @export
+     *
+     *
+     * @example
+     * ```
+     * <SpaceworxDescriptionTag />
+     * ```
+     *
+     */
+    export const SpaceworxDescriptionTag : React.FunctionComponent<ISpaceworxDescriptionTagProps>;
+        /**
+     * @export
+     */
     interface IWidgetWrapperProps {
         /**
          * Any extra css class names to add to the widget wrapper
          */
-        className?: string
+        className?: string,
+        cssBreakPoints?: {
+            width?: {
+                default: string,
+                [key: number]: string
+            },
+            height?: {
+                default: string,
+                [key: number]: string
+            }
+        },
+        /**
+         * this will be used to get the widget props
+         * this will be used to access the name and description of the widget
+         */
+        instanceId?: string
+        /**
+         * sample data label
+         */
+        sampleData?: {
+            /**
+             * toggle sample data label
+             */
+            showLabel?: boolean,
+            /**
+             * this will be shown in the popup
+             */
+            description?: string,
+            /**
+             * link to buy from spaceworx
+             * if not provided button will not be shown
+             */
+            link?: string
+        }
     }
     /**
      *
@@ -4450,6 +4632,34 @@ declare module "uxp/components" {
      *  <Label>My custom widget</Label>
      * </WidgetWrapper>
      * ```
+     *
+     * @example
+     *
+     * ```
+     * You can define custom break points for the widget and use css to make the widget responsive
+     * Uxp will automatically apply the relevant class based on the width or height of the widget wrapper.
+     * these class names will be prefixed with either `w-` (for width) or `h-` (for height)
+     * then you can write css to make the widgets resposive
+     * <WidgetWrapper
+     *      cssBreakPoints={{
+     *          width: {
+     *              default: 'larger',
+     *              100: 'smaller',
+     *              200: 'small',
+     *              300: 'medium'
+     *          },
+     *          height: {
+     *              default: 'larger',
+     * 				100: 'smaller',
+     *  			200: 'small',
+     *  			300: 'medium'
+     * 			}
+     *  	}}
+     * 	>
+     *
+     *
+     * ```
+     *
      */
     export const WidgetWrapper : React.FunctionComponent<IWidgetWrapperProps>;
         
@@ -5040,5 +5250,5 @@ declare module "uxp/components" {
      * ```
      */
     export const SampleDataLabel : React.FunctionComponent<ISampleDataLabelProps>;
-        export const useToast:ToastHook;    export const useAlert:AlertHook;    export const useResizeEffect:ResizeEffectHook;    export const useMessageBus:MessageBusHook;    export const useFields:FieldsHook;    export const useUpdateWidgetProps:IUseUpdateWidgetProps;    export const useEventSubscriber:IEventSubscriber;    export const useEffectWithPolling:IUseEffectWithPolling;    export const useDebounce:DebounceHook;
+        export const useToast:ToastHook;    export const useAlert:AlertHook;    export const useDebounce:DebounceHook;    export const useResizeEffect:ResizeEffectHook;    export const useMessageBus:MessageBusHook;    export const useFields:FieldsHook;    export const useUpdateWidgetProps:IUseUpdateWidgetProps;    export const useEventSubscriber:IEventSubscriber;    export const useEffectWithPolling:IUseEffectWithPolling;
 }

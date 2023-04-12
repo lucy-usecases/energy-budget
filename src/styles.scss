@@ -81,3 +81,40 @@
 .uxp-sample-data-label{
     text-transform: capitalize;
 }
+
+
+.energy-widget{ 
+    &.w-small{
+        .carbon-footprint { 
+            .data-grid{ 
+                 .data-grid-column{  
+                    
+                        .item-card{
+                            // display: inline-block;
+                            .item-card-image-container{
+                                // position: inherit;
+                                // top: 0;
+                                // left: 35%;
+                                // transform: inherit;
+                                // width: 100%;
+                                // height: auto;
+                                // text-align: center;
+                                // display: inline-block;
+                            }
+                            .content{
+                                // margin-left: 0;
+                                // width: 100%;
+                                // display: inline-block;
+                                // text-align: center;
+
+                                .title{
+                                    font-size: 1.8em;
+                                }
+                            }
+                        }
+                     
+                 }
+             }
+         } 
+    }
+}
