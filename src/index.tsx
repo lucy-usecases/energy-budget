@@ -253,7 +253,9 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 
 	
 	return (
-		<WidgetWrapper className='energy-widget'>
+		<WidgetWrapper className='energy-widget'
+		
+		>
 			<TitleBar icon={EnergyIcon} title={'YEARLY ENERGY CONSUMPTION ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
 				<FilterPanel enableClear={false}>
 					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
@@ -269,9 +271,9 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 			{
 				showCO2 && <div className={'carbon-footprint'}>
 					<DataGrid className='cf-grid' data={[
-						{ 'title': 'power consumed', value: `${totalConsumption} kWh`, image: PowerIcon },
-						{ 'title': 'co2 emitted', value: `${(emissions).toFixed(1)} tonnes`, image: Co2Icon },
-						{ 'title': 'trees to offset co2', value: `${(trees).toFixed(0)} `, image: TreesIcon },
+						{ 'title': 'Power consumed', value: `${totalConsumption} kWh`, image: PowerIcon },
+						{ 'title': 'CO2 emitted', value: `${(emissions).toFixed(1)} tonnes`, image: Co2Icon },
+						{ 'title': 'Trees to offset CO2', value: `${(trees).toFixed(0)} `, image: TreesIcon },
 
 					]}
 						columns={3}
@@ -375,6 +377,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 }
 			</div>
 			<SampleDataLabel show={isSample} />
+			
 		</WidgetWrapper>
 	)
 };
@@ -728,7 +731,11 @@ registerWidget({
 
 	configs: {
 		layout: {
-
+			w: 16,
+			h: 12,
+			minH: 12,
+			minW: 16,
+			maxH: 12 
 		},
 		props: [
 			{
@@ -765,7 +772,12 @@ registerWidget({
 
 	configs: {
 		layout: {
-
+			w: 8,
+			h: 8,
+			minH: 7,
+			minW: 8,
+			maxH: 10,
+			maxW: 12
 		},
 	},
 
@@ -779,7 +791,12 @@ registerWidget({
 
 	configs: {
 		layout: {
-
+			w: 10,
+			h: 10,
+			minH: 10,
+			minW: 10,
+			maxH: 12,
+			maxW: 16
 		},
 	},
 
