@@ -21,10 +21,10 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [addCategory, setAddCategory] = React.useState(false);
   const [monthlyBudget, setMonthlyBudget] = React.useState(false);
   const [setup, setSetup] = React.useState(true);
-  const [buySpaceworx, setBuySpaceworx] = React.useState(false);
   const [error, setError] = React.useState(false);
 
   const [categories, setcategories] = React.useState([]);
+  const [_id, set_id] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [categoryId, setCategoryId] = React.useState('');
   const [budgetDetails, setBudgetDetails] = React.useState({});
@@ -81,6 +81,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   };
 
   const onCategoryClick = async (c: any) => {
+    set_id(c?._id);
     setCategoryId(c?.id);
     setCategory(c?.label);
     const response = await props.uxpContext.executeService("Lucy", "GetPaginatedDocs", {
@@ -105,11 +106,11 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   };
 
   const setBudgetandUpdateCategory = async (categoryId: string) => {
-    console.log({categoryId});
+    console.log({ categoryId });
     if (id || name) {
       const body = (id && name) ? { id, label: name } : (id) ? { id } : { label: name };
       await props.uxpContext.executeService("Lucy", "UpdateDocument", {
-        _id: categoryId,
+        _id,
         document: JSON.stringify(body),
         model: modelKey,
         collection: 'categories',
@@ -149,8 +150,8 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       <div className='header'>
         <span>Energy Management</span>
         <div className='actions'>
-          <Button className='primary' title='Setup Budgets and Categories' onClick={() => { setBuySpaceworx(false); setSetup(true);  }}></Button>
-          <Button title='Connect Meters' onClick={() => { setSetup(false); setBuySpaceworx(true); }}></Button>
+          <Button className={setup ? 'active primary' : 'primary'} title='Setup Budgets and Categories' onClick={() => { setSetup(true); }}></Button>
+          <Button className={!setup ? 'active primary' : 'primary'} title='Connect Meters' onClick={() => { setSetup(false); }}></Button>
         </div>
       </div>
 
@@ -163,16 +164,10 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
           <Button className='add' title='+' onClick={() => setAddCategory(true)}></Button>
         </div>
         :
-        null
-      }
-
-      {buySpaceworx ?
         <div className='documentation'>
-          <a href="">View   API Docs To send data</a>
-          <BuyOnSpaceworxButton link='#' />
+          <a href="#" className='docs'>View   API Docs To send data</a>
+          <BuyOnSpaceworxButton link='#' className='spaceworx' />
         </div>
-        :
-        null
       }
 
       {addCategory ?
