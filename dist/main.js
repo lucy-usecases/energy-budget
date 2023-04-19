@@ -462,6 +462,7 @@ const Configuration = (props) => {
     const [name, setName] = react_1.default.useState('');
     const [addCategory, setAddCategory] = react_1.default.useState(false);
     const [monthlyBudget, setMonthlyBudget] = react_1.default.useState(false);
+    const [setup, setSetup] = react_1.default.useState(true);
     const [buySpaceworx, setBuySpaceworx] = react_1.default.useState(false);
     const [error, setError] = react_1.default.useState(false);
     const [categories, setcategories] = react_1.default.useState([]);
@@ -542,6 +543,7 @@ const Configuration = (props) => {
         setMonthlyBudget(true);
     });
     const setBudgetandUpdateCategory = (categoryId) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log({ categoryId });
         if (id || name) {
             const body = (id && name) ? { id, label: name } : (id) ? { id } : { label: name };
             yield props.uxpContext.executeService("Lucy", "UpdateDocument", {
@@ -580,18 +582,23 @@ const Configuration = (props) => {
         react_1.default.createElement("div", { className: 'header' },
             react_1.default.createElement("span", null, "Energy Management"),
             react_1.default.createElement("div", { className: 'actions' },
-                react_1.default.createElement(components_1.Button, { className: 'primary', title: 'Setup Budgets and Categories', onClick: () => { } }),
-                react_1.default.createElement(components_1.Button, { title: 'Connect Meters', onClick: () => { } }))),
-        !buySpaceworx ?
+                react_1.default.createElement(components_1.Button, { className: 'primary', title: 'Setup Budgets and Categories', onClick: () => { setBuySpaceworx(false); setSetup(true); } }),
+                react_1.default.createElement(components_1.Button, { title: 'Connect Meters', onClick: () => { setSetup(false); setBuySpaceworx(true); } }))),
+        setup ?
             react_1.default.createElement("div", { className: 'content' },
                 react_1.default.createElement(components_1.Button, { className: 'category-button', title: 'Default', onClick: () => { setMonthlyBudget(true); } }),
                 categories.map(c => {
                     return react_1.default.createElement(components_1.Button, { key: c === null || c === void 0 ? void 0 : c._id, className: 'category-button', title: c === null || c === void 0 ? void 0 : c.label, onClick: () => onCategoryClick(c) });
                 }),
-                react_1.default.createElement(components_1.Button, { className: 'add', title: '+', onClick: () => setAddCategory(true) })) :
+                react_1.default.createElement(components_1.Button, { className: 'add', title: '+', onClick: () => setAddCategory(true) }))
+            :
+                null,
+        buySpaceworx ?
             react_1.default.createElement("div", { className: 'documentation' },
                 react_1.default.createElement("a", { href: "" }, "View   API Docs To send data"),
-                react_1.default.createElement(components_1.BuyOnSpaceworxButton, { link: '#' })),
+                react_1.default.createElement(components_1.BuyOnSpaceworxButton, { link: '#' }))
+            :
+                null,
         addCategory ?
             react_1.default.createElement(components_1.Modal, { className: 'add-category', title: 'New Category', show: addCategory, onClose: () => setAddCategory(false) },
                 react_1.default.createElement(components_1.Input, { value: id, placeholder: 'ID', onChange: (val) => { setError(false); setId(val); } }),

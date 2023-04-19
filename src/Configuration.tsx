@@ -20,6 +20,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [name, setName] = React.useState('');
   const [addCategory, setAddCategory] = React.useState(false);
   const [monthlyBudget, setMonthlyBudget] = React.useState(false);
+  const [setup, setSetup] = React.useState(true);
   const [buySpaceworx, setBuySpaceworx] = React.useState(false);
   const [error, setError] = React.useState(false);
 
@@ -101,10 +102,10 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
     }
 
     setMonthlyBudget(true);
-
   };
 
   const setBudgetandUpdateCategory = async (categoryId: string) => {
+    console.log({categoryId});
     if (id || name) {
       const body = (id && name) ? { id, label: name } : (id) ? { id } : { label: name };
       await props.uxpContext.executeService("Lucy", "UpdateDocument", {
@@ -148,23 +149,30 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       <div className='header'>
         <span>Energy Management</span>
         <div className='actions'>
-          <Button className='primary' title='Setup Budgets and Categories' onClick={() => { }}></Button>
-          <Button title='Connect Meters' onClick={() => { }}></Button>
+          <Button className='primary' title='Setup Budgets and Categories' onClick={() => { setBuySpaceworx(false); setSetup(true);  }}></Button>
+          <Button title='Connect Meters' onClick={() => { setSetup(false); setBuySpaceworx(true); }}></Button>
         </div>
       </div>
 
-      {!buySpaceworx ?
+      {setup ?
         <div className='content'>
           <Button className='category-button' title='Default' onClick={() => { setMonthlyBudget(true) }}></Button>
           {categories.map(c => {
             return <Button key={c?._id} className='category-button' title={c?.label} onClick={() => onCategoryClick(c)} />
           })}
           <Button className='add' title='+' onClick={() => setAddCategory(true)}></Button>
-        </div> :
+        </div>
+        :
+        null
+      }
+
+      {buySpaceworx ?
         <div className='documentation'>
           <a href="">View   API Docs To send data</a>
           <BuyOnSpaceworxButton link='#' />
         </div>
+        :
+        null
       }
 
       {addCategory ?
