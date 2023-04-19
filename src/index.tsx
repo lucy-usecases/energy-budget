@@ -4,6 +4,7 @@ import { registerWidget, registerLink, registerUI, IContextProvider, IConfigPane
 import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker, SampleDataLabel } from "uxp/components";
 import './styles.scss';
 import { isExportAssignment } from "typescript";
+import Configuration from "./Configuration";
 // import { SampleDataLabel } from "./SampleDataLabel";
 
 
@@ -758,9 +759,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
  */
 registerWidget({
 	id: "energy-budget",
-	name: "Yearly Energy Consumption",
 	widget: EnergyBudgetWidget,
-
 	configs: {
 		layout: {
 			w: 16,
@@ -799,9 +798,7 @@ registerWidget({
 
 registerWidget({
 	id: "current-monthly-energy",
-	name: "Current Monthly Energy Usage",
 	widget: CurrentUsage,
-
 	configs: {
 		layout: {
 			w: 8,
@@ -818,9 +815,7 @@ registerWidget({
 
 registerWidget({
 	id: "energy-breakdown",
-	name: "Energy Consumption (Category-wise)",
 	widget: EnergyBreakdown,
-
 	configs: {
 		layout: {
 			w: 10,
@@ -833,6 +828,12 @@ registerWidget({
 	},
 
 });
+
+registerUI({
+	id: 'config',
+	component: Configuration,
+	showDefaultHeader: false
+})
 
 
 
