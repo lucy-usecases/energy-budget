@@ -10896,7 +10896,7 @@ exports.EnergyBreakdown = (props) => {
             :
                 React.createElement(recharts_1.ResponsiveContainer, { width: "100%", height: "100%" },
                     React.createElement(recharts_1.PieChart, null,
-                        React.createElement(recharts_1.Legend, { verticalAlign: "top", height: 36 }),
+                        React.createElement(recharts_1.Legend, { verticalAlign: "top", height: 35 }),
                         React.createElement(recharts_1.Pie, { data: consumptionData, label: true, cx: '50%', nameKey: 'label', cy: '50%', innerRadius: '55%', outerRadius: '85%', paddingAngle: 5, dataKey: "value" }, consumptionData.map((entry, index) => (React.createElement(recharts_1.Cell, { key: `cell-${index}`, fill: COLORS[index % COLORS.length] })))),
                         React.createElement(recharts_1.Tooltip, { content: (opts) => {
                                 var _a, _b;
@@ -10966,7 +10966,7 @@ exports.CurrentUsage = (props) => {
         React.createElement("div", { style: { fontSize: '1em', textAlign: 'center', padding: '10px', marginTop: '20px' } },
             React.createElement("span", { style: { height: '20px', backgroundSize: 'contain', display: 'inline-block', verticalAlign: 'middle', width: '14px', backgroundRepeat: 'no-repeat', marginRight: '10px', backgroundImage: `url(${EnergyIcon})` } }),
             React.createElement("span", { style: { textTransform: 'uppercase' } }, "This Month's Consumption")),
-        React.createElement("div", { style: { fontSize: '4em', textAlign: 'center', padding: '10px' } },
+        React.createElement("div", { style: { fontSize: '3em', textAlign: 'center', padding: '10px' } },
             value.toFixed(2),
             React.createElement("span", { style: { fontSize: '0.3em', opacity: 0.5 } }, "KWH"),
             Number(budget) > 0 ?
@@ -10984,10 +10984,10 @@ uxp_1.registerWidget({
     widget: EnergyBudgetWidget,
     configs: {
         layout: {
-            w: 16,
-            h: 13,
-            minH: 12,
-            minW: 16,
+            w: 13,
+            h: 9,
+            minH: 9,
+            minW: 13,
             maxH: 13
         },
         props: [
@@ -11023,10 +11023,10 @@ uxp_1.registerWidget({
     widget: exports.CurrentUsage,
     configs: {
         layout: {
-            w: 8,
-            h: 10,
-            minH: 10,
-            minW: 8,
+            w: 6,
+            h: 8,
+            minH: 8,
+            minW: 6,
             maxH: 10,
             maxW: 12
         },
@@ -11038,10 +11038,10 @@ uxp_1.registerWidget({
     widget: exports.EnergyBreakdown,
     configs: {
         layout: {
-            w: 10,
-            h: 10,
-            minH: 10,
-            minW: 10,
+            w: 7,
+            h: 8,
+            minH: 8,
+            minW: 7,
             maxH: 12,
             maxW: 16
         },

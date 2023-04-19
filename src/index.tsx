@@ -618,7 +618,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 			<ResponsiveContainer width="100%" height="100%">
 				<PieChart>
 
-					<Legend verticalAlign="top" height={36} />
+					<Legend verticalAlign="top" height={35} />
 					<Pie
 
 						data={consumptionData}
@@ -739,7 +739,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 			<span style={{ textTransform: 'uppercase' }}>This Month's Consumption</span>
 		</div>
 
-		<div style={{ fontSize: '4em', textAlign: 'center', padding: '10px' }}>
+		<div style={{ fontSize: '3em', textAlign: 'center', padding: '10px' }}>
 			{value.toFixed(2)}<span style={{ fontSize: '0.3em', opacity: 0.5 }}>KWH</span>
 			{
 				Number(budget)>0?
@@ -763,10 +763,10 @@ registerWidget({
 
 	configs: {
 		layout: {
-			w: 16,
-			h: 13,
-			minH: 12,
-			minW: 16,
+			w: 13,
+			h: 9,
+			minH: 9,
+			minW: 13,
 			maxH: 13 
 		},
 		props: [
@@ -804,10 +804,10 @@ registerWidget({
 
 	configs: {
 		layout: {
-			w: 8,
-			h: 10,
-			minH: 10,
-			minW: 8,
+			w: 6,
+			h: 8,
+			minH: 8,
+			minW: 6,
 			maxH: 10,
 			maxW: 12
 		},
@@ -823,10 +823,10 @@ registerWidget({
 
 	configs: {
 		layout: {
-			w: 10,
-			h: 10,
-			minH: 10,
-			minW: 10,
+			w: 7,
+			h: 8,
+			minH: 8,
+			minW: 7,
 			maxH: 12,
 			maxW: 16
 		},
