@@ -462,6 +462,7 @@ const Configuration = (props) => {
     const [name, setName] = react_1.default.useState('');
     const [addCategory, setAddCategory] = react_1.default.useState(false);
     const [monthlyBudget, setMonthlyBudget] = react_1.default.useState(false);
+    const [defaultClick, setDefaultClick] = react_1.default.useState(false);
     const [setup, setSetup] = react_1.default.useState(true);
     const [error, setError] = react_1.default.useState(false);
     const [categories, setcategories] = react_1.default.useState([]);
@@ -510,6 +511,7 @@ const Configuration = (props) => {
             setName('');
             setAddCategory(false);
             alert.show(`${name} added succefully!!!`);
+            window.location.reload();
         }
         catch (err) {
             console.log(err);
@@ -521,14 +523,19 @@ const Configuration = (props) => {
         setValues(newValues);
     };
     const onCategoryClick = (c) => __awaiter(void 0, void 0, void 0, function* () {
-        set_id(c === null || c === void 0 ? void 0 : c._id);
-        setCategoryId(c === null || c === void 0 ? void 0 : c.id);
-        setCategory(c === null || c === void 0 ? void 0 : c.label);
+        if (c) {
+            setDefaultClick(false);
+            set_id(c === null || c === void 0 ? void 0 : c._id);
+            setCategoryId(c === null || c === void 0 ? void 0 : c.id);
+            setCategory(c === null || c === void 0 ? void 0 : c.label);
+            setId(c === null || c === void 0 ? void 0 : c.id);
+            setName(c === null || c === void 0 ? void 0 : c.label);
+        }
         const response = yield props.uxpContext.executeService("Lucy", "GetPaginatedDocs", {
             collectionName: 'budget',
             modelName,
             max: 20,
-            filter: JSON.stringify({ category: c.id })
+            filter: JSON.stringify({ category: (c === null || c === void 0 ? void 0 : c.id) ? c === null || c === void 0 ? void 0 : c.id : "Default" })
         });
         const [result] = JSON.parse(response);
         const { data } = result;
@@ -544,20 +551,20 @@ const Configuration = (props) => {
         setMonthlyBudget(true);
     });
     const setBudgetandUpdateCategory = (categoryId) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log({ categoryId });
-        if (id || name) {
-            const body = (id && name) ? { id, label: name } : (id) ? { id } : { label: name };
-            yield props.uxpContext.executeService("Lucy", "UpdateDocument", {
-                _id,
-                document: JSON.stringify(body),
-                model: modelKey,
-                collection: 'categories',
-                replace: ''
-            });
+        if (!defaultClick) {
+            if (id || name) {
+                const body = (id && name) ? { id, label: name } : (id) ? { id } : { label: name };
+                yield props.uxpContext.executeService("Lucy", "UpdateDocument", {
+                    _id,
+                    document: JSON.stringify(body),
+                    model: modelKey,
+                    collection: 'categories',
+                    replace: ''
+                });
+            }
         }
-        setId('');
-        setName('');
-        const budgetBody = { location: 'building', values, category: categoryId };
+        const budgetBody = { location: 'building', values, category: defaultClick ? 'Default' : id };
+        const cat = defaultClick ? "Default" : category;
         if (Object.keys(budgetDetails).length > 0) {
             const { _id } = budgetDetails;
             yield props.uxpContext.executeService("Lucy", "UpdateDocument", {
@@ -567,7 +574,7 @@ const Configuration = (props) => {
                 collection: 'budget',
                 replace: ''
             });
-            alert.show(`Budget for ${category} updated successfully!!!`);
+            alert.show(`Budget for ${cat} updated successfully!!!`);
         }
         else {
             yield props.uxpContext.executeService("Lucy", "AddNewDocument", {
@@ -575,9 +582,10 @@ const Configuration = (props) => {
                 modelName,
                 collection: 'budget'
             });
-            alert.show(`Budget for ${category} added successfully!!!`);
+            alert.show(`Budget for ${cat} added successfully!!!`);
         }
         setMonthlyBudget(false);
+        window.location.reload();
     });
     return (react_1.default.createElement("div", { className: 'config' },
         react_1.default.createElement("div", { className: 'header' },
@@ -587,7 +595,7 @@ const Configuration = (props) => {
                 react_1.default.createElement(components_1.Button, { className: !setup ? 'active primary' : 'primary', title: 'Connect Meters', onClick: () => { setSetup(false); } }))),
         setup ?
             react_1.default.createElement("div", { className: 'content' },
-                react_1.default.createElement(components_1.Button, { className: 'category-button', title: 'Default', onClick: () => { setMonthlyBudget(true); } }),
+                react_1.default.createElement(components_1.Button, { className: 'category-button', title: 'Default', onClick: () => { setDefaultClick(true); setMonthlyBudget(true); onCategoryClick(); } }),
                 categories.map(c => {
                     return react_1.default.createElement(components_1.Button, { key: c === null || c === void 0 ? void 0 : c._id, className: 'category-button', title: c === null || c === void 0 ? void 0 : c.label, onClick: () => onCategoryClick(c) });
                 }),
@@ -606,10 +614,13 @@ const Configuration = (props) => {
             : null,
         ";",
         monthlyBudget ?
-            react_1.default.createElement(components_1.Modal, { className: 'monthly-budget', title: category, show: monthlyBudget, onClose: () => setMonthlyBudget(false) },
-                react_1.default.createElement("div", { className: 'inputs' },
-                    react_1.default.createElement(components_1.Input, { placeholder: 'ID', value: id, onChange: (val) => { setError(false); setId(val); } }),
-                    react_1.default.createElement(components_1.Input, { placeholder: 'Name', value: name, onChange: (val) => { setError(false); setName(val); } })),
+            react_1.default.createElement(components_1.Modal, { className: 'monthly-budget', title: defaultClick ? "Default" : category, show: monthlyBudget, onClose: () => setMonthlyBudget(false) },
+                !defaultClick ?
+                    react_1.default.createElement("div", { className: 'inputs' },
+                        react_1.default.createElement(components_1.Input, { placeholder: 'ID', value: id, onChange: (val) => { setError(false); setId(val); } }),
+                        react_1.default.createElement(components_1.Input, { placeholder: 'Name', value: name, onChange: (val) => { setError(false); setName(val); } }))
+                    :
+                        null,
                 react_1.default.createElement("div", { className: 'budgets' }, MONTHS.map((M, i) => {
                     return react_1.default.createElement("div", { key: M, className: 'budget' },
                         react_1.default.createElement("div", null,
