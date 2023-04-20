@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './styles.scss';
-import { Button, BuyOnSpaceworxButton, Input, Modal, useAlert } from 'uxp/components';
+import { Button, BuyOnSpaceworxButton, DatePicker, Input, Modal, useAlert } from 'uxp/components';
 import { IContextProvider } from './uxp';
 
 export interface IConfigUIProps {
@@ -20,6 +20,10 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [name, setName] = React.useState('');
   const [addCategory, setAddCategory] = React.useState(false);
   const [monthlyBudget, setMonthlyBudget] = React.useState(false);
+  const [defaultClick, setDefaultClick] = React.useState(false);
+  const [upload, setUpload] = React.useState(false);
+  const [date, setDate] = useState(new Date());
+
   const [setup, setSetup] = React.useState(true);
   const [error, setError] = React.useState(false);
 
@@ -30,6 +34,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [budgetDetails, setBudgetDetails] = React.useState({});
   const [modelKey, setModelKey] = React.useState('');
   const [values, setValues] = React.useState(Array(MONTHS.length).fill(ENERGY));
+  const [uploadValues, setUploadValues] = React.useState([]);
 
   React.useEffect(() => {
     getModelKey();
@@ -51,7 +56,9 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       filter: JSON.stringify({})
     });
     const { data } = JSON.parse(res)[0];
-    setcategories(JSON.parse(data));
+    const catArray = JSON.parse(data);
+    setcategories(catArray);
+    setUploadValues(Array(catArray.length).fill(ENERGY))
   }
 
   const newCategory = async () => {
@@ -68,7 +75,8 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       setId('');
       setName('');
       setAddCategory(false);
-      alert.show(`${name} added succefully!!!`)
+      alert.show(`${name} added succefully!!!`);
+      window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -80,15 +88,27 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
     setValues(newValues);
   };
 
-  const onCategoryClick = async (c: any) => {
-    set_id(c?._id);
-    setCategoryId(c?.id);
-    setCategory(c?.label);
+  const changeUploadValues = (index: any, value: any) => {
+    const newValues = [...uploadValues];
+    newValues[index] = parseInt(value);
+    setUploadValues(newValues);
+  };
+
+  const onCategoryClick = async (c?: any) => {
+    if (c) {
+      setDefaultClick(false);
+      set_id(c?._id);
+      setCategoryId(c?.id);
+      setCategory(c?.label);
+      setId(c?.id);
+      setName(c?.label);
+    }
+
     const response = await props.uxpContext.executeService("Lucy", "GetPaginatedDocs", {
       collectionName: 'budget',
       modelName,
       max: 20,
-      filter: JSON.stringify({ category: c.id })
+      filter: JSON.stringify({ category: c?.id ? c?.id : "Default" })
     });
     const [result] = JSON.parse(response);
     const { data } = result;
@@ -106,21 +126,21 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   };
 
   const setBudgetandUpdateCategory = async (categoryId: string) => {
-    console.log({ categoryId });
-    if (id || name) {
-      const body = (id && name) ? { id, label: name } : (id) ? { id } : { label: name };
-      await props.uxpContext.executeService("Lucy", "UpdateDocument", {
-        _id,
-        document: JSON.stringify(body),
-        model: modelKey,
-        collection: 'categories',
-        replace: ''
-      })
+    if (!defaultClick) {
+      if (id || name) {
+        const body = (id && name) ? { id, label: name } : (id) ? { id } : { label: name };
+        await props.uxpContext.executeService("Lucy", "UpdateDocument", {
+          _id,
+          document: JSON.stringify(body),
+          model: modelKey,
+          collection: 'categories',
+          replace: ''
+        })
+      }
     }
-    setId('');
-    setName('');
 
-    const budgetBody = { location: 'building', values, category: categoryId };
+    const budgetBody = { location: 'building', values, category: defaultClick ? 'Default' : id };
+    const cat = defaultClick ? "Default" : category;
 
     if (Object.keys(budgetDetails).length > 0) {
       const { _id } = budgetDetails as any;
@@ -132,17 +152,33 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
         replace: ''
       });
 
-      alert.show(`Budget for ${category} updated successfully!!!`);
+      alert.show(`Budget for ${cat} updated successfully!!!`);
     } else {
       await props.uxpContext.executeService("Lucy", "AddNewDocument", {
         document: JSON.stringify(budgetBody),
         modelName,
         collection: 'budget'
       });
-      alert.show(`Budget for ${category} added successfully!!!`);
+      alert.show(`Budget for ${cat} added successfully!!!`);
     }
     setMonthlyBudget(false);
+    window.location.reload();
+  };
 
+  const uplaodValuesManually = () => {
+    const month = new Date(date).getMonth();
+    const year = new Date(date).getFullYear();
+
+    categories.map(async (c, i) => {
+      await props.uxpContext.executeAction("EnergyBudget", "AddValue",
+        {
+          month,
+          year,
+          location: 'building',
+          category: c.id,
+          value: uploadValues[i]
+        });
+    });
   };
 
   return (
@@ -157,15 +193,16 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
 
       {setup ?
         <div className='content'>
-          <Button className='category-button' title='Default' onClick={() => { setMonthlyBudget(true) }}></Button>
+          <Button className='category-button' title='Default' onClick={() => { setDefaultClick(true); setMonthlyBudget(true); onCategoryClick() }}></Button>
           {categories.map(c => {
             return <Button key={c?._id} className='category-button' title={c?.label} onClick={() => onCategoryClick(c)} />
           })}
-          <Button className='add' title='+' onClick={() => setAddCategory(true)}></Button>
+          <Button className='add' title='+' onClick={() => {setId('');setName('');setAddCategory(true)}}></Button>
         </div>
         :
         <div className='documentation'>
           <a href="#" className='docs'>View   API Docs To send data</a>
+          <Button className='upload-values' title='Manually Upload Energy' onClick={() => { setUpload(true) }} />
           <BuyOnSpaceworxButton link='#' className='spaceworx' />
         </div>
       }
@@ -189,17 +226,41 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
         : null
       };
 
+
+      <Modal
+        className='uploadValuesModal'
+        show={upload}
+        title='Update Monthly Energy Consumption'
+        onClose={() => setUpload(false)}
+      >
+        <DatePicker title='' date={date} onChange={val => setDate(val)} />
+        <div className='categories'>
+          {categories.map((c, i) => {
+            return <div className='single-category'>
+              <span>{c?.label}</span>
+              <Input value={uploadValues[i]} type='number' onChange={(v) => changeUploadValues(i, v)} />
+            </div>
+          })}
+        </div>
+        <Button title='Save' onClick={() => uplaodValuesManually()}></Button>
+      </Modal>
+
+
       {monthlyBudget ?
         <Modal
           className='monthly-budget'
-          title={category}
+          title={defaultClick ? "Default" : category}
           show={monthlyBudget}
           onClose={() => setMonthlyBudget(false)}>
 
-          <div className='inputs'>
-            <Input placeholder='ID' value={id} onChange={(val) => { setError(false); setId(val) }} />
-            <Input placeholder='Name' value={name} onChange={(val) => { setError(false); setName(val) }} />
-          </div>
+          {!defaultClick ?
+            <div className='inputs'>
+              <Input placeholder='ID' value={id} onChange={(val) => { setError(false); setId(val) }} />
+              <Input placeholder='Name' value={name} onChange={(val) => { setError(false); setName(val) }} />
+            </div>
+            :
+            null
+          }
 
           <div className='budgets'>
             {MONTHS.map((M, i) => {
@@ -220,8 +281,6 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
         : null
       }
     </div>
-
-
   )
 }
 

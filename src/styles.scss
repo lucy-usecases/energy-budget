@@ -135,6 +135,7 @@
     height: 100%;
     position: relative;
     overflow-y: hidden;
+
     .header {
         position: absolute;
         left: 50%;
@@ -205,6 +206,13 @@
             left: 50%;
             transform: translateX(-50%);
             bottom: 250px;
+        }
+
+        .upload-values {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 350px;
         }
 
     }
@@ -344,6 +352,40 @@
 
         }
     }
+}
 
+.uploadValuesModal {
+    display: flex;
+    flex-direction: column;
 
+    .uxp-date-time-picker-container {
+        width: 250px;
+    }
+
+    .categories {
+        display: flex;
+        flex-direction: column;
+        margin-top: 25px;
+        padding: 5px;
+
+        .single-category {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 250px;
+
+            span {
+                margin-right: 15px;
+            }
+        }
+    }
+
+    .uxp-button {
+        display: block;
+        color: black;
+        margin-top: 25px;
+        background-color: #06f;
+
+    }
 }
