@@ -3,7 +3,7 @@
     "tags": [
         "energy"
     ],
-    "version": "2.1.1",
+    "version": "2.1.2",
     "public": true,
     "connectorsRequired": [],
     "postInstallActions": [],

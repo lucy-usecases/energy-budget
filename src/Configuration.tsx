@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './styles.scss';
 import './config.scss';
-import { Button, BuyOnSpaceworxButton, DatePicker, Input, Modal, useAlert, useToast } from 'uxp/components';
+import { AsyncButton, Button, BuyOnSpaceworxButton, DatePicker, Input, Modal, useAlert, useToast } from 'uxp/components';
 import { IContextProvider } from './uxp';
 import { completeInstallation } from './config-util';
 
@@ -170,20 +170,23 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
     // window.location.reload();
   };
 
-  const uplaodValuesManually = () => {
+  const uploadValuesManually = async () => {
     const month = new Date(date).getMonth();
     const year = new Date(date).getFullYear();
-
-    categories.map(async (c, i) => {
+    let i = 0;
+    for(let cat of categories) {
       await props.uxpContext.executeAction("EnergyBudget", "AddValue",
-        {
-          month,
-          year,
-          location: 'building',
-          category: c.id,
-          value: uploadValues[i]
-        });
-    });
+      {
+        month,
+        year,
+        location: 'building',
+        category: cat.id,
+        value: uploadValues[i]
+      });
+      i++;
+    }
+    setUpload(false);
+    toast.success('Energy data has been uploaded');
   };
 
   return (
@@ -206,9 +209,19 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
         </div>
         :
         <div className='documentation'>
-          <a href="#" className='docs'>View   API Docs To send data</a>
-          <Button className='upload-values' title='Manually Upload Energy' onClick={() => { setUpload(true) }} />
-          <BuyOnSpaceworxButton link='#' className='spaceworx' />
+          <div className='doc-item'  onClick={()=>{setUpload(true)}}>
+            <div className='icon' />
+            <div className='label'>Manually upload energy data</div>
+          </div>
+          {/* <div className='doc-item'>
+            <div className='icon' />
+            <div className='label'>Send data via API</div>
+          </div> */}
+          <div className='doc-item'>
+            <div className='icon' />
+            <div className='label'>Get Smart Meters</div>
+            <BuyOnSpaceworxButton link='#' className='spaceworx' />
+          </div>
         </div>
       }
 
@@ -242,19 +255,25 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       <Modal
         className='uploadValuesModal'
         show={upload}
+        autoSize={true}
         title='Update Monthly Energy Consumption'
         onClose={() => setUpload(false)}
       >
-        <DatePicker title='' date={date} onChange={val => setDate(val)} />
+      
         <div className='categories'>
+        <div className='single-category'>
+          <span>Date</span>
+        <DatePicker title='' date={date} onChange={val => setDate(val)} />
+        </div>
           {categories.map((c, i) => {
             return <div className='single-category'>
               <span>{c?.label}</span>
               <Input value={uploadValues[i]} type='number' onChange={(v) => changeUploadValues(i, v)} />
+              <label>kwh</label>
             </div>
           })}
         </div>
-        <Button title='Save' onClick={() => uplaodValuesManually()}></Button>
+        <AsyncButton title='Save' onClick={async () => await uploadValuesManually()} />
       </Modal>
 
 
