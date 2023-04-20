@@ -1,12 +1,14 @@
 .selector-energy {
     margin-bottom: 10px;
 }
+
 .energy-gauge {
     .gauge-face-container {
         margin-left: auto;
         margin-right: auto;
     }
 }
+
 .energy-widget {
     .no-budget-data {
         font-size: 3em;
@@ -17,22 +19,28 @@
         transform: translateY(-50%);
     }
 }
+
 .carbon-footprint {
     padding: 10px 50px;
+
     .profile-image-container {
         background-color: transparent !important;
     }
+
     .cf-grid {
         .data-grid-column {
             border: none !important;
         }
+
         .item-card {
             padding: 5px;
+
             //    justify-content: center;
             .title {
                 font-size: 2.4em;
                 font-weight: 200;
             }
+
             .content {
                 padding: 0px;
             }
@@ -44,18 +52,18 @@
     width: 60vw;
     height: auto;
 
-    & > .row {
+    &>.row {
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
 
-    & > .button-row {
+    &>.button-row {
         display: flex;
         align-items: center;
         justify-content: flex-end;
 
-        & > .uxp-button {
+        &>.uxp-button {
             margin: 5px;
 
             &.save {
@@ -67,54 +75,275 @@
         }
     }
 }
+
 .u-tt {
-    background-color: rgba(0,0,0,.5);
+    background-color: rgba(0, 0, 0, .5);
     border-radius: 5px;
-    padding:10px;
-    color:white;
+    padding: 10px;
+    color: white;
     display: flex;
+
     div {
-        margin-right:10px;
+        margin-right: 10px;
     }
 }
 
-.uxp-sample-data-label{
+.uxp-sample-data-label {
     text-transform: capitalize;
 }
 
 
-.energy-widget{ 
-    &.w-small{
-        .carbon-footprint { 
-            .data-grid{ 
-                 .data-grid-column{  
-                    
-                        .item-card{
-                            // display: inline-block;
-                            .item-card-image-container{
-                                // position: inherit;
-                                // top: 0;
-                                // left: 35%;
-                                // transform: inherit;
-                                // width: 100%;
-                                // height: auto;
-                                // text-align: center;
-                                // display: inline-block;
-                            }
-                            .content{
-                                // margin-left: 0;
-                                // width: 100%;
-                                // display: inline-block;
-                                // text-align: center;
+.energy-widget {
+    &.w-small {
+        .carbon-footprint {
+            .data-grid {
+                .data-grid-column {
 
-                                .title{
-                                    font-size: 1.8em;
-                                }
+                    .item-card {
+
+                        // display: inline-block;
+                        .item-card-image-container {
+                            // position: inherit;
+                            // top: 0;
+                            // left: 35%;
+                            // transform: inherit;
+                            // width: 100%;
+                            // height: auto;
+                            // text-align: center;
+                            // display: inline-block;
+                        }
+
+                        .content {
+                            // margin-left: 0;
+                            // width: 100%;
+                            // display: inline-block;
+                            // text-align: center;
+
+                            .title {
+                                font-size: 1.8em;
                             }
                         }
-                     
-                 }
-             }
-         } 
+                    }
+
+                }
+            }
+        }
     }
+}
+
+.config {
+    height: 100%;
+    position: relative;
+    overflow-y: hidden;
+    .header {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: auto;
+        width: 90%;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 2px solid black;
+        padding-top: 25px;
+
+        span {
+            color: black;
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: end;
+
+            .uxp-button {
+                height: 35px;
+                font-weight: 700;
+                background-color: grey;
+            }
+
+            .primary {
+                color: black;
+                margin-right: 25px;
+            }
+
+            .active {
+                background-color: #06f;
+            }
+        }
+    }
+
+
+    .documentation {
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        position: absolute;
+        height: 100%;
+        width: 90%;
+        display: flex;
+        flex-direction: column;
+
+        .docs {
+            color: black;
+            font-size: 32px;
+            font-weight: bold;
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .spaceworx {
+            width: 250px;
+            height: 50px;
+            border-radius: 15px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 250px;
+        }
+
+    }
+
+    .content {
+        height: 100%;
+        position: absolute;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        padding: 50px 0 0 15px;
+        margin: auto;
+
+        .uxp-button {
+            color: white;
+            height: 50px;
+            width: 125px;
+            border-radius: 5px;
+            margin: 0 25px 25px 0;
+            text-align: center;
+            display: inline;
+        }
+
+        .category-button {
+
+            background-color: black;
+        }
+
+        .add {
+            font-size: 15px;
+            font-weight: bold;
+            height: 50px;
+            width: 65px;
+            background-color: #DB4382;
+        }
+    }
+
+    .uxp-input-container {
+        margin: 25px;
+    }
+
+}
+
+.add-category {
+    .modal-body {
+        display: flex;
+        flex-direction: column;
+
+        .save-button {
+            display: flex;
+            justify-content: flex-end;
+
+            .button {
+                margin: 0;
+                background-color: #06f;
+                color: white;
+                display: inline-block;
+                width: 100px;
+                height: 35px;
+            }
+        }
+
+        .uxp-input-container {
+            margin: 15px 0 15px 0;
+        }
+
+    }
+}
+
+.monthly-budget {
+    .modal-body {
+        display: flex;
+        flex-direction: column;
+
+        .inputs {
+            padding: 10px;
+            display: flex;
+            margin-bottom: 15px;
+            width: 100%;
+
+            .uxp-input-container {
+                width: 40%;
+                margin-right: 25px;
+            }
+
+        }
+
+        .budgets {
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+
+            .budget {
+                width: 15%;
+                padding: 10px;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                background-color: lightgray;
+                border-radius: 10px;
+
+                div {
+                    display: flex;
+                    align-items: center;
+
+                    .uxp-form-input {
+                        height: 15px;
+                        margin-right: 2.5px;
+                        text-align: center;
+                    }
+                }
+
+                span {
+                    margin-top: 10px;
+                    font-weight: bold;
+                }
+            }
+        }
+
+        .save-button {
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: end;
+
+            .uxp-button {
+                margin: 0;
+                margin-right: 40px;
+                color: white;
+                background-color: #06f;
+            }
+
+        }
+    }
+
+
 }

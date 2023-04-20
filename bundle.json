@@ -21,5 +21,8 @@
 	    "category":"energy-management"
         }
 
-    ]
+    ],
+    "uis": [{ "id": "config", "label": "Energy Budget Setup" }],
+    "menuItems": [],
+    "sidebarLinks": []
 }

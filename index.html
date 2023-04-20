@@ -10,6 +10,7 @@
     <!-- <link rel="stylesheet" type="text/css" href="./node_modules/react-resizable/css/styles.css"> -->
 
     <link rel="stylesheet" type="text/css" href="https://uxp.s3.amazonaws.com/dist/experimental/uxp_dashboard.css">
+    <!-- <link rel="stylesheet" type="text/css" href="http://localhost:5501/assets/styles/css/uxp_dashboard.css"> -->
 
 
     <title>UXP Development Environment</title>
@@ -19,22 +20,42 @@
     <div id="root"></div>
 
     <!-- Dependencies -->
-    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <!-- React | Production | Loading from S3 -->
+    <script crossorigin src="https://uxp.s3.amazonaws.com/packages/react-16/react.production.min.js"></script>
+    <script crossorigin src="https://uxp.s3.amazonaws.com/packages/react-16/react-dom.production.min.js"></script>
 
-    <script crossorigin src="https://unpkg.com/prop-types/prop-types.min.js"></script>
-    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/recharts/1.8.5/Recharts.min.js"></script>
+    <!-- React | Development | For debuging  -->
+    <!-- <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script> -->
+
+    <script crossorigin src="https://uxp.s3.amazonaws.com/packages/prop-types/prop-types.min.js"></script>
+    <script crossorigin src="https://uxp.s3.amazonaws.com/packages/recharts/1.8.5/Recharts.min.js"></script>
+
+    <!-- Fontawesome -->
+    <script src="https://uxp.s3.amazonaws.com/font-awesome/dist/main.js"></script>
 
     <!-- Main -->
     <script src="https://uxp.s3.amazonaws.com/dist/experimental/main.js"></script>
+    <!-- <script src="http://localhost:5501/dist/main.js"></script> -->
+    <script src="./dist/main.js"></script>
 
     <script>
 
-        // scripts
+        const renderUXPDashboard = () => {
+            renderDashboard(contextProviderValue, toolbars)
+        }
+
+        window.Widgets = [];
+
+        // script files
         let scripts = [
             "./dist/main.js",
         ]
 
+
+        // context provider value
+        // define all variables here
+        // ex : logged-in user details, theme, base urls
         let installedWidgets = [];
         try {
             installedWidgets = JSON.parse(localStorage.getItem('uxp-widgets')) || [];
@@ -42,17 +63,18 @@
 
         }
         let deletedWidgets = [];
-
         let contextProviderValue = {
+            language: 'en',
             environment: "dev",
             userKey: "user_001",
             root: "root",
             sidebarItems: window.SidebarLinks || [],
             scriptFiles: scripts, // widget script files
-            apiKey: '',
+            lucyUrl: localStorage.getItem('lucyUrl'),
+            apiKey: localStorage.getItem('lucyApiKey'),
             widgetManager: {
                 loadFromMarketPlace: false,
-                url: "",
+                url: "http://lucy1.local:5000/api/UXP/search",
                 getInstalledWidgets: () => installedWidgets,
                 getDeletedWidgets: () => deletedWidgets,
                 onWidgetsChanged: (added, deleted) => {
@@ -63,51 +85,67 @@
                         resolve();
                     });
                 }
+            },
+            reRenderDashboard: renderUXPDashboard,
+            headerLinks: [],
+            marketplace: {
+                show: {
+                    header: true,
+                    sidebar: true,
+                    widgetBrowser: true
+                },
+                url: "https://marketplace.spaceworx.io",
+                logo: "https://spaceworx.io/wp-content/uploads/2019/12/cropped-Asset-5-1-192x192.png"
             }
         }
+
         let toolbars = [{
             component: UXPComponents.DeveloperMenu,
-            props: {
-                title: '',
-                url: contextProviderValue.lucyUrl,
-                apiKey: contextProviderValue.apiKey,
-                onSave: (url, apiKey) => {
-                    updateCredentials(url, apiKey);
-                }
-            }
+            props: {}
         }];
 
-        // render 
-        renderDashboard(contextProviderValue, toolbars);
+        const validateURL = () => {
+            // check url
+            let paramsString = window.location.search;
+            console.log("paramsString : ", paramsString)
+            let urlParams = new URLSearchParams(paramsString);
 
-        // update credentials
-        function updateCredentials(lucyUrl, apiKey) {
-            localStorage.setItem('lucyUrl', lucyUrl);
-            localStorage.setItem('lucyApiKey', apiKey);
-            contextProviderValue.lucyUrl = lucyUrl;
-            contextProviderValue.apiKey = apiKey;
-            let _toolbars = [{
-                component: UXPComponents.DeveloperMenu,
-                props: {
-                    title: '',
-                    url: contextProviderValue.lucyUrl,
-                    apiKey: contextProviderValue.apiKey,
-                    onSave: (url, apiKey) => {
-                        updateCredentials(url, apiKey);
+            let id = null;
+            let bundle = null
+            if (urlParams.has("id")) id = urlParams.get("id")
+            if (urlParams.has("bundle")) bundle = urlParams.get("bundle")
+
+            console.log("bundle : ", bundle)
+            return [id != null, id, bundle]
+        }
+
+        const renderView = () => {
+            let [validUI, id, bundle] = validateURL()
+
+            if (validUI) {
+                if (typeof RenderUIItems != "undefined") {
+                    let _uiid = id
+                    if (bundle && bundle.trim().length > 0) _uiid = bundle + "/ui/" + id
+
+                    let _ui = RenderUIItems.find(ui => (ui.id.includes(_uiid)))
+
+                    if (_ui) {
+                        renderUI(contextProviderValue, toolbars, _ui.id, _ui.title ? _ui.title : "")
+                    }
+                    else {
+                        alert("unable to find the given ui")
                     }
                 }
-            }];
-            renderDashboard(contextProviderValue, _toolbars);
+                else {
+                    alert("unable to find the given ui")
+                }
+            }
+            else {
+                renderUXPDashboard()
+            }
         }
-        let storedUrl = localStorage.getItem('lucyUrl');
-        let storedApiKey = localStorage.getItem('lucyApiKey');
-        if (!!storedUrl && !!storedApiKey) {
-            updateCredentials(storedUrl, storedApiKey);
-        }
-        /*
-        Call this to link this setup with an iviva account
-        updateCredentials('http://demo.lucy.iviva.cloud','SC:demo:0a22e95581330018');
-        */
+
+        renderView()
 
     </script>
 

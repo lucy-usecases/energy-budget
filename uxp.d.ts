@@ -5250,5 +5250,6 @@ declare module "uxp/components" {
      * ```
      */
     export const SampleDataLabel : React.FunctionComponent<ISampleDataLabelProps>;
+    type AlertHook = () => IAlertResult;
         export const useToast:ToastHook;    export const useAlert:AlertHook;    export const useDebounce:DebounceHook;    export const useResizeEffect:ResizeEffectHook;    export const useMessageBus:MessageBusHook;    export const useFields:FieldsHook;    export const useUpdateWidgetProps:IUseUpdateWidgetProps;    export const useEventSubscriber:IEventSubscriber;    export const useEffectWithPolling:IUseEffectWithPolling;
 }
