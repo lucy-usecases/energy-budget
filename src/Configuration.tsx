@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './styles.scss';
-import { Button, BuyOnSpaceworxButton, DatePicker, Input, Modal, useAlert } from 'uxp/components';
+import './config.scss';
+import { Button, BuyOnSpaceworxButton, DatePicker, Input, Modal, useAlert, useToast } from 'uxp/components';
 import { IContextProvider } from './uxp';
+import { completeInstallation } from './config-util';
 
 export interface IConfigUIProps {
   uxpContext: IContextProvider;
@@ -16,6 +18,7 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 
 const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const alert = useAlert();
+  const toast = useToast();
   const [id, setId] = React.useState('');
   const [name, setName] = React.useState('');
   const [addCategory, setAddCategory] = React.useState(false);
@@ -75,8 +78,10 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       setId('');
       setName('');
       setAddCategory(false);
-      alert.show(`${name} added succefully!!!`);
-      window.location.reload();
+
+      toast.success(`${name} added succefully!!!`);
+      await completeInstallation(props.uxpContext);
+      // window.location.reload();
     } catch (err) {
       console.log(err);
     }
@@ -152,17 +157,17 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
         replace: ''
       });
 
-      alert.show(`Budget for ${cat} updated successfully!!!`);
+      toast.success(`Budget for ${cat} updated`);
     } else {
       await props.uxpContext.executeService("Lucy", "AddNewDocument", {
         document: JSON.stringify(budgetBody),
         modelName,
         collection: 'budget'
       });
-      alert.show(`Budget for ${cat} added successfully!!!`);
+      toast.success(`Budget for ${cat} added successfully.`);
     }
     setMonthlyBudget(false);
-    window.location.reload();
+    // window.location.reload();
   };
 
   const uplaodValuesManually = () => {
@@ -209,13 +214,20 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
 
       {addCategory ?
         <Modal
+          autoSize={true}
           className='add-category'
           title='New Category'
           show={addCategory}
           onClose={() => setAddCategory(false)}>
+           <label>Category Name</label>
+          <Input value={name} placeholder='Label' onChange={(val) => { 
+            setError(false); 
+            setName(val) ;
+            setId(val.toLowerCase().replace(/\s+/g,'-'));
+            }} />
 
+          <label>Category ID</label>
           <Input value={id} placeholder='ID' onChange={(val) => { setError(false); setId(val) }} />
-          <Input value={name} placeholder='Name' onChange={(val) => { setError(false); setName(val) }} />
           {error ? <span style={{ color: 'red', margin: "5px 5px 10px 5px", textAlign: 'end' }}>Please fill above fields</span> : null}
 
           <div className='save-button'>
@@ -255,20 +267,22 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
 
           {!defaultClick ?
             <div className='inputs'>
+              <label>ID</label>
               <Input placeholder='ID' value={id} onChange={(val) => { setError(false); setId(val) }} />
+              <label>Label</label>
               <Input placeholder='Name' value={name} onChange={(val) => { setError(false); setName(val) }} />
             </div>
             :
             null
           }
-
+          <div className='budget-label'>Set monthly energy consumption budgets for this  category</div>
           <div className='budgets'>
             {MONTHS.map((M, i) => {
               return <div key={M} className='budget'>
                 <div>
                   <Input value={values[i]} type='number' onChange={(val) => handleValueChange(i, val)} />kWh
                 </div>
-                <span>{M}</span>
+                <span className='month'>{M}</span>
               </div>
             })}
           </div>
