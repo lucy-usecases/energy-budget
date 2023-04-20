@@ -197,7 +197,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
           {categories.map(c => {
             return <Button key={c?._id} className='category-button' title={c?.label} onClick={() => onCategoryClick(c)} />
           })}
-          <Button className='add' title='+' onClick={() => setAddCategory(true)}></Button>
+          <Button className='add' title='+' onClick={() => {setId('');setName('');setAddCategory(true)}}></Button>
         </div>
         :
         <div className='documentation'>

@@ -642,7 +642,7 @@ const Configuration = (props) => {
                 categories.map(c => {
                     return react_1.default.createElement(components_1.Button, { key: c === null || c === void 0 ? void 0 : c._id, className: 'category-button', title: c === null || c === void 0 ? void 0 : c.label, onClick: () => onCategoryClick(c) });
                 }),
-                react_1.default.createElement(components_1.Button, { className: 'add', title: '+', onClick: () => setAddCategory(true) }))
+                react_1.default.createElement(components_1.Button, { className: 'add', title: '+', onClick: () => { setId(''); setName(''); setAddCategory(true); } }))
             :
                 react_1.default.createElement("div", { className: 'documentation' },
                     react_1.default.createElement("a", { href: "#", className: 'docs' }, "View   API Docs To send data"),
