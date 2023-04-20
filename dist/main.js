@@ -11,7 +11,7 @@
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.id, ".selector-energy {\n  margin-bottom: 10px;\n}\n\n.energy-gauge .gauge-face-container {\n  margin-left: auto;\n  margin-right: auto;\n}\n\n.energy-widget .no-budget-data {\n  font-size: 3em;\n  opacity: 0.5;\n  text-align: center;\n  position: relative;\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.carbon-footprint {\n  padding: 10px 50px;\n}\n.carbon-footprint .profile-image-container {\n  background-color: transparent !important;\n}\n.carbon-footprint .cf-grid .data-grid-column {\n  border: none !important;\n}\n.carbon-footprint .cf-grid .item-card {\n  padding: 5px;\n}\n.carbon-footprint .cf-grid .item-card .title {\n  font-size: 2.4em;\n  font-weight: 200;\n}\n.carbon-footprint .cf-grid .item-card .content {\n  padding: 0px;\n}\n\n.energy-budget-widget-config-panel {\n  width: 60vw;\n  height: auto;\n}\n.energy-budget-widget-config-panel > .row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.energy-budget-widget-config-panel > .button-row {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button {\n  margin: 5px;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button.save.active {\n  background-color: #52c4c9;\n  color: white;\n}\n\n.u-tt {\n  background-color: rgba(0, 0, 0, 0.5);\n  border-radius: 5px;\n  padding: 10px;\n  color: white;\n  display: flex;\n}\n.u-tt div {\n  margin-right: 10px;\n}\n\n.uxp-sample-data-label {\n  text-transform: capitalize;\n}\n\n.energy-widget.w-small .carbon-footprint .data-grid .data-grid-column .item-card .content .title {\n  font-size: 1.8em;\n}\n\n.config {\n  height: 100%;\n  position: relative;\n  overflow-y: hidden;\n}\n.config .header {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n  margin: auto;\n  width: 90%;\n  height: 100px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  border-bottom: 2px solid black;\n  padding-top: 25px;\n}\n.config .header span {\n  color: black;\n  font-size: 42px;\n  font-weight: bold;\n}\n.config .header .actions {\n  display: flex;\n  justify-content: end;\n}\n.config .header .actions .uxp-button {\n  height: 35px;\n  font-weight: 700;\n  background-color: grey;\n}\n.config .header .actions .primary {\n  color: black;\n  margin-right: 25px;\n}\n.config .header .actions .active {\n  background-color: #06f;\n}\n.config .documentation {\n  position: absolute;\n  top: 100px;\n  left: 50%;\n  transform: translateX(-50%);\n  position: absolute;\n  height: 100%;\n  width: 90%;\n  display: flex;\n  flex-direction: column;\n}\n.config .documentation .docs {\n  color: black;\n  font-size: 32px;\n  font-weight: bold;\n  position: absolute;\n  top: 150px;\n  left: 50%;\n  transform: translateX(-50%);\n}\n.config .documentation .spaceworx {\n  width: 250px;\n  height: 50px;\n  border-radius: 15px;\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n  bottom: 250px;\n}\n.config .content {\n  height: 100%;\n  position: absolute;\n  top: 100px;\n  left: 50%;\n  transform: translateX(-50%);\n  width: 90%;\n  padding: 50px 0 0 15px;\n  margin: auto;\n}\n.config .content .uxp-button {\n  color: white;\n  height: 50px;\n  width: 125px;\n  border-radius: 5px;\n  margin: 0 25px 25px 0;\n  text-align: center;\n  display: inline;\n}\n.config .content .category-button {\n  background-color: black;\n}\n.config .content .add {\n  font-size: 15px;\n  font-weight: bold;\n  height: 50px;\n  width: 65px;\n  background-color: #DB4382;\n}\n.config .uxp-input-container {\n  margin: 25px;\n}\n\n.add-category .modal-body {\n  display: flex;\n  flex-direction: column;\n}\n.add-category .modal-body .save-button {\n  display: flex;\n  justify-content: flex-end;\n}\n.add-category .modal-body .save-button .button {\n  margin: 0;\n  background-color: #06f;\n  color: white;\n  display: inline-block;\n  width: 100px;\n  height: 35px;\n}\n.add-category .modal-body .uxp-input-container {\n  margin: 15px 0 15px 0;\n}\n\n.monthly-budget .modal-body {\n  display: flex;\n  flex-direction: column;\n}\n.monthly-budget .modal-body .inputs {\n  padding: 10px;\n  display: flex;\n  margin-bottom: 15px;\n  width: 100%;\n}\n.monthly-budget .modal-body .inputs .uxp-input-container {\n  width: 40%;\n  margin-right: 25px;\n}\n.monthly-budget .modal-body .budgets {\n  width: 100%;\n  padding: 10px;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 15px;\n}\n.monthly-budget .modal-body .budgets .budget {\n  width: 15%;\n  padding: 10px;\n  height: auto;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  background-color: lightgray;\n  border-radius: 10px;\n}\n.monthly-budget .modal-body .budgets .budget div {\n  display: flex;\n  align-items: center;\n}\n.monthly-budget .modal-body .budgets .budget div .uxp-form-input {\n  height: 15px;\n  margin-right: 2.5px;\n  text-align: center;\n}\n.monthly-budget .modal-body .budgets .budget span {\n  margin-top: 10px;\n  font-weight: bold;\n}\n.monthly-budget .modal-body .save-button {\n  width: 100%;\n  padding: 10px;\n  display: flex;\n  justify-content: end;\n}\n.monthly-budget .modal-body .save-button .uxp-button {\n  margin: 0;\n  margin-right: 40px;\n  color: white;\n  background-color: #06f;\n}", ""]);
+exports.push([module.id, ".selector-energy {\n  margin-bottom: 10px;\n}\n\n.energy-gauge .gauge-face-container {\n  margin-left: auto;\n  margin-right: auto;\n}\n\n.energy-widget .no-budget-data {\n  font-size: 3em;\n  opacity: 0.5;\n  text-align: center;\n  position: relative;\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.carbon-footprint {\n  padding: 10px 50px;\n}\n.carbon-footprint .profile-image-container {\n  background-color: transparent !important;\n}\n.carbon-footprint .cf-grid .data-grid-column {\n  border: none !important;\n}\n.carbon-footprint .cf-grid .item-card {\n  padding: 5px;\n}\n.carbon-footprint .cf-grid .item-card .title {\n  font-size: 2.4em;\n  font-weight: 200;\n}\n.carbon-footprint .cf-grid .item-card .content {\n  padding: 0px;\n}\n\n.energy-budget-widget-config-panel {\n  width: 60vw;\n  height: auto;\n}\n.energy-budget-widget-config-panel > .row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.energy-budget-widget-config-panel > .button-row {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button {\n  margin: 5px;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button.save.active {\n  background-color: #52c4c9;\n  color: white;\n}\n\n.u-tt {\n  background-color: rgba(0, 0, 0, 0.5);\n  border-radius: 5px;\n  padding: 10px;\n  color: white;\n  display: flex;\n}\n.u-tt div {\n  margin-right: 10px;\n}\n\n.uxp-sample-data-label {\n  text-transform: capitalize;\n}\n\n.energy-widget.w-small .carbon-footprint .data-grid .data-grid-column .item-card .content .title {\n  font-size: 1.8em;\n}\n\n.config {\n  height: 100%;\n  position: relative;\n  overflow-y: hidden;\n}\n.config .header {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n  margin: auto;\n  width: 90%;\n  height: 100px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  border-bottom: 2px solid black;\n  padding-top: 25px;\n}\n.config .header span {\n  color: black;\n  font-size: 42px;\n  font-weight: bold;\n}\n.config .header .actions {\n  display: flex;\n  justify-content: end;\n}\n.config .header .actions .uxp-button {\n  height: 35px;\n  font-weight: 700;\n  background-color: grey;\n}\n.config .header .actions .primary {\n  color: black;\n  margin-right: 25px;\n}\n.config .header .actions .active {\n  background-color: #06f;\n}\n.config .documentation {\n  position: absolute;\n  top: 100px;\n  left: 50%;\n  transform: translateX(-50%);\n  position: absolute;\n  height: 100%;\n  width: 90%;\n  display: flex;\n  flex-direction: column;\n}\n.config .documentation .docs {\n  color: black;\n  font-size: 32px;\n  font-weight: bold;\n  position: absolute;\n  top: 150px;\n  left: 50%;\n  transform: translateX(-50%);\n}\n.config .documentation .spaceworx {\n  width: 250px;\n  height: 50px;\n  border-radius: 15px;\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n  bottom: 250px;\n}\n.config .documentation .upload-values {\n  position: absolute;\n  left: 50%;\n  transform: translateX(-50%);\n  bottom: 350px;\n}\n.config .content {\n  height: 100%;\n  position: absolute;\n  top: 100px;\n  left: 50%;\n  transform: translateX(-50%);\n  width: 90%;\n  padding: 50px 0 0 15px;\n  margin: auto;\n}\n.config .content .uxp-button {\n  color: white;\n  height: 50px;\n  width: 125px;\n  border-radius: 5px;\n  margin: 0 25px 25px 0;\n  text-align: center;\n  display: inline;\n}\n.config .content .category-button {\n  background-color: black;\n}\n.config .content .add {\n  font-size: 15px;\n  font-weight: bold;\n  height: 50px;\n  width: 65px;\n  background-color: #DB4382;\n}\n.config .uxp-input-container {\n  margin: 25px;\n}\n\n.add-category .modal-body {\n  display: flex;\n  flex-direction: column;\n}\n.add-category .modal-body .save-button {\n  display: flex;\n  justify-content: flex-end;\n}\n.add-category .modal-body .save-button .button {\n  margin: 0;\n  background-color: #06f;\n  color: white;\n  display: inline-block;\n  width: 100px;\n  height: 35px;\n}\n.add-category .modal-body .uxp-input-container {\n  margin: 15px 0 15px 0;\n}\n\n.monthly-budget .modal-body {\n  display: flex;\n  flex-direction: column;\n}\n.monthly-budget .modal-body .inputs {\n  padding: 10px;\n  display: flex;\n  margin-bottom: 15px;\n  width: 100%;\n}\n.monthly-budget .modal-body .inputs .uxp-input-container {\n  width: 40%;\n  margin-right: 25px;\n}\n.monthly-budget .modal-body .budgets {\n  width: 100%;\n  padding: 10px;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 15px;\n}\n.monthly-budget .modal-body .budgets .budget {\n  width: 15%;\n  padding: 10px;\n  height: auto;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  background-color: lightgray;\n  border-radius: 10px;\n}\n.monthly-budget .modal-body .budgets .budget div {\n  display: flex;\n  align-items: center;\n}\n.monthly-budget .modal-body .budgets .budget div .uxp-form-input {\n  height: 15px;\n  margin-right: 2.5px;\n  text-align: center;\n}\n.monthly-budget .modal-body .budgets .budget span {\n  margin-top: 10px;\n  font-weight: bold;\n}\n.monthly-budget .modal-body .save-button {\n  width: 100%;\n  padding: 10px;\n  display: flex;\n  justify-content: end;\n}\n.monthly-budget .modal-body .save-button .uxp-button {\n  margin: 0;\n  margin-right: 40px;\n  color: white;\n  background-color: #06f;\n}\n\n.uploadValuesModal {\n  display: flex;\n  flex-direction: column;\n}\n.uploadValuesModal .uxp-date-time-picker-container {\n  width: 250px;\n}\n.uploadValuesModal .categories {\n  display: flex;\n  flex-direction: column;\n  margin-top: 25px;\n  padding: 5px;\n}\n.uploadValuesModal .categories .single-category {\n  margin-top: 15px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 250px;\n}\n.uploadValuesModal .categories .single-category span {\n  margin-right: 15px;\n}\n.uploadValuesModal .uxp-button {\n  display: block;\n  color: black;\n  margin-top: 25px;\n  background-color: #06f;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -437,6 +437,29 @@ module.exports = content.locals || {};
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -446,11 +469,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
 __webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
 const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
 const ENERGY = 230;
@@ -463,6 +483,8 @@ const Configuration = (props) => {
     const [addCategory, setAddCategory] = react_1.default.useState(false);
     const [monthlyBudget, setMonthlyBudget] = react_1.default.useState(false);
     const [defaultClick, setDefaultClick] = react_1.default.useState(false);
+    const [upload, setUpload] = react_1.default.useState(false);
+    const [date, setDate] = (0, react_1.useState)(new Date());
     const [setup, setSetup] = react_1.default.useState(true);
     const [error, setError] = react_1.default.useState(false);
     const [categories, setcategories] = react_1.default.useState([]);
@@ -472,6 +494,7 @@ const Configuration = (props) => {
     const [budgetDetails, setBudgetDetails] = react_1.default.useState({});
     const [modelKey, setModelKey] = react_1.default.useState('');
     const [values, setValues] = react_1.default.useState(Array(MONTHS.length).fill(ENERGY));
+    const [uploadValues, setUploadValues] = react_1.default.useState([]);
     react_1.default.useEffect(() => {
         getModelKey();
         getCategories();
@@ -493,7 +516,9 @@ const Configuration = (props) => {
                 filter: JSON.stringify({})
             });
             const { data } = JSON.parse(res)[0];
-            setcategories(JSON.parse(data));
+            const catArray = JSON.parse(data);
+            setcategories(catArray);
+            setUploadValues(Array(catArray.length).fill(ENERGY));
         });
     }
     const newCategory = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -521,6 +546,11 @@ const Configuration = (props) => {
         const newValues = [...values];
         newValues[index] = parseInt(value);
         setValues(newValues);
+    };
+    const changeUploadValues = (index, value) => {
+        const newValues = [...uploadValues];
+        newValues[index] = parseInt(value);
+        setUploadValues(newValues);
     };
     const onCategoryClick = (c) => __awaiter(void 0, void 0, void 0, function* () {
         if (c) {
@@ -587,6 +617,19 @@ const Configuration = (props) => {
         setMonthlyBudget(false);
         window.location.reload();
     });
+    const uplaodValuesManually = () => {
+        const month = new Date(date).getMonth();
+        const year = new Date(date).getFullYear();
+        categories.map((c, i) => __awaiter(void 0, void 0, void 0, function* () {
+            yield props.uxpContext.executeAction("EnergyBudget", "AddValue", {
+                month,
+                year,
+                location: 'building',
+                category: c.id,
+                value: uploadValues[i]
+            });
+        }));
+    };
     return (react_1.default.createElement("div", { className: 'config' },
         react_1.default.createElement("div", { className: 'header' },
             react_1.default.createElement("span", null, "Energy Management"),
@@ -603,6 +646,7 @@ const Configuration = (props) => {
             :
                 react_1.default.createElement("div", { className: 'documentation' },
                     react_1.default.createElement("a", { href: "#", className: 'docs' }, "View   API Docs To send data"),
+                    react_1.default.createElement(components_1.Button, { className: 'upload-values', title: 'Manually Upload Energy', onClick: () => { setUpload(true); } }),
                     react_1.default.createElement(components_1.BuyOnSpaceworxButton, { link: '#', className: 'spaceworx' })),
         addCategory ?
             react_1.default.createElement(components_1.Modal, { className: 'add-category', title: 'New Category', show: addCategory, onClose: () => setAddCategory(false) },
@@ -613,6 +657,14 @@ const Configuration = (props) => {
                     react_1.default.createElement(components_1.Button, { className: 'button', title: 'Save', onClick: () => { newCategory(); } })))
             : null,
         ";",
+        react_1.default.createElement(components_1.Modal, { className: 'uploadValuesModal', show: upload, title: 'Update Monthly Energy Consumption', onClose: () => setUpload(false) },
+            react_1.default.createElement(components_1.DatePicker, { title: '', date: date, onChange: val => setDate(val) }),
+            react_1.default.createElement("div", { className: 'categories' }, categories.map((c, i) => {
+                return react_1.default.createElement("div", { className: 'single-category' },
+                    react_1.default.createElement("span", null, c === null || c === void 0 ? void 0 : c.label),
+                    react_1.default.createElement(components_1.Input, { value: uploadValues[i], type: 'number', onChange: (v) => changeUploadValues(i, v) }));
+            })),
+            react_1.default.createElement(components_1.Button, { title: 'Save', onClick: () => uplaodValuesManually() })),
         monthlyBudget ?
             react_1.default.createElement(components_1.Modal, { className: 'monthly-budget', title: defaultClick ? "Default" : category, show: monthlyBudget, onClose: () => setMonthlyBudget(false) },
                 !defaultClick ?

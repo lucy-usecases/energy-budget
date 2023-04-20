@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './styles.scss';
-import { Button, BuyOnSpaceworxButton, Input, Modal, useAlert } from 'uxp/components';
+import { Button, BuyOnSpaceworxButton, DatePicker, Input, Modal, useAlert } from 'uxp/components';
 import { IContextProvider } from './uxp';
 
 export interface IConfigUIProps {
@@ -21,6 +21,8 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [addCategory, setAddCategory] = React.useState(false);
   const [monthlyBudget, setMonthlyBudget] = React.useState(false);
   const [defaultClick, setDefaultClick] = React.useState(false);
+  const [upload, setUpload] = React.useState(false);
+  const [date, setDate] = useState(new Date());
 
   const [setup, setSetup] = React.useState(true);
   const [error, setError] = React.useState(false);
@@ -32,6 +34,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [budgetDetails, setBudgetDetails] = React.useState({});
   const [modelKey, setModelKey] = React.useState('');
   const [values, setValues] = React.useState(Array(MONTHS.length).fill(ENERGY));
+  const [uploadValues, setUploadValues] = React.useState([]);
 
   React.useEffect(() => {
     getModelKey();
@@ -53,7 +56,9 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       filter: JSON.stringify({})
     });
     const { data } = JSON.parse(res)[0];
-    setcategories(JSON.parse(data));
+    const catArray = JSON.parse(data);
+    setcategories(catArray);
+    setUploadValues(Array(catArray.length).fill(ENERGY))
   }
 
   const newCategory = async () => {
@@ -81,6 +86,12 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
     const newValues = [...values];
     newValues[index] = parseInt(value);
     setValues(newValues);
+  };
+
+  const changeUploadValues = (index: any, value: any) => {
+    const newValues = [...uploadValues];
+    newValues[index] = parseInt(value);
+    setUploadValues(newValues);
   };
 
   const onCategoryClick = async (c?: any) => {
@@ -154,6 +165,22 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
     window.location.reload();
   };
 
+  const uplaodValuesManually = () => {
+    const month = new Date(date).getMonth();
+    const year = new Date(date).getFullYear();
+
+    categories.map(async (c, i) => {
+      await props.uxpContext.executeAction("EnergyBudget", "AddValue",
+        {
+          month,
+          year,
+          location: 'building',
+          category: c.id,
+          value: uploadValues[i]
+        });
+    });
+  };
+
   return (
     <div className='config'>
       <div className='header'>
@@ -175,6 +202,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
         :
         <div className='documentation'>
           <a href="#" className='docs'>View   API Docs To send data</a>
+          <Button className='upload-values' title='Manually Upload Energy' onClick={() => { setUpload(true) }} />
           <BuyOnSpaceworxButton link='#' className='spaceworx' />
         </div>
       }
@@ -197,6 +225,26 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
         </Modal>
         : null
       };
+
+
+      <Modal
+        className='uploadValuesModal'
+        show={upload}
+        title='Update Monthly Energy Consumption'
+        onClose={() => setUpload(false)}
+      >
+        <DatePicker title='' date={date} onChange={val => setDate(val)} />
+        <div className='categories'>
+          {categories.map((c, i) => {
+            return <div className='single-category'>
+              <span>{c?.label}</span>
+              <Input value={uploadValues[i]} type='number' onChange={(v) => changeUploadValues(i, v)} />
+            </div>
+          })}
+        </div>
+        <Button title='Save' onClick={() => uplaodValuesManually()}></Button>
+      </Modal>
+
 
       {monthlyBudget ?
         <Modal
