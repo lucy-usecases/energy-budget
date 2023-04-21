@@ -210,7 +210,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
         :
         <div className='documentation'>
           <div className='doc-item'  onClick={()=>{setUpload(true)}}>
-            <div className='icon' />
+            <div className='icon icon-upload'  />
             <div className='label'>Manually upload energy data</div>
           </div>
           {/* <div className='doc-item'>
@@ -218,7 +218,6 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
             <div className='label'>Send data via API</div>
           </div> */}
           <div className='doc-item'>
-            <div className='icon' />
             <div className='label'>Get Smart Meters</div>
             <BuyOnSpaceworxButton link='#' className='spaceworx' />
           </div>

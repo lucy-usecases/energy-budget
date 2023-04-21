@@ -48,6 +48,7 @@
         position: relative;
         margin-top: 200px;
         display: flex;
+        justify-content: center;
         // left: 50%;
         // transform: translateX(-50%);
         // position: absolute;
@@ -58,7 +59,7 @@
         .doc-item {
             aspect-ratio: 2;
             height: 165px;
-            margin: 20px auto;
+            margin: 20px;
             background: #EFEFEF;
             border-radius: 10px;
             font-weight: 600;
@@ -68,6 +69,17 @@
             flex-direction: column;
             justify-content: center;
             cursor: pointer;
+            > .icon {
+                width:40px;
+                margin:20px;
+                aspect-ratio: 1;
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+            }
+            .icon-upload {
+                background-image: url(../images/upload.svg);
+            }
         }
 
         .docs {
