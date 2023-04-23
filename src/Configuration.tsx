@@ -5,6 +5,7 @@ import { AsyncButton, Button, BuyOnSpaceworxButton, DatePicker, Input, Modal, us
 import { IContextProvider } from './uxp';
 import { completeInstallation } from './config-util';
 
+const DEFAULT_BUILDING = 'building';
 export interface IConfigUIProps {
   uxpContext: IContextProvider;
   packageUrl: string;
@@ -17,7 +18,7 @@ const modelName = 'EnergyBudget';
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
-  const alert = useAlert();
+  const alerts = useAlert();
   const toast = useToast();
   const [id, setId] = React.useState('');
   const [name, setName] = React.useState('');
@@ -27,7 +28,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [upload, setUpload] = React.useState(false);
   const [date, setDate] = useState(new Date());
 
-  const [setup, setSetup] = React.useState(true);
+  const [setup, setSetup] = React.useState(false);
   const [error, setError] = React.useState(false);
 
   const [categories, setcategories] = React.useState([]);
@@ -81,6 +82,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
 
       toast.success(`${name} added succefully!!!`);
       await completeInstallation(props.uxpContext);
+      await getCategories();
       // window.location.reload();
     } catch (err) {
       console.log(err);
@@ -129,7 +131,20 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
 
     setMonthlyBudget(true);
   };
+  const addNewCategory = async (cid:string,cname:string,budget:number[])=> {
+    await props.uxpContext.executeService("Lucy", "AddNewDocument", {
+      document: JSON.stringify({id:cid,label:cname}),
+      modelName,
+      collection: 'categories',
+      replace: ''
+    });
+    await props.uxpContext.executeService("Lucy", "AddNewDocument", {
+      document: JSON.stringify({location:DEFAULT_BUILDING,values:budget,category:cid}),
+      modelName,
+      collection: 'budget',
+    });
 
+  }
   const setBudgetandUpdateCategory = async (categoryId: string) => {
     if (!defaultClick) {
       if (id || name) {
@@ -144,7 +159,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       }
     }
 
-    const budgetBody = { location: 'building', values, category: defaultClick ? 'Default' : id };
+    const budgetBody = { location: DEFAULT_BUILDING, values, category: defaultClick ? 'Default' : id };
     const cat = defaultClick ? "Default" : category;
 
     if (Object.keys(budgetDetails).length > 0) {
@@ -169,9 +184,42 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
     setMonthlyBudget(false);
     // window.location.reload();
   };
+  async function deleteCategory(id:string) {
+    let b = await alerts.confirm('Are you sure you want to delete this category and monthly budgets? This will not remove any existing meter data. You can add the category again later');
+    if (!b) {
+      return;
+    }
+    await props.uxpContext.executeAction(modelName,'DeleteCategory',{category:id},{json:true});
+    toast.success('Category deleted');
+    await getCategories();
+
+  }
+  async function uploadData() {
+    if (categories.length<1) {
+      let options = await alerts.form({
+        title:'Setup your categories first',
+        content:'You need to setup at least one energy category and budget before entering data. You can start simple. Lets create a single category. Call it "Overall Energy" or something.',
+        formStructure:[
+          {label:'Category Name',validate:{required:true},name:'category',type:'string',placeholder:'Overall Energy'},
+        ]
+      });
+      let {category} = options;
+      if (!category) {
+        return;
+      }
+      //use last set budget values or defaults
+      let cid = category.toLowerCase().replace(/\s+/g,'-');
+      await addNewCategory(cid,category,values);
+      await getCategories();
+      setUpload(true);
+      return;
+    } else {
+      setUpload(true);
+    }
+  }
 
   const uploadValuesManually = async () => {
-    const month = new Date(date).getMonth();
+    const month = new Date(date).getMonth()+1;
     const year = new Date(date).getFullYear();
     let i = 0;
     for(let cat of categories) {
@@ -179,7 +227,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       {
         month,
         year,
-        location: 'building',
+        location: DEFAULT_BUILDING,
         category: cat.id,
         value: uploadValues[i]
       });
@@ -194,12 +242,17 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       <div className='header'>
         <span>Energy Management</span>
         <div className='actions'>
-          <Button className={setup ? 'active primary' : 'primary'} title='Setup Budgets and Categories' onClick={() => { setSetup(true); }}></Button>
           <Button className={!setup ? 'active primary' : 'primary'} title='Connect Meters' onClick={() => { setSetup(false); }}></Button>
+          <Button className={setup ? 'active primary' : 'primary'} title='Setup Budgets and Categories' onClick={() => { setSetup(true); }}></Button>
         </div>
       </div>
 
       {setup ?
+      <div className='config-container'>
+          <div className='instructions'>
+          Setup your energy categories and monthly budgets for each category.
+            </div>
+
         <div className='content'>
           <Button className='category-button' title='Default' onClick={() => { setDefaultClick(true); setMonthlyBudget(true); onCategoryClick() }}></Button>
           {categories.map(c => {
@@ -207,9 +260,12 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
           })}
           <Button className='add' title='+' onClick={() => {setId('');setName('');setAddCategory(true)}}></Button>
         </div>
-        :
+        </div>
+        :<div className='connect-container'>
+          <div className='instructions'>Either manually enter your energy data here, or connect some smart meters to automatically send data into Lucy</div>
+
         <div className='documentation'>
-          <div className='doc-item'  onClick={()=>{setUpload(true)}}>
+          <div className='doc-item'  onClick={()=>{uploadData();}}>
             <div className='icon icon-upload'  />
             <div className='label'>Manually upload energy data</div>
           </div>
@@ -221,6 +277,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
             <div className='label'>Get Smart Meters</div>
             <BuyOnSpaceworxButton link='#' className='spaceworx' />
           </div>
+        </div>
         </div>
       }
 
@@ -242,8 +299,10 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
           <Input value={id} placeholder='ID' onChange={(val) => { setError(false); setId(val) }} />
           {error ? <span style={{ color: 'red', margin: "5px 5px 10px 5px", textAlign: 'end' }}>Please fill above fields</span> : null}
 
+            
           <div className='save-button'>
             <Button className='button' title='Save' onClick={() => { newCategory() }} />
+
           </div>
 
         </Modal>
@@ -304,9 +363,13 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
               </div>
             })}
           </div>
-
+          <div className='actions'>
+          <div className='delete-button'>
+                <a href='#' onClick={()=>deleteCategory(categoryId).then(()=>setMonthlyBudget(false))}>Delete this category</a>
+              </div>
           <div className='save-button'>
             <Button title='Save' onClick={() => { setBudgetandUpdateCategory(categoryId) }} />
+          </div>
           </div>
 
         </Modal>
