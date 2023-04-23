@@ -41,6 +41,9 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [uploadValues, setUploadValues] = React.useState([]);
 
   React.useEffect(() => {
+    /* mark as completed when the config page opens */
+    completeInstallation(props.uxpContext);
+
     getModelKey();
     getCategories();
   }, []);
@@ -234,6 +237,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       i++;
     }
     setUpload(false);
+    await completeInstallation(props.uxpContext);
     toast.success('Energy data has been uploaded');
   };
 
