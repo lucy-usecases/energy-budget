@@ -185,6 +185,7 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       toast.success(`Budget for ${cat} added successfully.`);
     }
     setMonthlyBudget(false);
+    await getCategories();
     // window.location.reload();
   };
   async function deleteCategory(id:string) {
