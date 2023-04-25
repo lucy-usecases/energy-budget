@@ -93,7 +93,7 @@
 /*! exports provided: id, author, widgets, uis, menuItems, sidebarLinks, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"id\":\"356cd8c5-4807-4c5f-c60a-6b67c5660d4d\",\"author\":\"eutech\",\"widgets\":[{\"id\":\"energy-budget\",\"name\":\"Yearly Energy Consumption\",\"description\":\"Show actual energy consumption for the year vs budgeted consumption\",\"category\":\"energy-management\"},{\"id\":\"current-monthly-energy\",\"name\":\"Current Monthly Energy Usage\",\"description\":\"A gauge display of how much of your monthly energy budget has been used. This can be set per category or overall.\",\"category\":\"energy-management\"},{\"id\":\"energy-breakdown\",\"name\":\"Energy Consumption (Category-wise)\",\"description\":\"Provides insight on how energy is consumed across different categories of energy consumption.\",\"category\":\"energy-management\"}],\"uis\":[{\"id\":\"config\",\"label\":\"Energy Budget Setup\"}],\"menuItems\":[],\"sidebarLinks\":[]}");
+module.exports = JSON.parse("{\"id\":\"356cd8c5-4807-4c5f-c60a-6b67c5660d4d\",\"author\":\"eutech\",\"widgets\":[{\"id\":\"energy-budget\",\"name\":\"Yearly Energy Consumption\",\"description\":\"Energy consumption details by year\",\"category\":\"energy-management\"},{\"id\":\"current-monthly-energy\",\"name\":\"Current Monthly Energy Usage\",\"description\":\"Energy consumption details by month\",\"category\":\"energy-management\"},{\"id\":\"energy-breakdown\",\"name\":\"Energy Consumption (Category-wise)\",\"description\":\"Energy consumption data by category\",\"category\":\"energy-management\"}],\"uis\":[{\"id\":\"config\",\"label\":\"Energy Budget Setup\"}],\"menuItems\":[],\"sidebarLinks\":[]}");
 
 /***/ }),
 
@@ -11162,7 +11162,7 @@ const EnergyBudgetWidget = (props) => {
             }
         }, instanceId: props.instanceId, sampleData: {
             showLabel: isSample,
-            description: 'This widget contains sample data.'
+            description: 'This widget contains sample Energy Consumption data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).'
         } },
         React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'YEARLY ENERGY CONSUMPTION ' + (hasBudget ? 'Budgeted vs Actual ' : '') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory ? `[${selectedCategory}]` : '') },
             React.createElement(components_1.FilterPanel, { enableClear: false },
@@ -11367,7 +11367,7 @@ exports.EnergyBreakdown = (props) => {
             }
         }, instanceId: props.instanceId, sampleData: {
             showLabel: isSample,
-            description: 'This widget contains sample data.'
+            description: 'This widget contains sample Energy Consumption data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).',
         } },
         React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'Energy Consumption (Category-wise) ' },
             React.createElement(components_1.FilterPanel, { enableClear: false },
@@ -11451,7 +11451,7 @@ exports.CurrentUsage = (props) => {
     }
     return React.createElement(components_1.WidgetWrapper, { className: 'energy-gauge', instanceId: props.instanceId, sampleData: {
             showLabel: isSample,
-            description: 'This widget contains sample data.'
+            description: 'This widget contains sample Energy Usage data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).'
         } },
         React.createElement(components_1.TitleBar, { title: 'Current Monthly Energy Usage ' + (selectedCategory ? `[${selectedCategory}]` : '') },
             React.createElement(components_1.FilterPanel, { enableClear: false },

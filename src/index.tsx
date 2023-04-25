@@ -266,7 +266,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		instanceId={props.instanceId}
 		sampleData={{
 			showLabel: isSample,
-			description: 'This widget contains sample data.' 
+			description: 'This widget contains sample Energy Consumption data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).' 
 		  }}
 		>
 			<TitleBar icon={EnergyIcon} title={'YEARLY ENERGY CONSUMPTION ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
@@ -389,7 +389,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 						</ComposedChart>
 					</ResponsiveContainer>
 
-				</div>
+				 </div>
 }
 			</div>
 			 
@@ -574,11 +574,13 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 				350: 'small'
 			}
 		}}
-	
-		instanceId={props.instanceId}
-		sampleData={{
+	 
+
+		  instanceId={props.instanceId}
+		  sampleData={{
 			showLabel: isSample,
-			description: 'This widget contains sample data.' 
+			description: 'This widget contains sample Energy Consumption data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).',
+			//link: 'https://marketplace.spaceworx.com/home/products-connectors/P-HY-POS-0061?type-of-spaces=commercial&countries=SG'
 		  }}
 		  
 		  >
@@ -720,7 +722,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 	    instanceId={props.instanceId}
 		sampleData={{
 			showLabel: isSample,
-			description: 'This widget contains sample data.' 
+			description: 'This widget contains sample Energy Usage data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).' 
 		  }}
 		  
 		  >
