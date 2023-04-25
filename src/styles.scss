@@ -1,12 +1,14 @@
 .selector-energy {
     margin-bottom: 10px;
 }
+
 .energy-gauge {
     .gauge-face-container {
         margin-left: auto;
         margin-right: auto;
     }
 }
+
 .energy-widget {
     .no-budget-data {
         font-size: 3em;
@@ -17,22 +19,28 @@
         transform: translateY(-50%);
     }
 }
+
 .carbon-footprint {
     padding: 10px 50px;
+
     .profile-image-container {
         background-color: transparent !important;
     }
+
     .cf-grid {
         .data-grid-column {
             border: none !important;
         }
+
         .item-card {
             padding: 5px;
+
             //    justify-content: center;
             .title {
                 font-size: 2.1em;
                 font-weight: 200;
             }
+
             .content {
                 padding: 0px;
             }
@@ -44,18 +52,18 @@
     width: 60vw;
     height: auto;
 
-    & > .row {
+    &>.row {
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
 
-    & > .button-row {
+    &>.button-row {
         display: flex;
         align-items: center;
         justify-content: flex-end;
 
-        & > .uxp-button {
+        &>.uxp-button {
             margin: 5px;
 
             &.save {
@@ -67,18 +75,20 @@
         }
     }
 }
+
 .u-tt {
-    background-color: rgba(0,0,0,.5);
+    background-color: rgba(0, 0, 0, .5);
     border-radius: 5px;
-    padding:10px;
-    color:white;
+    padding: 10px;
+    color: white;
     display: flex;
+
     div {
-        margin-right:10px;
+        margin-right: 10px;
     }
 }
 
-.uxp-sample-data-label{
+.uxp-sample-data-label {
     text-transform: capitalize;
 }
 

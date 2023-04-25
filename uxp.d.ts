@@ -346,6 +346,39 @@ declare module "uxp/components" {
         dataUrl: string,
         name: string
     }
+
+    type IAlertContent = () => JSX.Element;
+
+    export type IFormFieldType = 'checkbox' | 'toggle' | 'number' | 'select' | 'date' | 'time' | 'json' | 'string' | 'password' | 'email'
+    export interface IAlertFormField {
+        name: string,
+        label: string,
+        type: IFormFieldType,
+        value?: string | number | boolean,
+        placeholder?: string,
+        options?: Array<{ label: string, value: string }>,
+
+        validate?: {
+            required?: boolean // default is false 
+            allowEmptyString?: boolean // trim value. only for string values 
+            minLength?: number
+            maxLength?: number
+            regExp?: RegExp
+            allowZeros?: boolean // on;y applicable to numbers 
+            minVal?: number
+            maxVal?: number
+            customValidateFunction?: (value: any) => { valid: boolean, error?: string }// this is to give a custom validate function, which takes the value and return a boolean indicating value is valid or not
+        }
+    }
+    export interface IFormAlertProps {
+        icon?: IconProp
+        title: string | IAlertContent,
+        content?: string | IAlertContent,
+        formStructure: IAlertFormField[],
+        submitButtonTitle?: string,
+        cancelButtonTitle?: string,
+        hideCancelButton?: boolean
+    }
         
     /**
      * The result of calling the useAlert hook. This gives you methods to invoke a alert or a confirm alert
@@ -5250,5 +5283,6 @@ declare module "uxp/components" {
      * ```
      */
     export const SampleDataLabel : React.FunctionComponent<ISampleDataLabelProps>;
+    type AlertHook = () => IAlertResult;
         export const useToast:ToastHook;    export const useAlert:AlertHook;    export const useDebounce:DebounceHook;    export const useResizeEffect:ResizeEffectHook;    export const useMessageBus:MessageBusHook;    export const useFields:FieldsHook;    export const useUpdateWidgetProps:IUseUpdateWidgetProps;    export const useEventSubscriber:IEventSubscriber;    export const useEffectWithPolling:IUseEffectWithPolling;
 }

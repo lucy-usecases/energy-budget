@@ -4,6 +4,7 @@ import { registerWidget, registerLink, registerUI, IContextProvider, IConfigPane
 import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, RadialGauge, Checkbox, useMessageBus, DataGrid, ItemCard, FormField, Label, Input, Button, useToast, ColorPicker, SampleDataLabel } from "uxp/components";
 import './styles.scss';
 import { isExportAssignment } from "typescript";
+import Configuration from "./Configuration";
 // import { SampleDataLabel } from "./SampleDataLabel";
  
 const EnergyIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMC44NDgiIGhlaWdodD0iMzAuODQ5IiB2aWV3Qm94PSIwIDAgMzAuODQ4IDMwLjg0OSI+CiAgPHBhdGggaWQ9Ikljb25fbWV0cm8tcG93ZXIiIGRhdGEtbmFtZT0iSWNvbiBtZXRyby1wb3dlciIgZD0iTTE0LjEzOSwxLjkyOCwyLjU3MSwxNy4zNTJIMTQuMTM5TDYuNDI3LDMyLjc3NywzMy40MTksMTMuNUgxNy45OTVMMjkuNTYzLDEuOTI4WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIuNTcxIC0xLjkyOCkiLz4KPC9zdmc+Cg==';
@@ -768,9 +769,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
  */
 registerWidget({
 	id: "energy-budget",
-	name: "Yearly Energy Consumption",
 	widget: EnergyBudgetWidget,
-
 	configs: {
 		layout: {
 			w: 13,
@@ -809,9 +808,7 @@ registerWidget({
 
 registerWidget({
 	id: "current-monthly-energy",
-	name: "Current Monthly Energy Usage",
 	widget: CurrentUsage,
-
 	configs: {
 		layout: {
 			w: 6,
@@ -828,9 +825,7 @@ registerWidget({
 
 registerWidget({
 	id: "energy-breakdown",
-	name: "Energy Consumption (Category-wise)",
 	widget: EnergyBreakdown,
-
 	configs: {
 		layout: {
 			// w: 7,
@@ -850,6 +845,12 @@ registerWidget({
 	},
 
 });
+
+registerUI({
+	id: 'config',
+	component: Configuration,
+	showDefaultHeader: false
+})
 
 
 
