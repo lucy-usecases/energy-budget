@@ -835,10 +835,10 @@ registerWidget({
 			// maxH: 12,
 			// maxW: 16
 
-			w: 9,
-			h: 10,
-			minH: 10,
-			minW: 9,
+			w: 7,
+			h: 8,
+			minH: 8,
+			minW: 7,
 			maxH: 12,
 			maxW: 16
 		},
