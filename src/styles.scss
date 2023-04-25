@@ -30,7 +30,7 @@
             padding: 5px;
             //    justify-content: center;
             .title {
-                font-size: 2.4em;
+                font-size: 2.1em;
                 font-weight: 200;
             }
             .content {
@@ -84,6 +84,21 @@
 
 
 .energy-widget{ 
+
+    .chart-responsive, .chart-resp-pie {
+        display: inline-block;
+        width: 100%; 
+    } 
+
+    &.w-large{
+        .chart-responsive { 
+            height: 98%;
+        }
+        .chart-resp-pie{ 
+            height: 99%;
+        }
+    }
+
     &.w-small{
         .carbon-footprint { 
             .data-grid{ 
@@ -108,7 +123,10 @@
                                 // text-align: center;
 
                                 .title{
-                                    font-size: 1.8em;
+                                    font-size: 1.1em;
+                                }
+                                .sub-title{
+                                    font-size: 9px;
                                 }
                             }
                         }
@@ -116,5 +134,14 @@
                  }
              }
          } 
+
+         .chart-responsive { 
+            height: 220px;
+        }
+
+        .chart-resp-pie{ 
+            height: 260px;
+        }
     }
 }
+

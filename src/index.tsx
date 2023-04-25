@@ -5,9 +5,7 @@ import { TitleBar, FilterPanel, WidgetWrapper, Select, useUpdateWidgetProps, Rad
 import './styles.scss';
 import { isExportAssignment } from "typescript";
 // import { SampleDataLabel } from "./SampleDataLabel";
-
-
-
+ 
 const EnergyIcon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMC44NDgiIGhlaWdodD0iMzAuODQ5IiB2aWV3Qm94PSIwIDAgMzAuODQ4IDMwLjg0OSI+CiAgPHBhdGggaWQ9Ikljb25fbWV0cm8tcG93ZXIiIGRhdGEtbmFtZT0iSWNvbiBtZXRyby1wb3dlciIgZD0iTTE0LjEzOSwxLjkyOCwyLjU3MSwxNy4zNTJIMTQuMTM5TDYuNDI3LDMyLjc3NywzMy40MTksMTMuNUgxNy45OTVMMjkuNTYzLDEuOTI4WiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTIuNTcxIC0xLjkyOCkiLz4KPC9zdmc+Cg==';
 const PowerIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33"%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill:%23535353;%7D.b%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Ccircle class="a" cx="16.5" cy="16.5" r="16.5"/%3E%3Cpath class="b" d="M7.316,1.928,2.571,8.256H7.316L4.153,14.583,15.226,6.674H8.9l4.746-4.746Z" transform="translate(7.385 8.602)"/%3E%3C/svg%3E';
 const Co2Icon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 33 33"%3E%3Cdefs%3E%3Cstyle%3E.a%7Bfill:%23535353;%7D.b%7Bfill:%23fff;%7D%3C/style%3E%3C/defs%3E%3Ccircle class="a" cx="16.5" cy="16.5" r="16.5"/%3E%3Cpath class="b" d="M7.608,12.061a3.251,3.251,0,0,1,.734-2.08A3.188,3.188,0,0,1,10.2,8.817a4.046,4.046,0,0,1,6.454-2.311,3.955,3.955,0,0,1,1.428,2.22H18.3A3.258,3.258,0,0,1,20.68,9.7a3.2,3.2,0,0,1,.982,2.352,3.253,3.253,0,0,1-.305,1.4,3.377,3.377,0,0,1-.85,1.131v.025a2.07,2.07,0,0,1-.462,1.312,2.007,2.007,0,0,1-1.155.734,2.574,2.574,0,0,1-2.1,1.964,1.443,1.443,0,0,1-1.081,2.385,1.36,1.36,0,0,1-1.015-.429,1.4,1.4,0,0,1-.421-1.023,1.347,1.347,0,0,1,.083-.47h-.083a1.775,1.775,0,0,1-1.758-1.758,1.6,1.6,0,0,1,.248-.883,2.05,2.05,0,0,1-.924-1.032H10.785V15.4a3.323,3.323,0,0,1-2.253-1.048A3.184,3.184,0,0,1,7.608,12.061Zm1.155-.206a2.367,2.367,0,0,0,2.368,2.377,2.32,2.32,0,0,0,1.131-.281,2.529,2.529,0,0,0,.858,1.535,2.448,2.448,0,0,0,1.667.611,2.5,2.5,0,0,0,1.832-.759,1.591,1.591,0,0,0,1.271.586,1.691,1.691,0,0,0,1.7-1.7,2.374,2.374,0,0,0,.784-.858,2.327,2.327,0,0,0,.289-1.131,2.232,2.232,0,0,0-.7-1.667,2.349,2.349,0,0,0-1.692-.685,2.323,2.323,0,0,0-1.263.363,2.729,2.729,0,0,0,.066-.652,2.743,2.743,0,0,0-.85-2.03,2.931,2.931,0,0,0-4.06-.033,2.724,2.724,0,0,0-.883,1.956h-.14a2.3,2.3,0,0,0-1.675.693A2.276,2.276,0,0,0,8.763,11.854Z" transform="translate(1.332 3.3)"/%3E%3C/svg%3E';
@@ -260,7 +258,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		cssBreakPoints={{
 			width: {
 				default: 'large',
-				850: 'small'
+				650: 'small'
 			}
 		}}
 
@@ -305,6 +303,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
             No data available
           </div>
           :
+		  <div className="chart-responsive">
 				<ResponsiveContainer width="100%" height="100%">
 					<ComposedChart
 						width={500}
@@ -386,8 +385,10 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 						/>
 }
 
-					</ComposedChart>
-				</ResponsiveContainer>
+						</ComposedChart>
+					</ResponsiveContainer>
+
+				</div>
 }
 			</div>
 			 
@@ -565,6 +566,13 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 		hasData = true;
 	}
 	return <WidgetWrapper className='energy-widget'
+
+		cssBreakPoints={{
+			width: {
+				default: 'large',
+				350: 'small'
+			}
+		}}
 	
 		instanceId={props.instanceId}
 		sampleData={{
@@ -615,6 +623,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 		   </div>
 			:
 
+			<div className="chart-resp-pie">
 			<ResponsiveContainer width="100%" height="100%">
 				<PieChart>
 
@@ -644,6 +653,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 					</div>} />
 				</PieChart>
 			</ResponsiveContainer>
+			</div>
 }			
 		</div>
 		{/* {isSample && <SampleDataLabel />} */}
@@ -739,7 +749,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 			<span style={{ textTransform: 'uppercase' }}>This Month's Consumption</span>
 		</div>
 
-		<div style={{ fontSize: '3em', textAlign: 'center', padding: '10px' }}>
+		<div style={{ fontSize: '2.8em', textAlign: 'center', padding: '0px 10px 10px 10px' }}>
 			{value.toFixed(2)}<span style={{ fontSize: '0.3em', opacity: 0.5 }}>KWH</span>
 			{
 				Number(budget)>0?
@@ -767,7 +777,7 @@ registerWidget({
 			h: 9,
 			minH: 9,
 			minW: 13,
-			maxH: 13 
+			//maxH: 13 
 		},
 		props: [
 			{
@@ -823,10 +833,17 @@ registerWidget({
 
 	configs: {
 		layout: {
-			w: 7,
-			h: 8,
-			minH: 8,
-			minW: 7,
+			// w: 7,
+			// h: 8,
+			// minH: 8,
+			// minW: 7,
+			// maxH: 12,
+			// maxW: 16
+
+			w: 9,
+			h: 10,
+			minH: 10,
+			minW: 9,
 			maxH: 12,
 			maxW: 16
 		},

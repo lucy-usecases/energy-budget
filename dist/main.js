@@ -312,7 +312,7 @@ module.exports = function () {
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".selector-energy {\n  margin-bottom: 10px;\n}\n\n.energy-gauge .gauge-face-container {\n  margin-left: auto;\n  margin-right: auto;\n}\n\n.energy-widget .no-budget-data {\n  font-size: 3em;\n  opacity: 0.5;\n  text-align: center;\n  position: relative;\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.carbon-footprint {\n  padding: 10px 50px;\n}\n.carbon-footprint .profile-image-container {\n  background-color: transparent !important;\n}\n.carbon-footprint .cf-grid .data-grid-column {\n  border: none !important;\n}\n.carbon-footprint .cf-grid .item-card {\n  padding: 5px;\n}\n.carbon-footprint .cf-grid .item-card .title {\n  font-size: 2.4em;\n  font-weight: 200;\n}\n.carbon-footprint .cf-grid .item-card .content {\n  padding: 0px;\n}\n\n.energy-budget-widget-config-panel {\n  width: 60vw;\n  height: auto;\n}\n.energy-budget-widget-config-panel > .row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.energy-budget-widget-config-panel > .button-row {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button {\n  margin: 5px;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button.save.active {\n  background-color: #52c4c9;\n  color: white;\n}\n\n.u-tt {\n  background-color: rgba(0, 0, 0, 0.5);\n  border-radius: 5px;\n  padding: 10px;\n  color: white;\n  display: flex;\n}\n.u-tt div {\n  margin-right: 10px;\n}\n\n.uxp-sample-data-label {\n  text-transform: capitalize;\n}\n\n.energy-widget.w-small .carbon-footprint .data-grid .data-grid-column .item-card .content .title {\n  font-size: 1.8em;\n}", ""]);
+exports.push([module.i, ".selector-energy {\n  margin-bottom: 10px;\n}\n\n.energy-gauge .gauge-face-container {\n  margin-left: auto;\n  margin-right: auto;\n}\n\n.energy-widget .no-budget-data {\n  font-size: 3em;\n  opacity: 0.5;\n  text-align: center;\n  position: relative;\n  top: 50%;\n  transform: translateY(-50%);\n}\n\n.carbon-footprint {\n  padding: 10px 50px;\n}\n.carbon-footprint .profile-image-container {\n  background-color: transparent !important;\n}\n.carbon-footprint .cf-grid .data-grid-column {\n  border: none !important;\n}\n.carbon-footprint .cf-grid .item-card {\n  padding: 5px;\n}\n.carbon-footprint .cf-grid .item-card .title {\n  font-size: 2.1em;\n  font-weight: 200;\n}\n.carbon-footprint .cf-grid .item-card .content {\n  padding: 0px;\n}\n\n.energy-budget-widget-config-panel {\n  width: 60vw;\n  height: auto;\n}\n.energy-budget-widget-config-panel > .row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n}\n.energy-budget-widget-config-panel > .button-row {\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button {\n  margin: 5px;\n}\n.energy-budget-widget-config-panel > .button-row > .uxp-button.save.active {\n  background-color: #52c4c9;\n  color: white;\n}\n\n.u-tt {\n  background-color: rgba(0, 0, 0, 0.5);\n  border-radius: 5px;\n  padding: 10px;\n  color: white;\n  display: flex;\n}\n.u-tt div {\n  margin-right: 10px;\n}\n\n.uxp-sample-data-label {\n  text-transform: capitalize;\n}\n\n.energy-widget .chart-responsive, .energy-widget .chart-resp-pie {\n  display: inline-block;\n  width: 100%;\n}\n.energy-widget.w-large .chart-responsive {\n  height: 98%;\n}\n.energy-widget.w-large .chart-resp-pie {\n  height: 99%;\n}\n.energy-widget.w-small .carbon-footprint .data-grid .data-grid-column .item-card .content .title {\n  font-size: 1.1em;\n}\n.energy-widget.w-small .carbon-footprint .data-grid .data-grid-column .item-card .content .sub-title {\n  font-size: 9px;\n}\n.energy-widget.w-small .chart-responsive {\n  height: 220px;\n}\n.energy-widget.w-small .chart-resp-pie {\n  height: 260px;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -10664,7 +10664,7 @@ const EnergyBudgetWidget = (props) => {
     return (React.createElement(components_1.WidgetWrapper, { className: 'energy-widget', cssBreakPoints: {
             width: {
                 default: 'large',
-                850: 'small'
+                650: 'small'
             }
         }, instanceId: props.instanceId, sampleData: {
             showLabel: isSample,
@@ -10687,39 +10687,40 @@ const EnergyBudgetWidget = (props) => {
             ?
                 React.createElement("div", { className: 'no-budget-data' }, "No data available")
             :
-                React.createElement(recharts_1.ResponsiveContainer, { width: "100%", height: "100%" },
-                    React.createElement(recharts_1.ComposedChart, { width: 500, height: 300, data: chartData, margin: {
-                            top: 5,
-                            right: 30,
-                            left: 20,
-                            bottom: 5,
-                        } },
-                        React.createElement("defs", null,
-                            React.createElement("filter", { id: "shadow", height: "200%" },
-                                React.createElement("feDropShadow", { dx: "4", dy: "4", stdDeviation: "4" }))),
-                        React.createElement(recharts_1.CartesianGrid, { strokeWidth: 1, vertical: false, strokeOpacity: 0.5 }),
-                        React.createElement(recharts_1.XAxis, { dataKey: "name", label: {
-                                position: "center",
-                                value: (labels === null || labels === void 0 ? void 0 : labels.xAxis) || "Months",
-                                dy: 15
-                            } }),
-                        React.createElement(recharts_1.YAxis, { axisLine: false, label: {
-                                position: "center",
-                                value: (labels === null || labels === void 0 ? void 0 : labels.yAxis) || "KwH",
-                                angle: -90,
-                                dx: -30,
-                            } }),
-                        React.createElement(recharts_1.YAxis, { axisLine: false, orientation: 'right', yAxisId: 'cummulative' }),
-                        React.createElement(recharts_1.Tooltip, { formatter: (value, name, entry, index) => {
-                                return `${intFmt(Number(value).toFixed(2)) + ((labels === null || labels === void 0 ? void 0 : labels.yAxis) || '')}`;
-                            } }),
-                        React.createElement(recharts_1.Legend, { align: "center", verticalAlign: "bottom", wrapperStyle: { paddingTop: 20 } }),
-                        React.createElement(recharts_1.Area, { filter: "url(#shadow)", name: 'Cumulative Consumption', yAxisId: 'cummulative', fill: (colors === null || colors === void 0 ? void 0 : colors.cumulativeConsumption) || "#06F", fillOpacity: 0.5, stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeConsumption) || "#06F", dataKey: "cummulativeEnergy" }),
-                        React.createElement(recharts_1.Bar, { name: 'Consumption', barSize: 15, dataKey: "energy", fill: (colors === null || colors === void 0 ? void 0 : colors.consumption) || "#F78FAA" }),
-                        hasBudget &&
-                            React.createElement(recharts_1.Bar, { name: 'Baseline', barSize: 15, dataKey: "budgeted", fill: (colors === null || colors === void 0 ? void 0 : colors.baseline) || "#79B7B6" }),
-                        hasBudget &&
-                            React.createElement(recharts_1.Line, { name: 'Cumulative Budget', strokeDasharray: '0 1 1 1', strokeDashoffset: 3, strokeOpacity: 0.8, strokeWidth: 2, yAxisId: 'cummulative', type: "monotone", fill: 'red', fillOpacity: 0.1, dataKey: "cummulativeBudget", stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeBudget) || "#ff7300" }))))));
+                React.createElement("div", { className: "chart-responsive" },
+                    React.createElement(recharts_1.ResponsiveContainer, { width: "100%", height: "100%" },
+                        React.createElement(recharts_1.ComposedChart, { width: 500, height: 300, data: chartData, margin: {
+                                top: 5,
+                                right: 30,
+                                left: 20,
+                                bottom: 5,
+                            } },
+                            React.createElement("defs", null,
+                                React.createElement("filter", { id: "shadow", height: "200%" },
+                                    React.createElement("feDropShadow", { dx: "4", dy: "4", stdDeviation: "4" }))),
+                            React.createElement(recharts_1.CartesianGrid, { strokeWidth: 1, vertical: false, strokeOpacity: 0.5 }),
+                            React.createElement(recharts_1.XAxis, { dataKey: "name", label: {
+                                    position: "center",
+                                    value: (labels === null || labels === void 0 ? void 0 : labels.xAxis) || "Months",
+                                    dy: 15
+                                } }),
+                            React.createElement(recharts_1.YAxis, { axisLine: false, label: {
+                                    position: "center",
+                                    value: (labels === null || labels === void 0 ? void 0 : labels.yAxis) || "KwH",
+                                    angle: -90,
+                                    dx: -30,
+                                } }),
+                            React.createElement(recharts_1.YAxis, { axisLine: false, orientation: 'right', yAxisId: 'cummulative' }),
+                            React.createElement(recharts_1.Tooltip, { formatter: (value, name, entry, index) => {
+                                    return `${intFmt(Number(value).toFixed(2)) + ((labels === null || labels === void 0 ? void 0 : labels.yAxis) || '')}`;
+                                } }),
+                            React.createElement(recharts_1.Legend, { align: "center", verticalAlign: "bottom", wrapperStyle: { paddingTop: 20 } }),
+                            React.createElement(recharts_1.Area, { filter: "url(#shadow)", name: 'Cumulative Consumption', yAxisId: 'cummulative', fill: (colors === null || colors === void 0 ? void 0 : colors.cumulativeConsumption) || "#06F", fillOpacity: 0.5, stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeConsumption) || "#06F", dataKey: "cummulativeEnergy" }),
+                            React.createElement(recharts_1.Bar, { name: 'Consumption', barSize: 15, dataKey: "energy", fill: (colors === null || colors === void 0 ? void 0 : colors.consumption) || "#F78FAA" }),
+                            hasBudget &&
+                                React.createElement(recharts_1.Bar, { name: 'Baseline', barSize: 15, dataKey: "budgeted", fill: (colors === null || colors === void 0 ? void 0 : colors.baseline) || "#79B7B6" }),
+                            hasBudget &&
+                                React.createElement(recharts_1.Line, { name: 'Cumulative Budget', strokeDasharray: '0 1 1 1', strokeDashoffset: 3, strokeOpacity: 0.8, strokeWidth: 2, yAxisId: 'cummulative', type: "monotone", fill: 'red', fillOpacity: 0.1, dataKey: "cummulativeBudget", stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeBudget) || "#ff7300" })))))));
 };
 const EnergyBudgetWidgetConfigPanel = (props) => {
     let { onSubmit, onCancel, configs } = props;
@@ -10865,7 +10866,12 @@ exports.EnergyBreakdown = (props) => {
         consumptionData = SampleData;
         hasData = true;
     }
-    return React.createElement(components_1.WidgetWrapper, { className: 'energy-widget', instanceId: props.instanceId, sampleData: {
+    return React.createElement(components_1.WidgetWrapper, { className: 'energy-widget', cssBreakPoints: {
+            width: {
+                default: 'large',
+                350: 'small'
+            }
+        }, instanceId: props.instanceId, sampleData: {
             showLabel: isSample,
             description: 'This widget contains sample data.'
         } },
@@ -10894,16 +10900,17 @@ exports.EnergyBreakdown = (props) => {
         React.createElement("div", { style: { flex: 1, padding: '30px', paddingBottom: '45px' } }, !hasData ?
             React.createElement("div", { className: 'no-budget-data' }, "No data available")
             :
-                React.createElement(recharts_1.ResponsiveContainer, { width: "100%", height: "100%" },
-                    React.createElement(recharts_1.PieChart, null,
-                        React.createElement(recharts_1.Legend, { verticalAlign: "top", height: 35 }),
-                        React.createElement(recharts_1.Pie, { data: consumptionData, label: true, cx: '50%', nameKey: 'label', cy: '50%', innerRadius: '55%', outerRadius: '85%', paddingAngle: 5, dataKey: "value" }, consumptionData.map((entry, index) => (React.createElement(recharts_1.Cell, { key: `cell-${index}`, fill: COLORS[index % COLORS.length] })))),
-                        React.createElement(recharts_1.Tooltip, { content: (opts) => {
-                                var _a, _b;
-                                return React.createElement("div", { className: 'u-tt' },
-                                    React.createElement("div", null, (_a = opts === null || opts === void 0 ? void 0 : opts.payload[0]) === null || _a === void 0 ? void 0 : _a.name),
-                                    React.createElement("div", null, intFmt(Number((_b = opts === null || opts === void 0 ? void 0 : opts.payload[0]) === null || _b === void 0 ? void 0 : _b.value).toFixed(2)) + ' kWh'));
-                            } })))));
+                React.createElement("div", { className: "chart-resp-pie" },
+                    React.createElement(recharts_1.ResponsiveContainer, { width: "100%", height: "100%" },
+                        React.createElement(recharts_1.PieChart, null,
+                            React.createElement(recharts_1.Legend, { verticalAlign: "top", height: 35 }),
+                            React.createElement(recharts_1.Pie, { data: consumptionData, label: true, cx: '50%', nameKey: 'label', cy: '50%', innerRadius: '55%', outerRadius: '85%', paddingAngle: 5, dataKey: "value" }, consumptionData.map((entry, index) => (React.createElement(recharts_1.Cell, { key: `cell-${index}`, fill: COLORS[index % COLORS.length] })))),
+                            React.createElement(recharts_1.Tooltip, { content: (opts) => {
+                                    var _a, _b;
+                                    return React.createElement("div", { className: 'u-tt' },
+                                        React.createElement("div", null, (_a = opts === null || opts === void 0 ? void 0 : opts.payload[0]) === null || _a === void 0 ? void 0 : _a.name),
+                                        React.createElement("div", null, intFmt(Number((_b = opts === null || opts === void 0 ? void 0 : opts.payload[0]) === null || _b === void 0 ? void 0 : _b.value).toFixed(2)) + ' kWh'));
+                                } }))))));
 };
 exports.CurrentUsage = (props) => {
     var _a;
@@ -10966,7 +10973,7 @@ exports.CurrentUsage = (props) => {
         React.createElement("div", { style: { fontSize: '1em', textAlign: 'center', padding: '10px', marginTop: '20px' } },
             React.createElement("span", { style: { height: '20px', backgroundSize: 'contain', display: 'inline-block', verticalAlign: 'middle', width: '14px', backgroundRepeat: 'no-repeat', marginRight: '10px', backgroundImage: `url(${EnergyIcon})` } }),
             React.createElement("span", { style: { textTransform: 'uppercase' } }, "This Month's Consumption")),
-        React.createElement("div", { style: { fontSize: '3em', textAlign: 'center', padding: '10px' } },
+        React.createElement("div", { style: { fontSize: '2.8em', textAlign: 'center', padding: '0px 10px 10px 10px' } },
             value.toFixed(2),
             React.createElement("span", { style: { fontSize: '0.3em', opacity: 0.5 } }, "KWH"),
             Number(budget) > 0 ?
@@ -10988,7 +10995,6 @@ uxp_1.registerWidget({
             h: 9,
             minH: 9,
             minW: 13,
-            maxH: 13
         },
         props: [
             {
@@ -11038,10 +11044,16 @@ uxp_1.registerWidget({
     widget: exports.EnergyBreakdown,
     configs: {
         layout: {
-            w: 7,
-            h: 8,
-            minH: 8,
-            minW: 7,
+            // w: 7,
+            // h: 8,
+            // minH: 8,
+            // minW: 7,
+            // maxH: 12,
+            // maxW: 16
+            w: 9,
+            h: 10,
+            minH: 10,
+            minW: 9,
             maxH: 12,
             maxW: 16
         },
