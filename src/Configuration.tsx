@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import './styles.scss';
 import './config.scss';
-import { AsyncButton, Button, BuyOnSpaceworxButton, DatePicker, Input, Modal, useAlert, useToast } from 'uxp/components';
+import { AsyncButton, Button, BuyOnSpaceworxButton, DatePicker, Input, ItemCard, Modal, Select, useAlert, useToast } from 'uxp/components';
 import { IContextProvider } from './uxp';
 import { completeInstallation } from './config-util';
 
+
 const DEFAULT_BUILDING = 'building';
+const CARBON_DATASET_URL = 'https://s3.amazonaws.com/ecyber.public/datasets/carbon-intensity-electricity.json';
 export interface IConfigUIProps {
   uxpContext: IContextProvider;
   packageUrl: string;
   loadConfigUI: (ui: string) => void;
   onClose: () => void;
+}
+interface ICarbonData {
+  countryCode: string;
+  name: string;
+  value: number;
 }
 
 const ENERGY = 230;
@@ -28,7 +35,8 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [upload, setUpload] = React.useState(false);
   const [date, setDate] = useState(new Date());
 
-  const [setup, setSetup] = React.useState(false);
+  // const [setup, setSetup] = React.useState(false);
+  const [mode,setMode] = React.useState<'types'|'upload'|'co2'>('types');
   const [error, setError] = React.useState(false);
 
   const [categories, setcategories] = React.useState([]);
@@ -40,14 +48,24 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
   const [values, setValues] = React.useState(Array(MONTHS.length).fill(ENERGY));
   const [uploadValues, setUploadValues] = React.useState([]);
 
+  const [carbonData,setCarbonData] = React.useState<ICarbonData[]>(null);
+  const [country,setCountry] = React.useState('');
+  const [emission,setEmission] = React.useState('');
+
   React.useEffect(() => {
     /* mark as completed when the config page opens */
     completeInstallation(props.uxpContext);
 
     getModelKey();
     getCategories();
+    getCarbonData();
   }, []);
-
+  
+  async function getCarbonData() {
+    let resp = await fetch(CARBON_DATASET_URL);
+    let json = await resp.json();
+    setCarbonData(json);
+  }
   async function getModelKey() {
     const result = await props.uxpContext.executeService('System', 'MetadataMap:KeyByname', { Name: modelName });
     const details = JSON.parse(result);
@@ -247,12 +265,13 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
       <div className='header'>
         <span>Energy Management</span>
         <div className='actions'>
-          <Button className={!setup ? 'active primary' : 'primary'} title='Connect Meters' onClick={() => { setSetup(false); }}></Button>
-          <Button className={setup ? 'active primary' : 'primary'} title='Setup Budgets and Categories' onClick={() => { setSetup(true); }}></Button>
+          <Button className={(mode=='upload') ? 'active primary' : 'primary'} title='Connect Meters' onClick={() => { setMode('upload'); }}></Button>
+          <Button className={(mode=='types') ? 'active primary' : 'primary'} title='Setup Budgets and Categories' onClick={() => { setMode('types'); }}></Button>
+          <Button className={(mode=='co2') ? 'active primary' : 'primary'} title='Carbon Footprint' onClick={() => { setMode('co2'); }}></Button>
         </div>
       </div>
 
-      {setup ?
+      {(mode=='types') &&
       <div className='config-container'>
           <div className='instructions'>
           Setup your energy categories and monthly budgets for each category.
@@ -266,7 +285,8 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
           <Button className='add' title='+' onClick={() => {setId('');setName('');setAddCategory(true)}}></Button>
         </div>
         </div>
-        :<div className='connect-container'>
+      }
+      {(mode=='upload') && <div className='connect-container'>
           <div className='instructions'>Either manually enter your energy data here, or connect some smart meters to automatically send data into Lucy</div>
 
         <div className='documentation'>
@@ -283,6 +303,40 @@ const Configuration: React.FunctionComponent<IConfigUIProps> = (props) => {
             <BuyOnSpaceworxButton link='#' className='spaceworx' />
           </div>
         </div>
+        </div>
+      }
+       {(mode=='co2') && <div className='co2-container'>
+          <div className='instructions'>Select your region to calculate your overall carbon emission</div>
+          <div className='gmap'>
+
+            <Select
+            placeholder='Select your region'
+            renderOption={(option)=><ItemCard className='co2-emission-card' item={option} image={`https://static.iviva.com/flags/${option.countryCode?.toLowerCase()}.svg`} titleField='name' subTitle={`Emission Intensity: ${option?.value?.toFixed(2)} gCO2/kwh`} />}
+            options={carbonData} labelField='name' valueField='countryCode' selected={country} onChange={(v,opt)=>{
+              setCountry(v);
+              let ev = carbonData.find((x)=>x.countryCode==v)?.value;
+              if (ev) {
+                setEmission(ev+'');
+              }
+            }} />
+          </div>
+          <div className='amount'>
+            <Input onChange={setEmission} value={emission} />
+            <label>gCO2/kWH</label>
+       
+        </div>
+        <div className='action'>
+          <AsyncButton title='Update' onClick={async ()=>{
+            let v = Number(emission);
+            if (!v) {
+              alerts.show('Please enter a valid emission intensity value. You can select your country to pick a reasonable value');
+              return;
+            }
+            await props.uxpContext.executeAction('EnergyBudget','UpdateLocationEmissionInfo',{location:'building','co2':emission});
+            toast.success('Emission data updated');
+          }} />
+        </div>
+
         </div>
       }
 
