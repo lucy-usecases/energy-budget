@@ -1074,10 +1074,17 @@ declare module "uxp/components" {
      * @export
      */
     export interface IBuyOnSpaceworxButtonProps {
-        /**
-         * link to the marketplace product page
-         */
-        link: string
+       /**
+        * this is deprecated - use product ids instead
+        * link to buy from spaceworx
+        * if not provided button will not be shown
+        */
+       link?: string,
+
+       /**
+        * prouct ids to show on spaceworx
+        */
+       productIds?: string[]
         /**
          * class name for additional styling
          */
@@ -1132,10 +1139,16 @@ declare module "uxp/components" {
              */
             description?: string,
             /**
-             * link to buy from spaceworx
-             * if not provided button will not be shown
+        * this is deprecated - use product ids instead
+        * link to buy from spaceworx
+        * if not provided button will not be shown
+        */
+            link?: string,
+
+            /**
+             * prouct ids to show on spaceworx
              */
-            link?: string
+            productIds?: string[]
         }
     }
         
@@ -4565,9 +4578,16 @@ declare module "uxp/components" {
      */
     interface IBuyOnSpaceworxButtonProps {
         /**
-         * link to the marketplace product page
+        * this is deprecated - use product ids instead
+        * link to buy from spaceworx
+        * if not provided button will not be shown
+        */
+        link?: string,
+
+        /**
+         * prouct ids to show on spaceworx
          */
-        link: string
+        productIds?: string[]
         /**
          * class name for additional styling
          */
@@ -4646,10 +4666,16 @@ declare module "uxp/components" {
              */
             description?: string,
             /**
-             * link to buy from spaceworx
-             * if not provided button will not be shown
+        * this is deprecated - use product ids instead
+        * link to buy from spaceworx
+        * if not provided button will not be shown
+        */
+            link?: string,
+
+            /**
+             * prouct ids to show on spaceworx
              */
-            link?: string
+            productIds?: string[]
         }
     }
     /**

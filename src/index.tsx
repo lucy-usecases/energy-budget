@@ -266,7 +266,8 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		instanceId={props.instanceId}
 		sampleData={{
 			showLabel: isSample,
-			description: 'This widget contains sample Energy Consumption data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).' 
+			description: 'This widget contains sample Energy Consumption data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).' ,
+			productIds:['60a7514811463a1ec3e13528', '6284e77efe60b4e6386f8e97','6284d138fe60b4e6386f8e8b', '63fc771953a83942be8e7be5']
 		  }}
 		>
 			<TitleBar icon={EnergyIcon} title={'YEARLY ENERGY CONSUMPTION ' + (hasBudget?'Budgeted vs Actual ':'') + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') + ' ' + (selectedCategory?`[${selectedCategory}]`:'')}>
@@ -580,7 +581,7 @@ export const EnergyBreakdown: React.FunctionComponent<IBreakdownWidgetProps> = (
 		  sampleData={{
 			showLabel: isSample,
 			description: 'This widget contains sample Energy Consumption data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).',
-			//link: 'https://marketplace.spaceworx.com/home/products-connectors/P-HY-POS-0061?type-of-spaces=commercial&countries=SG'
+			productIds:['60a7514811463a1ec3e13528', '6284e77efe60b4e6386f8e97','6284d138fe60b4e6386f8e8b', '63fc771953a83942be8e7be5']
 		  }}
 		  
 		  >
@@ -722,7 +723,8 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 	    instanceId={props.instanceId}
 		sampleData={{
 			showLabel: isSample,
-			description: 'This widget contains sample Energy Usage data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).' 
+			description: 'This widget contains sample Energy Usage data. To use data from your own location, click on the Spaceworx icon to purchase the required product(s).' ,
+			productIds:['60a7514811463a1ec3e13528', '6284e77efe60b4e6386f8e97','6284d138fe60b4e6386f8e8b', '63fc771953a83942be8e7be5']
 		  }}
 		  
 		  >
