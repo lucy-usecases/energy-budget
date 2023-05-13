@@ -1,8 +1,13 @@
 {
-    "title":"Energy Budgeting",
-    "tags":["energy"],
-    "version":"1.3.0",
-    "public":true,
-    "connectorsRequired":[],
-    "postInstallActions": []
+    "title": "Energy Budgeting",
+    "tags": [
+        "energy"
+    ],
+    "version": "2.5.3",
+    "public": true,
+    "connectorsRequired": [],
+    "postInstallActions": [],
+    "configUI": {
+        "default": "config"
+    }
 }
