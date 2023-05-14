@@ -398,7 +398,7 @@ const EnergyBudgetWidget: React.FunctionComponent<IEnergyBudgetWidgetProps> = (p
 		</WidgetWrapper>
 	)
 };
-
+//start of config panel
 const EnergyBudgetWidgetConfigPanel: React.FunctionComponent<IConfigPanelProps> = (props) => {
 
 	let { onSubmit, onCancel, configs } = props

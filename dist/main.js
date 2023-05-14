@@ -1323,6 +1323,7 @@ const EnergyBudgetWidget = (props) => {
                             hasBudget &&
                                 React.createElement(recharts_1.Line, { name: 'Cumulative Budget', strokeDasharray: '0 1 1 1', strokeDashoffset: 3, strokeOpacity: 0.8, strokeWidth: 2, yAxisId: 'cummulative', type: "monotone", fill: 'red', fillOpacity: 0.1, dataKey: "cummulativeBudget", stroke: (colors === null || colors === void 0 ? void 0 : colors.cumulativeBudget) || "#ff7300" })))))));
 };
+//start of config panel
 const EnergyBudgetWidgetConfigPanel = (props) => {
     let { onSubmit, onCancel, configs } = props;
     let toast = components_1.useToast();
