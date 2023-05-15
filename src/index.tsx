@@ -767,6 +767,205 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 		
 	</WidgetWrapper>;
 }
+const EnergyBudgetWidgetNew: React.FunctionComponent<IEnergyBudgetWidgetProps> = (props) => {
+
+	let { colors, labels } = props
+
+	let [yearList, setYearList] = React.useState([]);
+	let [buildings, setBuildings] = React.useState<ILocation[]>([]);
+
+
+	//let [selectedBudget, setSelectedBudget] = React.useState<number[]>([]);
+	let [chartData, setChartData] = React.useState<any[]>([]);
+	let [Categories, setCategories] = React.useState<any[]>([]);
+	let [energyConsumptionData, setEnergyConsumptionData] = React.useState<any[]>([]);
+
+	// configurable states 
+	// get defaults from props  
+	let [year, setYear] = React.useState(props.year);
+	let [selectedBuilding, setSelectedBuilding] = React.useState(props.building);
+	let updater = useUpdateWidgetProps();
+
+	async function loadLocations() {
+		let { locations } = await props.uxpContext.executeAction(model, 'GetLocationsAndCategories', {}, { json: true }) as ILC;
+		setBuildings(transformLocations(locations));
+	}
+	
+
+	React.useEffect(() => {
+		loadLocations().then(_ => { });
+		getYears(props.uxpContext).then(setYearList);
+	}, []);
+	
+	React.useEffect(() => {
+		console.log('yearandlocation',year,selectedBuilding)
+		props.uxpContext.executeAction(model, 'ConsumptionOfAllEnergyTypes', { year, location: selectedBuilding}, { json: true }).then((data: any[]) => {
+			console.log('ConsumptionData',data);
+			setEnergyConsumptionData(data)
+			updater(props.instanceId, { year, building: selectedBuilding});
+		});
+	}, [year, buildings,selectedBuilding]);
+	console.log('energyConsumptionData',energyConsumptionData)
+
+	React.useEffect(() => {
+		props.uxpContext.executeAction(model, 'GetCategories', {}, { json: true }).then((data: any[]) => {
+			setCategories(data)
+		});
+	}, []);
+
+//code to fill up chartData with null values for missing months
+if(energyConsumptionData.length != 0){
+	console.log('not null')
+	const result = Months.map(month => {
+		const foundData = energyConsumptionData.find(item => item.name === month);
+	  
+		if (foundData) {
+		  return foundData;
+		} else {
+		  const newData: { name: string; [key: string]: number | string } = { name: month };
+		  Categories.forEach(category => {
+			newData[category.id] = 0;
+		  });
+		  return newData;
+		}
+	  });
+	  
+	  result.sort((a, b) => {
+		const monthIndexA = Months.indexOf(a.name);
+		const monthIndexB = Months.indexOf(b.name);
+	  
+		return monthIndexA - monthIndexB;
+	  });
+	  chartData=result
+	  console.log('result',result);
+}
+  //filling code ends here
+
+	let hasChartData =   chartData.length > 0;
+	console.log(hasChartData,'hasChartData')
+	console.log('categories',Categories)
+	console.log('hasChartData',hasChartData)
+
+	let isSample = !hasChartData
+
+	if (isSample) {
+
+		//generating sample data
+		const Categories = ["cold-water", "gas", "Electricity", "water"];
+
+		
+		interface Data {
+		  name: string;
+		  [key: string]: number | string;
+		}
+		
+		let dummyData: Data[] = Months.map(month => {
+		  const data: Data = {
+			name: month
+		  };
+		
+		  Categories.forEach(category => {
+			data[category] = getRandomValue();
+		  });
+		
+		  return data;
+		});
+		
+		function getRandomValue(): number {
+		  // Generate a random value between 0 and 300
+		  return Math.floor(Math.random() * 301);
+		}
+		chartData = dummyData
+		console.log('dummyData',dummyData);
+
+	}
+	//dummy data generation ends here
+	console.log('chartData',chartData);
+	let hasData = chartData.length > 0;
+	console.log('budget',hasData);
+
+	let BarColors = ["#ed3083","#fccd27","#7dfa48","#2aa3f9"]
+	return (
+		<WidgetWrapper className='energy-widget'>
+			<TitleBar icon={EnergyIcon} title={'Total Energy Consumption By Energy Type ' +'for'+ (selectedBuilding ? `${selectedBuilding} - ${year}` : '') }>
+				<FilterPanel enableClear={false}>
+					<Select className={'selector-energy'} placeholder={'Year'} onChange={(year) => setYear(year)}
+						options={yearList} labelField='year' valueField='year' selected={year}
+					/>
+					<Select className={'selector-energy'} placeholder={'Location'} onChange={(b) => setSelectedBuilding(b)} selected={selectedBuilding}
+						options={buildings} labelField={'location'} valueField={'location'} />
+
+				</FilterPanel>
+			</TitleBar>
+			<div style={{ flex: 1, padding: '30px' }}>
+			{
+          (!hasData)
+          ?
+          <div className='no-budget-data'>
+            No data available
+          </div>
+          :
+			
+					<ResponsiveContainer width="100%" height="100%">
+							<BarChart
+							width={500}
+							height={300}
+							data={chartData}
+							margin={{
+								top: 20,
+								right: 30,
+								left: 20,
+								bottom: 5,
+							}}
+							>
+									<defs>
+							<filter id="shadow" height="200%">
+								<feDropShadow dx="4" dy="4" stdDeviation="4" />
+							</filter>
+						</defs>
+						<CartesianGrid strokeWidth={1} vertical={false} strokeOpacity={0.5}  strokeDasharray="3 3" />
+						<XAxis dataKey="name"
+							label={{
+								position: "center",
+								value: labels?.xAxis ||"Energy Types",
+								dy: 15
+							}}
+						/>
+						<YAxis axisLine={false}
+							label={{
+								position: "center",
+								value: labels?.yAxis || "KwH",
+								angle: -90,
+								dx:-30,
+							}}
+						/>
+						<YAxis axisLine={false} orientation={'right'} yAxisId={'cummulative'} />
+
+		  				<Tooltip formatter={(value,name,entry,index)=>{
+							return `${intFmt(Number(value).toFixed(2))+(labels?.yAxis || '')}`
+						}} />
+						<Legend align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
+
+
+		        	{
+						Categories.map((category, index) => (
+							<Bar
+							dataKey={category.id}
+							barSize={20}
+							stackId="a"
+							fill={BarColors[index % BarColors.length]}
+							/>
+						))
+					}
+					
+						</BarChart>
+					</ResponsiveContainer>
+			}
+</div>
+			<SampleDataLabel show={isSample} />
+		</WidgetWrapper>
+	)
+};
 
 /**
  * Register as a Widget
@@ -856,5 +1055,38 @@ registerUI({
 	showDefaultHeader: false
 })
 
+registerWidget({
+	id: "energy-budget-new",
+	widget: EnergyBudgetWidgetNew,
 
+	configs: {
+		layout: {
 
+		},
+		props: [
+			{
+				name: "colors",
+				label: "Colors",
+				type: "string"
+			},
+			{
+				name: "labels",
+				label: "axis labels",
+				type: "string"
+			}
+		],
+		configPanel: EnergyBudgetWidgetConfigPanel
+	},
+	defaultProps: {
+		colors: {
+			baseline: "#79B7B6",
+			consumption: "#F78FAA",
+			cumulativeConsumption: "#06F",
+			cumulativeBudget: "#ff7300",
+		},
+		labels:{
+			xAxis: "",
+			yAxis: ""
+		}
+	}
+});

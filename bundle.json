@@ -19,6 +19,12 @@
 	        "name": "Energy Consumption (Category-wise)",
             "description":"Energy consumption data by category",
 	    "category":"energy-management"
+        },
+        {
+            "id":"energy-budget-new",
+	        "name": "Total Energy Consumption By Energy Type",
+            "description":"Total Energy Consumption By Energy Type",
+	    "category":"energy-management"
         }
 
     ],
