@@ -93,7 +93,7 @@
 /*! exports provided: id, author, widgets, uis, menuItems, sidebarLinks, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"id\":\"356cd8c5-4807-4c5f-c60a-6b67c5660d4d\",\"author\":\"eutech\",\"widgets\":[{\"id\":\"energy-budget\",\"name\":\"Yearly Energy Consumption\",\"description\":\"Energy consumption details by year\",\"category\":\"energy-management\"},{\"id\":\"current-monthly-energy\",\"name\":\"Current Monthly Energy Usage\",\"description\":\"Energy consumption details by month\",\"category\":\"energy-management\"},{\"id\":\"energy-breakdown\",\"name\":\"Energy Consumption (Category-wise)\",\"description\":\"Energy consumption data by category\",\"category\":\"energy-management\"}],\"uis\":[{\"id\":\"config\",\"label\":\"Energy Budget Setup\"}],\"menuItems\":[],\"sidebarLinks\":[]}");
+module.exports = JSON.parse("{\"id\":\"356cd8c5-4807-4c5f-c60a-6b67c5660d4d\",\"author\":\"eutech\",\"widgets\":[{\"id\":\"energy-budget\",\"name\":\"Yearly Energy Consumption\",\"description\":\"Energy consumption details by year\",\"category\":\"energy-management\"},{\"id\":\"current-monthly-energy\",\"name\":\"Current Monthly Energy Usage\",\"description\":\"Energy consumption details by month\",\"category\":\"energy-management\"},{\"id\":\"energy-breakdown\",\"name\":\"Energy Consumption (Category-wise)\",\"description\":\"Energy consumption data by category\",\"category\":\"energy-management\"},{\"id\":\"consumption-of-all-energy-types\",\"name\":\"All Energy Consumption (EnergyType-wise) \",\"description\":\"Total Energy Consumption By Energy Type\",\"category\":\"energy-management\"}],\"uis\":[{\"id\":\"config\",\"label\":\"Energy Budget Setup\"}],\"menuItems\":[],\"sidebarLinks\":[]}");
 
 /***/ }),
 
@@ -1585,6 +1585,136 @@ exports.CurrentUsage = (props) => {
                     React.createElement("span", { style: { fontSize: '0.3em', opacity: 0.5 } }, "KWH"))
                 : null));
 };
+const AllEnergyConsumption = (props) => {
+    let { colors, labels } = props;
+    let [yearList, setYearList] = React.useState([]);
+    let [buildings, setBuildings] = React.useState([]);
+    //let [selectedBudget, setSelectedBudget] = React.useState<number[]>([]);
+    let [chartData, setChartData] = React.useState([]);
+    let [Categories, setCategories] = React.useState([]);
+    let [energyConsumptionData, setEnergyConsumptionData] = React.useState([]);
+    // configurable states 
+    // get defaults from props  
+    let [year, setYear] = React.useState(props.year);
+    let [selectedBuilding, setSelectedBuilding] = React.useState(props.building);
+    let updater = components_1.useUpdateWidgetProps();
+    function loadLocations() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let { locations } = yield props.uxpContext.executeAction(model, 'GetLocationsAndCategories', {}, { json: true });
+            setBuildings(transformLocations(locations));
+        });
+    }
+    React.useEffect(() => {
+        loadLocations().then(_ => { });
+        getYears(props.uxpContext).then(setYearList);
+    }, []);
+    React.useEffect(() => {
+        console.log('yearandlocation', year, selectedBuilding);
+        props.uxpContext.executeAction(model, 'ConsumptionOfAllEnergyTypes', { year, location: selectedBuilding }, { json: true }).then((data) => {
+            console.log('ConsumptionData', data);
+            setEnergyConsumptionData(data);
+            updater(props.instanceId, { year, building: selectedBuilding });
+        });
+    }, [year, buildings, selectedBuilding]);
+    console.log('energyConsumptionData', energyConsumptionData);
+    React.useEffect(() => {
+        props.uxpContext.executeAction(model, 'GetCategories', {}, { json: true }).then((data) => {
+            setCategories(data);
+        });
+    }, []);
+    //code to fill up chartData with null values for missing months
+    if (energyConsumptionData.length != 0) {
+        console.log('not null');
+        const result = Months.map(month => {
+            const foundData = energyConsumptionData.find(item => item.name === month);
+            if (foundData) {
+                return foundData;
+            }
+            else {
+                const newData = { name: month };
+                Categories.forEach(category => {
+                    newData[category.id] = 0;
+                });
+                return newData;
+            }
+        });
+        result.sort((a, b) => {
+            const monthIndexA = Months.indexOf(a.name);
+            const monthIndexB = Months.indexOf(b.name);
+            return monthIndexA - monthIndexB;
+        });
+        chartData = result;
+        console.log('result', result);
+    }
+    //filling code ends here
+    let hasChartData = chartData.length > 0;
+    console.log(hasChartData, 'hasChartData');
+    console.log('categories', Categories);
+    console.log('hasChartData', hasChartData);
+    let isSample = !hasChartData;
+    if (isSample) {
+        //generating sample data
+        const Categories = ["cold-water", "gas", "Electricity", "water"];
+        let dummyData = Months.map(month => {
+            const data = {
+                name: month
+            };
+            Categories.forEach(category => {
+                data[category] = getRandomValue();
+            });
+            return data;
+        });
+        function getRandomValue() {
+            // Generate a random value between 0 and 300
+            return Math.floor(Math.random() * 301);
+        }
+        chartData = dummyData;
+        console.log('dummyData', dummyData);
+    }
+    //dummy data generation ends here
+    console.log('chartData', chartData);
+    let hasData = chartData.length > 0;
+    console.log('budget', hasData);
+    let BarColors = ["#ed3083", "#fccd27", "#7dfa48", "#2aa3f9"];
+    return (React.createElement(components_1.WidgetWrapper, { className: 'energy-widget' },
+        React.createElement(components_1.TitleBar, { icon: EnergyIcon, title: 'Total Energy Consumption By Energy Type ' + 'for' + (selectedBuilding ? `${selectedBuilding} - ${year}` : '') },
+            React.createElement(components_1.FilterPanel, { enableClear: false },
+                React.createElement(components_1.Select, { className: 'selector-energy', placeholder: 'Year', onChange: (year) => setYear(year), options: yearList, labelField: 'year', valueField: 'year', selected: year }),
+                React.createElement(components_1.Select, { className: 'selector-energy', placeholder: 'Location', onChange: (b) => setSelectedBuilding(b), selected: selectedBuilding, options: buildings, labelField: 'location', valueField: 'location' }))),
+        React.createElement("div", { style: { flex: 1, padding: '30px' } }, (!hasData)
+            ?
+                React.createElement("div", { className: 'no-budget-data' }, "No data available")
+            :
+                React.createElement(recharts_1.ResponsiveContainer, { width: "100%", height: "100%" },
+                    React.createElement(recharts_1.BarChart, { width: 500, height: 300, data: chartData, margin: {
+                            top: 20,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        } },
+                        React.createElement("defs", null,
+                            React.createElement("filter", { id: "shadow", height: "200%" },
+                                React.createElement("feDropShadow", { dx: "4", dy: "4", stdDeviation: "4" }))),
+                        React.createElement(recharts_1.CartesianGrid, { strokeWidth: 1, vertical: false, strokeOpacity: 0.5, strokeDasharray: "3 3" }),
+                        React.createElement(recharts_1.XAxis, { dataKey: "name", label: {
+                                position: "center",
+                                value: (labels === null || labels === void 0 ? void 0 : labels.xAxis) || "Energy Types",
+                                dy: 15
+                            } }),
+                        React.createElement(recharts_1.YAxis, { axisLine: false, label: {
+                                position: "center",
+                                value: (labels === null || labels === void 0 ? void 0 : labels.yAxis) || "KwH",
+                                angle: -90,
+                                dx: -30,
+                            } }),
+                        React.createElement(recharts_1.YAxis, { axisLine: false, orientation: 'right', yAxisId: 'cummulative' }),
+                        React.createElement(recharts_1.Tooltip, { formatter: (value, name, entry, index) => {
+                                return `${intFmt(Number(value).toFixed(2)) + ((labels === null || labels === void 0 ? void 0 : labels.yAxis) || '')}`;
+                            } }),
+                        React.createElement(recharts_1.Legend, { align: "center", verticalAlign: "bottom", wrapperStyle: { paddingTop: 20 } }),
+                        Categories.map((category, index) => (React.createElement(recharts_1.Bar, { dataKey: category.id, barSize: 20, stackId: "a", fill: BarColors[index % BarColors.length] })))))),
+        React.createElement(components_1.SampleDataLabel, { show: isSample })));
+};
 /**
  * Register as a Widget
  */
@@ -1663,6 +1793,38 @@ uxp_1.registerUI({
     id: 'config',
     component: Configuration_1.default,
     showDefaultHeader: false
+});
+uxp_1.registerWidget({
+    id: "consumption-of-all-energy-types",
+    widget: AllEnergyConsumption,
+    configs: {
+        layout: {},
+        props: [
+            {
+                name: "colors",
+                label: "Colors",
+                type: "string"
+            },
+            {
+                name: "labels",
+                label: "axis labels",
+                type: "string"
+            }
+        ],
+        configPanel: EnergyBudgetWidgetConfigPanel
+    },
+    defaultProps: {
+        colors: {
+            baseline: "#79B7B6",
+            consumption: "#F78FAA",
+            cumulativeConsumption: "#06F",
+            cumulativeBudget: "#ff7300",
+        },
+        labels: {
+            xAxis: "",
+            yAxis: ""
+        }
+    }
 });
 
 

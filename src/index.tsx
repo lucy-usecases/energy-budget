@@ -767,7 +767,7 @@ export const CurrentUsage: React.FunctionComponent<IWidgetProps> = (props) => {
 		
 	</WidgetWrapper>;
 }
-const EnergyBudgetWidgetNew: React.FunctionComponent<IEnergyBudgetWidgetProps> = (props) => {
+const AllEnergyConsumption: React.FunctionComponent<IEnergyBudgetWidgetProps> = (props) => {
 
 	let { colors, labels } = props
 
@@ -1056,8 +1056,8 @@ registerUI({
 })
 
 registerWidget({
-	id: "energy-budget-new",
-	widget: EnergyBudgetWidgetNew,
+	id: "consumption-of-all-energy-types",
+	widget: AllEnergyConsumption,
 
 	configs: {
 		layout: {
