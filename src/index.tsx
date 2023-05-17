@@ -851,7 +851,7 @@ if(energyConsumptionData.length != 0){
 	if (isSample) {
 
 		//generating sample data
-		const Categories = ["cold-water", "gas", "Electricity", "water"];
+		const sampleCategories = ["cold-water", "gas", "Electricity", "water"];
 
 		
 		interface Data {
@@ -864,7 +864,7 @@ if(energyConsumptionData.length != 0){
 			name: month
 		  };
 		
-		  Categories.forEach(category => {
+		  sampleCategories.forEach(category => {
 			data[category] = getRandomValue();
 		  });
 		

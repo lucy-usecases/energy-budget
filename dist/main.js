@@ -1654,12 +1654,12 @@ const AllEnergyConsumption = (props) => {
     let isSample = !hasChartData;
     if (isSample) {
         //generating sample data
-        const Categories = ["cold-water", "gas", "Electricity", "water"];
+        const sampleCategories = ["cold-water", "gas", "Electricity", "water"];
         let dummyData = Months.map(month => {
             const data = {
                 name: month
             };
-            Categories.forEach(category => {
+            sampleCategories.forEach(category => {
                 data[category] = getRandomValue();
             });
             return data;
