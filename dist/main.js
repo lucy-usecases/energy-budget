@@ -1598,6 +1598,7 @@ const AllEnergyConsumption = (props) => {
     let [year, setYear] = React.useState(props.year);
     let [selectedBuilding, setSelectedBuilding] = React.useState(props.building);
     let updater = components_1.useUpdateWidgetProps();
+    let sampleCategories = ["Water", "Gas", "Electricity", "Internet"];
     function loadLocations() {
         return __awaiter(this, void 0, void 0, function* () {
             let { locations } = yield props.uxpContext.executeAction(model, 'GetLocationsAndCategories', {}, { json: true });
@@ -1653,8 +1654,6 @@ const AllEnergyConsumption = (props) => {
     console.log('hasChartData', hasChartData);
     let isSample = !hasChartData;
     if (isSample) {
-        //generating sample data
-        const sampleCategories = ["cold-water", "gas", "Electricity", "water"];
         let dummyData = Months.map(month => {
             const data = {
                 name: month
@@ -1712,7 +1711,11 @@ const AllEnergyConsumption = (props) => {
                                 return `${intFmt(Number(value).toFixed(2)) + ((labels === null || labels === void 0 ? void 0 : labels.yAxis) || '')}`;
                             } }),
                         React.createElement(recharts_1.Legend, { align: "center", verticalAlign: "bottom", wrapperStyle: { paddingTop: 20 } }),
-                        Categories.map((category, index) => (React.createElement(recharts_1.Bar, { dataKey: category.id, barSize: 20, stackId: "a", fill: BarColors[index % BarColors.length] })))))),
+                        (isSample)
+                            ?
+                                sampleCategories.map((category, index) => (React.createElement(recharts_1.Bar, { dataKey: category, barSize: 20, stackId: "a", fill: BarColors[index % BarColors.length] })))
+                            :
+                                Categories.map((category, index) => (React.createElement(recharts_1.Bar, { dataKey: category.id, barSize: 20, stackId: "a", fill: BarColors[index % BarColors.length] })))))),
         React.createElement(components_1.SampleDataLabel, { show: isSample })));
 };
 /**

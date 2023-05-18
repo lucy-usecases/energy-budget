@@ -785,6 +785,7 @@ const AllEnergyConsumption: React.FunctionComponent<IEnergyBudgetWidgetProps> = 
 	let [year, setYear] = React.useState(props.year);
 	let [selectedBuilding, setSelectedBuilding] = React.useState(props.building);
 	let updater = useUpdateWidgetProps();
+	let sampleCategories = ["Water", "Gas", "Electricity","Internet"];
 
 	async function loadLocations() {
 		let { locations } = await props.uxpContext.executeAction(model, 'GetLocationsAndCategories', {}, { json: true }) as ILC;
@@ -851,7 +852,7 @@ if(energyConsumptionData.length != 0){
 	if (isSample) {
 
 		//generating sample data
-		const sampleCategories = ["cold-water", "gas", "Electricity", "water"];
+
 
 		
 		interface Data {
@@ -946,8 +947,19 @@ if(energyConsumptionData.length != 0){
 						}} />
 						<Legend align="center" verticalAlign="bottom" wrapperStyle={{ paddingTop: 20 }} />
 
-
+					
 		        	{
+						(isSample)
+						?
+						sampleCategories.map((category, index) => (
+							<Bar
+							dataKey={category}
+							barSize={20}
+							stackId="a"
+							fill={BarColors[index % BarColors.length]}
+							/>
+						))
+						:
 						Categories.map((category, index) => (
 							<Bar
 							dataKey={category.id}
