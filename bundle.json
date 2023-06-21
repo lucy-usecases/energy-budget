@@ -1,28 +1,32 @@
 {
-    "id":"356cd8c5-4807-4c5f-c60a-6b67c5660d4d",
-    "author":"eutech",
-    "widgets":[
+    "id": "356cd8c5-4807-4c5f-c60a-6b67c5660d4d",
+    "author": "eutech",
+    "widgets": [
         {
-            "id":"energy-budget",
+            "id": "energy-budget",
             "name": "Yearly Energy Consumption",
-            "description":"Energy consumption details by year",
-	    "category":"energy-management"
+            "description": "Energy consumption details by year",
+            "category": "energy-management"
         },
         {
-            "id":"current-monthly-energy",
-            "name": "Current Monthly Energy Usage", 
-            "description"  : "Energy consumption details by month",
-	        "category":"energy-management"
+            "id": "current-monthly-energy",
+            "name": "Current Monthly Energy Usage",
+            "description": "Energy consumption details by month",
+            "category": "energy-management"
         },
-         {
-            "id":"energy-breakdown",
-	        "name": "Energy Consumption (Category-wise)",
-            "description":"Energy consumption data by category",
-	    "category":"energy-management"
+        {
+            "id": "energy-breakdown",
+            "name": "Energy Consumption (Category-wise)",
+            "description": "Energy consumption data by category",
+            "category": "energy-management"
         }
-
     ],
-    "uis": [{ "id": "config", "label": "Energy Budget Setup" }],
+    "uis": [
+        {
+            "id": "config",
+            "label": "Energy Budget Setup"
+        }
+    ],
     "menuItems": [],
     "sidebarLinks": []
 }

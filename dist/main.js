@@ -10509,34 +10509,15 @@ module.exports.formatError = function(err) {
 
 /***/ }),
 
-/***/ "./src/Configuration.tsx":
-/*!*******************************!*\
-  !*** ./src/Configuration.tsx ***!
-  \*******************************/
+/***/ "./src/BudgetModal.tsx":
+/*!*****************************!*\
+  !*** ./src/BudgetModal.tsx ***!
+  \*****************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10546,120 +10527,100 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(/*! react */ "react"));
-__webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
-__webpack_require__(/*! ./config.scss */ "./src/config.scss");
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
 const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
-const config_util_1 = __webpack_require__(/*! ./config-util */ "./src/config-util.tsx");
-const DEFAULT_BUILDING = 'building';
-const CARBON_DATASET_URL = 'https://s3.amazonaws.com/ecyber.public/datasets/carbon-intensity-electricity.json';
-const ENERGY = 230;
-const modelName = 'EnergyBudget';
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const Configuration = (props) => {
+const BudgetModal = ({ monthlyBudget, defaultClick, categoryId, setCategoryId, categoryLabel, setCategoryLabel, setMonthlyBudget, setBudgetandUpdateCategory, MONTHS, values, setValues, uxpContext, getCategories, modelName }) => {
     const alerts = components_1.useAlert();
     const toast = components_1.useToast();
-    const [id, setId] = react_1.default.useState('');
-    const [name, setName] = react_1.default.useState('');
-    const [addCategory, setAddCategory] = react_1.default.useState(false);
-    const [monthlyBudget, setMonthlyBudget] = react_1.default.useState(false);
-    const [defaultClick, setDefaultClick] = react_1.default.useState(false);
-    const [upload, setUpload] = react_1.default.useState(false);
-    const [date, setDate] = react_1.useState(new Date());
-    // const [setup, setSetup] = React.useState(false);
-    const [mode, setMode] = react_1.default.useState('types');
-    const [error, setError] = react_1.default.useState(false);
-    const [categories, setcategories] = react_1.default.useState([]);
-    const [_id, set_id] = react_1.default.useState('');
-    const [category, setCategory] = react_1.default.useState('');
-    const [categoryId, setCategoryId] = react_1.default.useState('');
-    const [budgetDetails, setBudgetDetails] = react_1.default.useState({});
-    const [modelKey, setModelKey] = react_1.default.useState('');
-    const [values, setValues] = react_1.default.useState(Array(MONTHS.length).fill(ENERGY));
-    const [uploadValues, setUploadValues] = react_1.default.useState([]);
-    const [carbonData, setCarbonData] = react_1.default.useState(null);
-    const [country, setCountry] = react_1.default.useState('');
-    const [emission, setEmission] = react_1.default.useState('');
-    react_1.default.useEffect(() => {
-        /* mark as completed when the config page opens */
-        config_util_1.completeInstallation(props.uxpContext);
-        getModelKey();
-        getCategories();
-        getCarbonData();
-    }, []);
-    function getCarbonData() {
+    function deleteCategory(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            let resp = yield fetch(CARBON_DATASET_URL);
-            let json = yield resp.json();
-            setCarbonData(json);
-        });
-    }
-    function getModelKey() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield props.uxpContext.executeService('System', 'MetadataMap:KeyByname', { Name: modelName });
-            const details = JSON.parse(result);
-            const { Key } = details[0];
-            setModelKey(Key);
-        });
-    }
-    function getCategories() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const res = yield props.uxpContext.executeService("Lucy", "GetPaginatedDocs", {
-                collectionName: 'categories',
-                modelName,
-                max: 20,
-                filter: JSON.stringify({})
-            });
-            const { data } = JSON.parse(res)[0];
-            const catArray = JSON.parse(data);
-            setcategories(catArray);
-            setUploadValues(Array(catArray.length).fill(ENERGY));
-        });
-    }
-    const newCategory = () => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            if (!id || !name) {
-                setError(true);
+            let b = yield alerts.confirm('Are you sure you want to delete this category and monthly budgets? This will not remove any existing meter data. You can add the category again later');
+            if (!b) {
                 return;
             }
-            yield props.uxpContext.executeService("Lucy", "AddNewDocument", {
-                document: JSON.stringify({ id, label: name }),
-                modelName,
-                collection: 'categories'
-            });
-            setId('');
-            setName('');
-            setAddCategory(false);
-            toast.success(`${name} added succefully!!!`);
-            yield config_util_1.completeInstallation(props.uxpContext);
+            yield uxpContext.executeAction(modelName, 'DeleteCategory', { category: id }, { json: true });
+            toast.success('Category deleted');
             yield getCategories();
-            // window.location.reload();
-        }
-        catch (err) {
-            console.log(err);
-        }
-    });
+        });
+    }
     const handleValueChange = (index, value) => {
         const newValues = [...values];
         newValues[index] = parseInt(value);
         setValues(newValues);
     };
-    const changeUploadValues = (index, value) => {
-        const newValues = [...uploadValues];
-        newValues[index] = parseInt(value);
-        setUploadValues(newValues);
-    };
+    return (react_1.default.createElement(components_1.Modal, { className: 'monthly-budget', title: defaultClick ? "Default" : categoryId, show: monthlyBudget, onClose: () => setMonthlyBudget(false) },
+        !defaultClick ?
+            react_1.default.createElement("div", { className: 'inputs' },
+                react_1.default.createElement("label", null, "ID"),
+                react_1.default.createElement(components_1.Input, { placeholder: 'ID', value: categoryId, onChange: (val) => { setCategoryId(val); } }),
+                react_1.default.createElement("label", null, "Label"),
+                react_1.default.createElement(components_1.Input, { placeholder: 'Name', value: categoryLabel, onChange: (val) => { setCategoryLabel(val); } }))
+            :
+                null,
+        react_1.default.createElement("div", { className: 'budget-label' }, "Set monthly energy consumption budgets for this  category"),
+        react_1.default.createElement("div", { className: 'budgets' }, MONTHS.map((M, i) => {
+            return react_1.default.createElement("div", { key: M, className: 'budget' },
+                react_1.default.createElement("div", null,
+                    react_1.default.createElement(components_1.Input, { value: values[i].toString(), type: 'number', onChange: (val) => handleValueChange(i, Number(val)) }),
+                    "kWh"),
+                react_1.default.createElement("span", { className: 'month' }, M));
+        })),
+        react_1.default.createElement("div", { className: 'actions' },
+            react_1.default.createElement("div", { className: 'delete-button' },
+                react_1.default.createElement("a", { href: '#', onClick: () => deleteCategory(categoryId).then(() => setMonthlyBudget(false)) }, "Delete this category")),
+            react_1.default.createElement("div", { className: 'save-button' },
+                react_1.default.createElement(components_1.Button, { title: 'Save', onClick: () => { setBudgetandUpdateCategory(categoryId); } })))));
+};
+exports.default = BudgetModal;
+
+
+/***/ }),
+
+/***/ "./src/CategoryListComponent.tsx":
+/*!***************************************!*\
+  !*** ./src/CategoryListComponent.tsx ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
+const BudgetModal_1 = __importDefault(__webpack_require__(/*! ./BudgetModal */ "./src/BudgetModal.tsx"));
+const CategoryListComponent = ({ uxpContext, modelKey, DEFAULT_BUILDING, modelName, values, setValues, categories, getCategories, MONTHS, ENERGY, }) => {
+    const [defaultClick, setDefaultClick] = react_1.default.useState(false);
+    const [_id, set_id] = react_1.default.useState('');
+    const [categoryId, setCategoryId] = react_1.default.useState('');
+    const [categoryLabel, setCategoryLabel] = react_1.default.useState('');
+    const [budgetDetails, setBudgetDetails] = react_1.default.useState({});
+    const [monthlyBudget, setMonthlyBudget] = react_1.default.useState(false);
+    const toast = components_1.useToast();
     const onCategoryClick = (c) => __awaiter(void 0, void 0, void 0, function* () {
         if (c) {
             setDefaultClick(false);
             set_id(c === null || c === void 0 ? void 0 : c._id);
             setCategoryId(c === null || c === void 0 ? void 0 : c.id);
-            setCategory(c === null || c === void 0 ? void 0 : c.label);
-            setId(c === null || c === void 0 ? void 0 : c.id);
-            setName(c === null || c === void 0 ? void 0 : c.label);
+            setCategoryLabel(c === null || c === void 0 ? void 0 : c.label);
         }
-        const response = yield props.uxpContext.executeService("Lucy", "GetPaginatedDocs", {
+        const response = yield uxpContext.executeService("Lucy", "GetPaginatedDocs", {
             collectionName: 'budget',
             modelName,
             max: 20,
@@ -10678,24 +10639,11 @@ const Configuration = (props) => {
         }
         setMonthlyBudget(true);
     });
-    const addNewCategory = (cid, cname, budget) => __awaiter(void 0, void 0, void 0, function* () {
-        yield props.uxpContext.executeService("Lucy", "AddNewDocument", {
-            document: JSON.stringify({ id: cid, label: cname }),
-            modelName,
-            collection: 'categories',
-            replace: ''
-        });
-        yield props.uxpContext.executeService("Lucy", "AddNewDocument", {
-            document: JSON.stringify({ location: DEFAULT_BUILDING, values: budget, category: cid }),
-            modelName,
-            collection: 'budget',
-        });
-    });
     const setBudgetandUpdateCategory = (categoryId) => __awaiter(void 0, void 0, void 0, function* () {
         if (!defaultClick) {
-            if (id || name) {
-                const body = (id && name) ? { id, label: name } : (id) ? { id } : { label: name };
-                yield props.uxpContext.executeService("Lucy", "UpdateDocument", {
+            if (categoryId || categoryLabel) {
+                const body = (categoryId && categoryLabel) ? { categoryId, label: categoryLabel } : (categoryId) ? { categoryId } : { label: categoryLabel };
+                yield uxpContext.executeService("Lucy", "UpdateDocument", {
                     _id,
                     document: JSON.stringify(body),
                     model: modelKey,
@@ -10704,11 +10652,11 @@ const Configuration = (props) => {
                 });
             }
         }
-        const budgetBody = { location: DEFAULT_BUILDING, values, category: defaultClick ? 'Default' : id };
-        const cat = defaultClick ? "Default" : category;
+        const budgetBody = { location: DEFAULT_BUILDING, values, category: defaultClick ? 'Default' : categoryId };
+        const cat = defaultClick ? "Default" : categoryLabel;
         if (Object.keys(budgetDetails).length > 0) {
             const { _id } = budgetDetails;
-            yield props.uxpContext.executeService("Lucy", "UpdateDocument", {
+            yield uxpContext.executeService("Lucy", "UpdateDocument", {
                 _id,
                 document: JSON.stringify(budgetBody),
                 model: modelKey,
@@ -10718,7 +10666,7 @@ const Configuration = (props) => {
             toast.success(`Budget for ${cat} updated`);
         }
         else {
-            yield props.uxpContext.executeService("Lucy", "AddNewDocument", {
+            yield uxpContext.executeService("Lucy", "AddNewDocument", {
                 document: JSON.stringify(budgetBody),
                 modelName,
                 collection: 'budget'
@@ -10729,17 +10677,343 @@ const Configuration = (props) => {
         yield getCategories();
         // window.location.reload();
     });
-    function deleteCategory(id) {
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement(components_1.Button, { className: 'category-button', title: 'Default', onClick: () => { setDefaultClick(true); setMonthlyBudget(true); onCategoryClick(); } }),
+        categories.map(c => {
+            return react_1.default.createElement(components_1.Button, { key: c === null || c === void 0 ? void 0 : c._id, className: 'category-button', title: c === null || c === void 0 ? void 0 : c.label, onClick: () => onCategoryClick(c) });
+        }),
+        react_1.default.createElement(BudgetModal_1.default, { monthlyBudget: monthlyBudget, setMonthlyBudget: setMonthlyBudget, defaultClick: defaultClick, categoryId: categoryId, setCategoryId: setCategoryId, categoryLabel: categoryLabel, setCategoryLabel: setCategoryLabel, values: values, setValues: setValues, setBudgetandUpdateCategory: setBudgetandUpdateCategory, MONTHS: MONTHS, uxpContext: uxpContext, getCategories: getCategories, modelName: modelName })));
+};
+exports.default = CategoryListComponent;
+
+
+/***/ }),
+
+/***/ "./src/Co2Component.tsx":
+/*!******************************!*\
+  !*** ./src/Co2Component.tsx ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
+const CARBON_DATASET_URL = 'https://s3.amazonaws.com/ecyber.public/datasets/carbon-intensity-electricity.json';
+const Co2Component = ({ uxpContext, }) => {
+    const [country, setCountry] = react_1.default.useState('');
+    const [emission, setEmission] = react_1.default.useState('');
+    const [carbonData, setCarbonData] = react_1.default.useState(null);
+    const alerts = components_1.useAlert();
+    const toast = components_1.useToast();
+    function getCarbonData() {
         return __awaiter(this, void 0, void 0, function* () {
-            let b = yield alerts.confirm('Are you sure you want to delete this category and monthly budgets? This will not remove any existing meter data. You can add the category again later');
-            if (!b) {
-                return;
-            }
-            yield props.uxpContext.executeAction(modelName, 'DeleteCategory', { category: id }, { json: true });
-            toast.success('Category deleted');
-            yield getCategories();
+            let resp = yield fetch(CARBON_DATASET_URL);
+            let json = yield resp.json();
+            setCarbonData(json);
         });
     }
+    react_1.default.useEffect(() => {
+        getCarbonData();
+    }, []);
+    return (react_1.default.createElement("div", { className: 'co2-container' },
+        react_1.default.createElement("div", { className: 'instructions' }, "Select your region to calculate your overall carbon emission"),
+        react_1.default.createElement("div", { className: 'gmap' },
+            react_1.default.createElement(components_1.Select, { placeholder: 'Select your region', renderOption: (option) => { var _a, _b; return react_1.default.createElement(components_1.ItemCard, { className: 'co2-emission-card', item: option, image: `https://static.iviva.com/flags/${(_a = option.countryCode) === null || _a === void 0 ? void 0 : _a.toLowerCase()}.svg`, titleField: 'name', subTitle: `Emission Intensity: ${(_b = option === null || option === void 0 ? void 0 : option.value) === null || _b === void 0 ? void 0 : _b.toFixed(2)} gCO2/kwh` }); }, options: carbonData, labelField: 'name', valueField: 'countryCode', selected: country, onChange: (v, opt) => {
+                    var _a;
+                    setCountry(v);
+                    let ev = (_a = carbonData.find((x) => x.countryCode == v)) === null || _a === void 0 ? void 0 : _a.value;
+                    if (ev) {
+                        setEmission(ev + '');
+                    }
+                } })),
+        react_1.default.createElement("div", { className: 'amount' },
+            react_1.default.createElement(components_1.Input, { onChange: setEmission, value: emission }),
+            react_1.default.createElement("label", null, "gCO2/kWH")),
+        react_1.default.createElement("div", { className: 'action' },
+            react_1.default.createElement(components_1.AsyncButton, { title: 'Update', onClick: () => __awaiter(void 0, void 0, void 0, function* () {
+                    let v = Number(emission);
+                    if (!v) {
+                        alerts.show('Please enter a valid emission intensity value. You can select your country to pick a reasonable value');
+                        return;
+                    }
+                    yield uxpContext.executeAction('EnergyBudget', 'UpdateLocationEmissionInfo', { location: 'building', 'co2': emission });
+                    toast.success('Emission data updated');
+                }) }))));
+};
+exports.default = Co2Component;
+
+
+/***/ }),
+
+/***/ "./src/Configuration.tsx":
+/*!*******************************!*\
+  !*** ./src/Configuration.tsx ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+__webpack_require__(/*! ./styles.scss */ "./src/styles.scss");
+__webpack_require__(/*! ./config.scss */ "./src/config.scss");
+const config_util_1 = __webpack_require__(/*! ./config-util */ "./src/config-util.tsx");
+const HeaderComponent_1 = __importDefault(__webpack_require__(/*! ./HeaderComponent */ "./src/HeaderComponent.tsx"));
+const TypesComponent_1 = __importDefault(__webpack_require__(/*! ./TypesComponent */ "./src/TypesComponent.tsx"));
+const UploadComponent_1 = __importDefault(__webpack_require__(/*! ./UploadComponent */ "./src/UploadComponent.tsx"));
+const Co2Component_1 = __importDefault(__webpack_require__(/*! ./Co2Component */ "./src/Co2Component.tsx"));
+const DEFAULT_BUILDING = 'building';
+const ENERGY = 230;
+const modelName = 'EnergyBudget';
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const Configuration = (props) => {
+    const [mode, setMode] = react_1.default.useState('types');
+    const [categories, setCategories] = react_1.default.useState([]);
+    const [values, setValues] = react_1.default.useState(Array(MONTHS.length).fill(ENERGY));
+    const [modelKey, setModelKey] = react_1.default.useState('');
+    const [uploadValues, setUploadValues] = react_1.default.useState([]);
+    react_1.default.useEffect(() => {
+        /* mark as completed when the config page opens */
+        config_util_1.completeInstallation(props.uxpContext);
+        getModelKey();
+        getCategories();
+    }, []);
+    function getModelKey() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield props.uxpContext.executeService('System', 'MetadataMap:KeyByname', { Name: modelName });
+            const details = JSON.parse(result);
+            const { Key } = details[0];
+            setModelKey(Key);
+        });
+    }
+    function getCategories() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const res = yield props.uxpContext.executeService("Lucy", "GetPaginatedDocs", {
+                collectionName: 'categories',
+                modelName,
+                max: 20,
+                filter: JSON.stringify({})
+            });
+            const { data } = JSON.parse(res)[0];
+            const catArray = JSON.parse(data);
+            setCategories(catArray);
+            setUploadValues(Array(catArray.length).fill(ENERGY));
+        });
+    }
+    return (react_1.default.createElement("div", { className: 'config' },
+        react_1.default.createElement(HeaderComponent_1.default, { mode: mode, setMode: setMode }),
+        (mode == 'upload') && react_1.default.createElement(UploadComponent_1.default, { categories: categories, uxpContext: props.uxpContext, DEFAULT_BUILDING: DEFAULT_BUILDING, getCategories: getCategories, modelName: modelName, values: values, uploadValues: uploadValues, setUploadValues: setUploadValues }),
+        mode === 'types' && react_1.default.createElement(TypesComponent_1.default, { categories: categories, uxpContext: props.uxpContext, modelName: modelName, ENERGY: ENERGY, getCategories: getCategories, values: values, setValues: setValues, MONTHS: MONTHS, modelKey: modelKey, DEFAULT_BUILDING: DEFAULT_BUILDING }),
+        mode === 'co2' && react_1.default.createElement(Co2Component_1.default, { uxpContext: props.uxpContext })));
+};
+exports.default = Configuration;
+
+
+/***/ }),
+
+/***/ "./src/HeaderComponent.tsx":
+/*!*********************************!*\
+  !*** ./src/HeaderComponent.tsx ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const HeaderComponent = ({ mode, setMode }) => {
+    return (react_1.default.createElement("div", { className: 'header' },
+        react_1.default.createElement("span", null, "Energy Management"),
+        react_1.default.createElement("div", { className: 'actions' },
+            react_1.default.createElement(components_1.Button, { className: (mode == 'upload') ? 'active primary' : 'primary', title: 'Connect Meters', onClick: () => { setMode('upload'); } }),
+            react_1.default.createElement(components_1.Button, { className: (mode == 'types') ? 'active primary' : 'primary', title: 'Setup Budgets and Categories', onClick: () => { setMode('types'); } }),
+            react_1.default.createElement(components_1.Button, { className: (mode == 'co2') ? 'active primary' : 'primary', title: 'Carbon Footprint', onClick: () => { setMode('co2'); } }))));
+};
+exports.default = HeaderComponent;
+
+
+/***/ }),
+
+/***/ "./src/NewCategoryModal.tsx":
+/*!**********************************!*\
+  !*** ./src/NewCategoryModal.tsx ***!
+  \**********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
+const config_util_1 = __webpack_require__(/*! ./config-util */ "./src/config-util.tsx");
+const NewCategoryModal = ({ uxpContext, modelName, getCategories }) => {
+    const toast = components_1.useToast();
+    const [error, setError] = react_1.default.useState(false);
+    const [id, setId] = react_1.default.useState('');
+    const [name, setName] = react_1.default.useState('');
+    const [showNewCategoryModal, setShowNewCategoryModal] = react_1.default.useState(false);
+    const addNewCategory = () => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            if (!id || !name) {
+                setError(true);
+                return;
+            }
+            yield uxpContext.executeService("Lucy", "AddNewDocument", {
+                document: JSON.stringify({ id, label: name }),
+                modelName,
+                collection: 'categories'
+            });
+            setId('');
+            setName('');
+            setShowNewCategoryModal(false);
+            toast.success(`${name} added succefully!!!`);
+            yield config_util_1.completeInstallation(uxpContext);
+            yield getCategories();
+            // window.location.reload();
+        }
+        catch (err) {
+            console.log(err);
+        }
+    });
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement(components_1.Button, { className: 'add', title: '+', onClick: () => { setShowNewCategoryModal(true); } }),
+        showNewCategoryModal ?
+            react_1.default.createElement(components_1.Modal, { autoSize: true, className: 'add-category', title: 'New Category', show: showNewCategoryModal, onClose: () => setShowNewCategoryModal(false) },
+                react_1.default.createElement("label", null, "Category Name"),
+                react_1.default.createElement(components_1.Input, { value: name, placeholder: 'Label', onChange: (val) => {
+                        setError(false);
+                        setName(val);
+                        setId(val.toLowerCase().replace(/\s+/g, '-'));
+                    } }),
+                react_1.default.createElement("label", null, "Category ID"),
+                react_1.default.createElement(components_1.Input, { value: id, placeholder: 'ID', onChange: (val) => { setError(false); setId(val); } }),
+                error ? react_1.default.createElement("span", { style: { color: 'red', margin: "5px 5px 10px 5px", textAlign: 'end' } }, "Please fill above fields") : null,
+                react_1.default.createElement("div", { className: 'save-button' },
+                    react_1.default.createElement(components_1.Button, { className: 'button', title: 'Save', onClick: () => { addNewCategory(); } })))
+            : null));
+};
+exports.default = NewCategoryModal;
+
+
+/***/ }),
+
+/***/ "./src/TypesComponent.tsx":
+/*!********************************!*\
+  !*** ./src/TypesComponent.tsx ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const CategoryListComponent_1 = __importDefault(__webpack_require__(/*! ./CategoryListComponent */ "./src/CategoryListComponent.tsx"));
+const NewCategoryModal_1 = __importDefault(__webpack_require__(/*! ./NewCategoryModal */ "./src/NewCategoryModal.tsx"));
+const TypesComponent = ({ categories, uxpContext, modelKey, modelName, ENERGY, getCategories, values, setValues, MONTHS, DEFAULT_BUILDING }) => {
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("div", { className: 'config-container' },
+            react_1.default.createElement("div", { className: 'instructions' }, "Setup your energy categories and monthly budgets for each category."),
+            react_1.default.createElement("div", { className: 'content' },
+                react_1.default.createElement(CategoryListComponent_1.default, { categories: categories, uxpContext: uxpContext, modelKey: modelKey, modelName: modelName, ENERGY: ENERGY, getCategories: getCategories, MONTHS: MONTHS, DEFAULT_BUILDING: DEFAULT_BUILDING, values: values, setValues: setValues }),
+                react_1.default.createElement(NewCategoryModal_1.default, { uxpContext: uxpContext, modelName: modelName, getCategories: getCategories })))));
+};
+exports.default = TypesComponent;
+
+
+/***/ }),
+
+/***/ "./src/UploadComponent.tsx":
+/*!*********************************!*\
+  !*** ./src/UploadComponent.tsx ***!
+  \*********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
+const UploadValuesModal_1 = __importDefault(__webpack_require__(/*! ./UploadValuesModal */ "./src/UploadValuesModal.tsx"));
+const productIds = ['60a7514811463a1ec3e13528', '6284e77efe60b4e6386f8e97', '6284d138fe60b4e6386f8e8b', '63fc771953a83942be8e7be5'];
+const UploadComponent = ({ categories, uxpContext, DEFAULT_BUILDING, getCategories, modelName, values, uploadValues, setUploadValues }) => {
+    const [upload, setUpload] = react_1.default.useState(false);
+    const alerts = components_1.useAlert();
+    const addNewCategory = (cid, cname, budget) => __awaiter(void 0, void 0, void 0, function* () {
+        yield uxpContext.executeService("Lucy", "AddNewDocument", {
+            document: JSON.stringify({ id: cid, label: cname }),
+            modelName,
+            collection: 'categories',
+            replace: ''
+        });
+        yield uxpContext.executeService("Lucy", "AddNewDocument", {
+            document: JSON.stringify({ location: DEFAULT_BUILDING, values: budget, category: cid }),
+            modelName,
+            collection: 'budget',
+        });
+    });
     function uploadData() {
         return __awaiter(this, void 0, void 0, function* () {
             if (categories.length < 1) {
@@ -10766,12 +11040,62 @@ const Configuration = (props) => {
             }
         });
     }
+    return (react_1.default.createElement(react_1.default.Fragment, null,
+        react_1.default.createElement("div", { className: 'connect-container' },
+            react_1.default.createElement("div", { className: 'instructions' }, "Either manually enter your energy data here, or connect some smart meters to automatically send data into Lucy"),
+            react_1.default.createElement("div", { className: 'documentation' },
+                react_1.default.createElement("div", { className: 'doc-item', onClick: uploadData },
+                    react_1.default.createElement("div", { className: 'icon icon-upload' }),
+                    react_1.default.createElement("div", { className: 'label' }, "Manually upload energy data")),
+                react_1.default.createElement("div", { className: 'doc-item' },
+                    react_1.default.createElement("div", { className: 'label' }, "Get Smart Meters"),
+                    react_1.default.createElement(components_1.BuyOnSpaceworxButton, { className: 'spaceworx', productIds: productIds })))),
+        upload && react_1.default.createElement(UploadValuesModal_1.default, { upload: upload, setUpload: setUpload, categories: categories, uploadValues: uploadValues, setUploadValues: setUploadValues, uxpContext: uxpContext, DEFAULT_BUILDING: DEFAULT_BUILDING })));
+};
+exports.default = UploadComponent;
+
+
+/***/ }),
+
+/***/ "./src/UploadValuesModal.tsx":
+/*!***********************************!*\
+  !*** ./src/UploadValuesModal.tsx ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(/*! react */ "react"));
+const components_1 = __webpack_require__(/*! uxp/components */ "uxp/components");
+const config_util_1 = __webpack_require__(/*! ./config-util */ "./src/config-util.tsx");
+const UploadValuesModal = ({ upload, setUpload, categories, uploadValues, uxpContext, DEFAULT_BUILDING, setUploadValues, }) => {
+    const toast = components_1.useToast();
+    const [date, setDate] = react_1.default.useState(new Date());
+    const changeUploadValues = (index, value) => {
+        const newValues = [...uploadValues];
+        newValues[index] = parseInt(value);
+        setUploadValues(newValues);
+    };
     const uploadValuesManually = () => __awaiter(void 0, void 0, void 0, function* () {
         const month = new Date(date).getMonth() + 1;
         const year = new Date(date).getFullYear();
         let i = 0;
         for (let cat of categories) {
-            yield props.uxpContext.executeAction("EnergyBudget", "AddValue", {
+            yield uxpContext.executeAction("EnergyBudget", "AddValue", {
                 month,
                 year,
                 location: DEFAULT_BUILDING,
@@ -10781,111 +11105,23 @@ const Configuration = (props) => {
             i++;
         }
         setUpload(false);
-        yield config_util_1.completeInstallation(props.uxpContext);
+        yield config_util_1.completeInstallation(uxpContext);
         toast.success('Energy data has been uploaded');
     });
-    return (react_1.default.createElement("div", { className: 'config' },
-        react_1.default.createElement("div", { className: 'header' },
-            react_1.default.createElement("span", null, "Energy Management"),
-            react_1.default.createElement("div", { className: 'actions' },
-                react_1.default.createElement(components_1.Button, { className: (mode == 'upload') ? 'active primary' : 'primary', title: 'Connect Meters', onClick: () => { setMode('upload'); } }),
-                react_1.default.createElement(components_1.Button, { className: (mode == 'types') ? 'active primary' : 'primary', title: 'Setup Budgets and Categories', onClick: () => { setMode('types'); } }),
-                react_1.default.createElement(components_1.Button, { className: (mode == 'co2') ? 'active primary' : 'primary', title: 'Carbon Footprint', onClick: () => { setMode('co2'); } }))),
-        (mode == 'types') &&
-            react_1.default.createElement("div", { className: 'config-container' },
-                react_1.default.createElement("div", { className: 'instructions' }, "Setup your energy categories and monthly budgets for each category."),
-                react_1.default.createElement("div", { className: 'content' },
-                    react_1.default.createElement(components_1.Button, { className: 'category-button', title: 'Default', onClick: () => { setDefaultClick(true); setMonthlyBudget(true); onCategoryClick(); } }),
-                    categories.map(c => {
-                        return react_1.default.createElement(components_1.Button, { key: c === null || c === void 0 ? void 0 : c._id, className: 'category-button', title: c === null || c === void 0 ? void 0 : c.label, onClick: () => onCategoryClick(c) });
-                    }),
-                    react_1.default.createElement(components_1.Button, { className: 'add', title: '+', onClick: () => { setId(''); setName(''); setAddCategory(true); } }))),
-        (mode == 'upload') && react_1.default.createElement("div", { className: 'connect-container' },
-            react_1.default.createElement("div", { className: 'instructions' }, "Either manually enter your energy data here, or connect some smart meters to automatically send data into Lucy"),
-            react_1.default.createElement("div", { className: 'documentation' },
-                react_1.default.createElement("div", { className: 'doc-item', onClick: () => { uploadData(); } },
-                    react_1.default.createElement("div", { className: 'icon icon-upload' }),
-                    react_1.default.createElement("div", { className: 'label' }, "Manually upload energy data")),
-                react_1.default.createElement("div", { className: 'doc-item' },
-                    react_1.default.createElement("div", { className: 'label' }, "Get Smart Meters"),
-                    react_1.default.createElement(components_1.BuyOnSpaceworxButton, { className: 'spaceworx', productIds: ['60a7514811463a1ec3e13528', '6284e77efe60b4e6386f8e97', '6284d138fe60b4e6386f8e8b', '63fc771953a83942be8e7be5'] })))),
-        (mode == 'co2') && react_1.default.createElement("div", { className: 'co2-container' },
-            react_1.default.createElement("div", { className: 'instructions' }, "Select your region to calculate your overall carbon emission"),
-            react_1.default.createElement("div", { className: 'gmap' },
-                react_1.default.createElement(components_1.Select, { placeholder: 'Select your region', renderOption: (option) => { var _a, _b; return react_1.default.createElement(components_1.ItemCard, { className: 'co2-emission-card', item: option, image: `https://static.iviva.com/flags/${(_a = option.countryCode) === null || _a === void 0 ? void 0 : _a.toLowerCase()}.svg`, titleField: 'name', subTitle: `Emission Intensity: ${(_b = option === null || option === void 0 ? void 0 : option.value) === null || _b === void 0 ? void 0 : _b.toFixed(2)} gCO2/kwh` }); }, options: carbonData, labelField: 'name', valueField: 'countryCode', selected: country, onChange: (v, opt) => {
-                        var _a;
-                        setCountry(v);
-                        let ev = (_a = carbonData.find((x) => x.countryCode == v)) === null || _a === void 0 ? void 0 : _a.value;
-                        if (ev) {
-                            setEmission(ev + '');
-                        }
-                    } })),
-            react_1.default.createElement("div", { className: 'amount' },
-                react_1.default.createElement(components_1.Input, { onChange: setEmission, value: emission }),
-                react_1.default.createElement("label", null, "gCO2/kWH")),
-            react_1.default.createElement("div", { className: 'action' },
-                react_1.default.createElement(components_1.AsyncButton, { title: 'Update', onClick: () => __awaiter(void 0, void 0, void 0, function* () {
-                        let v = Number(emission);
-                        if (!v) {
-                            alerts.show('Please enter a valid emission intensity value. You can select your country to pick a reasonable value');
-                            return;
-                        }
-                        yield props.uxpContext.executeAction('EnergyBudget', 'UpdateLocationEmissionInfo', { location: 'building', 'co2': emission });
-                        toast.success('Emission data updated');
-                    }) }))),
-        addCategory ?
-            react_1.default.createElement(components_1.Modal, { autoSize: true, className: 'add-category', title: 'New Category', show: addCategory, onClose: () => setAddCategory(false) },
-                react_1.default.createElement("label", null, "Category Name"),
-                react_1.default.createElement(components_1.Input, { value: name, placeholder: 'Label', onChange: (val) => {
-                        setError(false);
-                        setName(val);
-                        setId(val.toLowerCase().replace(/\s+/g, '-'));
-                    } }),
-                react_1.default.createElement("label", null, "Category ID"),
-                react_1.default.createElement(components_1.Input, { value: id, placeholder: 'ID', onChange: (val) => { setError(false); setId(val); } }),
-                error ? react_1.default.createElement("span", { style: { color: 'red', margin: "5px 5px 10px 5px", textAlign: 'end' } }, "Please fill above fields") : null,
-                react_1.default.createElement("div", { className: 'save-button' },
-                    react_1.default.createElement(components_1.Button, { className: 'button', title: 'Save', onClick: () => { newCategory(); } })))
-            : null,
-        ";",
-        react_1.default.createElement(components_1.Modal, { className: 'uploadValuesModal', show: upload, autoSize: true, title: 'Update Monthly Energy Consumption', onClose: () => setUpload(false) },
-            react_1.default.createElement("div", { className: 'categories' },
-                react_1.default.createElement("div", { className: 'single-category' },
-                    react_1.default.createElement("span", null, "Date"),
-                    react_1.default.createElement(components_1.DatePicker, { title: '', date: date, onChange: val => setDate(val) })),
-                categories.map((c, i) => {
-                    return react_1.default.createElement("div", { className: 'single-category' },
-                        react_1.default.createElement("span", null, c === null || c === void 0 ? void 0 : c.label),
-                        react_1.default.createElement(components_1.Input, { value: uploadValues[i], type: 'number', onChange: (v) => changeUploadValues(i, v) }),
-                        react_1.default.createElement("label", null, "kwh"));
-                })),
-            react_1.default.createElement(components_1.AsyncButton, { title: 'Save', onClick: () => __awaiter(void 0, void 0, void 0, function* () { return yield uploadValuesManually(); }) })),
-        monthlyBudget ?
-            react_1.default.createElement(components_1.Modal, { className: 'monthly-budget', title: defaultClick ? "Default" : category, show: monthlyBudget, onClose: () => setMonthlyBudget(false) },
-                !defaultClick ?
-                    react_1.default.createElement("div", { className: 'inputs' },
-                        react_1.default.createElement("label", null, "ID"),
-                        react_1.default.createElement(components_1.Input, { placeholder: 'ID', value: id, onChange: (val) => { setError(false); setId(val); } }),
-                        react_1.default.createElement("label", null, "Label"),
-                        react_1.default.createElement(components_1.Input, { placeholder: 'Name', value: name, onChange: (val) => { setError(false); setName(val); } }))
-                    :
-                        null,
-                react_1.default.createElement("div", { className: 'budget-label' }, "Set monthly energy consumption budgets for this  category"),
-                react_1.default.createElement("div", { className: 'budgets' }, MONTHS.map((M, i) => {
-                    return react_1.default.createElement("div", { key: M, className: 'budget' },
-                        react_1.default.createElement("div", null,
-                            react_1.default.createElement(components_1.Input, { value: values[i], type: 'number', onChange: (val) => handleValueChange(i, val) }),
-                            "kWh"),
-                        react_1.default.createElement("span", { className: 'month' }, M));
-                })),
-                react_1.default.createElement("div", { className: 'actions' },
-                    react_1.default.createElement("div", { className: 'delete-button' },
-                        react_1.default.createElement("a", { href: '#', onClick: () => deleteCategory(categoryId).then(() => setMonthlyBudget(false)) }, "Delete this category")),
-                    react_1.default.createElement("div", { className: 'save-button' },
-                        react_1.default.createElement(components_1.Button, { title: 'Save', onClick: () => { setBudgetandUpdateCategory(categoryId); } }))))
-            : null));
+    return (react_1.default.createElement(components_1.Modal, { className: 'uploadValuesModal', show: upload, autoSize: true, title: 'Update Monthly Energy Consumption', onClose: () => setUpload(false) },
+        react_1.default.createElement("div", { className: 'categories' },
+            react_1.default.createElement("div", { className: 'single-category' },
+                react_1.default.createElement("span", null, "Date"),
+                react_1.default.createElement(components_1.DatePicker, { title: '', date: date, onChange: val => setDate(val) })),
+            categories.map((c, i) => {
+                return (react_1.default.createElement("div", { className: 'single-category', key: i },
+                    react_1.default.createElement("span", null, c === null || c === void 0 ? void 0 : c.label),
+                    react_1.default.createElement(components_1.Input, { value: uploadValues[i].toString(), type: 'number', onChange: (v) => changeUploadValues(i, Number(v)) }),
+                    react_1.default.createElement("label", null, "kwh")));
+            })),
+        react_1.default.createElement(components_1.AsyncButton, { title: 'Save', onClick: () => __awaiter(void 0, void 0, void 0, function* () { return yield uploadValuesManually(); }) })));
 };
-exports.default = Configuration;
+exports.default = UploadValuesModal;
 
 
 /***/ }),
