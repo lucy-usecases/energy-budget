@@ -855,6 +855,3 @@ registerUI({
 	component: Configuration,
 	showDefaultHeader: false
 })
-
-
-
